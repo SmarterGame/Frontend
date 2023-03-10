@@ -1,27 +1,31 @@
-import { useState,useEffect, useRef, use } from 'react'
+import { useState,useEffect, useRef } from 'react'
 import Swal from "sweetalert2"
 import TeamBox from "../components/TeamBox"
 import Layout from "../components/Layout"
 
-import { useUser } from "@auth0/nextjs-auth0/client"
-import {getSession} from "@auth0/nextjs-auth0"
+import { useUser } from '@auth0/nextjs-auth0/client';
+import {getSession } from "@auth0/nextjs-auth0"
 import axios from "axios"
 
-export const getServerSideProps = ({res,req}) => {
-  url = "https://" + process.env.BACKEND_URI
-  const session = getSession(req, res)
-  if (!session) return { props: {} }
-  return { props: { token: session.accessToken, url: url}}
+export const getServerSideProps = ({ req, res }) => {
+  const url = "http://" + process.env.BACKEND_URI
+  const session = getSession(req,res)
+  if(!session.hasOwnProperty("accessToken")) return ({ props: {} })
+  return ({ props: { token: session.accessToken, url: url}})
 }
 
-
-
-export default function Home({accessToken,url}) {
+export default function Home({token,url}) {
   const { user, isLoading } = useUser()
   const [classroom_tiles,setClassroom_tiles] = useState([])
   useEffect(()=>{
     if (user){
-      //axios()  // checkProfile call with token 
+      axios({
+        method: "get",
+        url: url + "/user/checkProfile",
+        headers: { Authorization: "Bearer " + token }
+      }).then((back_profile)=>{
+        setClassroom_tiles([...back_profile.Classes])
+      })
     }
   },[user])
 
@@ -39,17 +43,26 @@ export default function Home({accessToken,url}) {
     })
     const newClass  = await axios({
       method: "get",
-      url: url + "/user/addBox/"+id,
+      url: url + "/user/addClassroom/"+id,
       headers: { Authorization: "Bearer " + token }
     })
     setClassroom_tiles([...classroom_tiles,newClass]) 
-    //if (id) router.push({ pathname: "/form", query: { draftID: id } })
   }
   
   return (
     <>
       <Layout user={user} loading={isLoading}>      
-        Testo di prova Children 
+        {(classroom_tiles.lenght != 0) ? (
+          <div>
+            {/* Testo di Federica! */}
+          </div>
+          ):(
+          <div className='flex-col items-center'>
+            {classroom_tiles.map((element)=>{
+              return <TeamBox classroomData={element}/>
+            })}
+          </div>
+        )}
       </Layout>      
     </>
   )

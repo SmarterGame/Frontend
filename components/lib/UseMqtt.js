@@ -1,12 +1,12 @@
 import MQTT from 'mqtt'
 import { useEffect, useRef } from 'react'
 
-function useMqtt({
+const useMqtt = ({
   uri,
   options = {},
   topicHandlers = [{ topic: '', handler: ({ topic, payload, packet }) => {} }],
   onConnectedHandler = (client) => {},
-}) {
+}) =>{
   const clientRef = useRef<MqttClient | null>(null)
 
   useEffect(() => {
@@ -50,4 +50,4 @@ function useMqtt({
   }, [])
 }
 
-e
+export default useMqtt;
