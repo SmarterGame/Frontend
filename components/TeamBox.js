@@ -22,4 +22,5 @@ const TeamBox = ({classroomData})=>{
     </div>
   )
 }
+
 export default TeamBox
