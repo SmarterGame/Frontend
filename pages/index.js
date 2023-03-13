@@ -1,47 +1,107 @@
-import { useState,useEffect, useRef } from 'react'
-import Layout from "../components/Layout"
-
-import { useUser } from '@auth0/nextjs-auth0/client';
-import {getSession } from "@auth0/nextjs-auth0"
+import { useState, useEffect, useRef } from "react";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { getSession } from "@auth0/nextjs-auth0";
+import Layout from "../components/Layout";
+import Link from "next/link";
 
 export const getServerSideProps = async ({ req, res }) => {
-  const url = "http://" + process.env.BACKEND_URI
-  const session = await getSession(req,res)
+    const url = "http://" + process.env.BACKEND_URI;
+    const session = await getSession(req, res);
 
-  if(session==null){ 
-    console.log("Early return")
-    return ({ props: {} })
-  }
-  // console.log(session.accessToken)
-  return ({ props: { token: session.accessToken, url: url}})
-}
+    if (session == null) {
+        console.log("Early return");
+        return { props: {} };
+    }
+    // console.log(session.accessToken)
+    return { props: { token: session.accessToken, url: url } };
+};
 
-export default function Home({token,url}) {
-  const { user, isLoading } = useUser()
-  return (
-    <>
-      <Layout user={user} loading={isLoading}>      
-          <div>
-            {/* Testo di Federica! */}
-          </div>
-      </Layout>      
-    </>
-  )
+export default function Home({ token, url }) {
+    const { user, isLoading } = useUser();
+    return (
+        <>
+            <Layout user={user} loading={isLoading}>
+                <div className="flex flex-row justify-between bg-blue-600 shadow-2xl h-auto">
+                    <Link href="/">
+                        <h1 className="text-4xl font-bold text-gray-100 text-stroke-orange mt-4 mb-4 ml-4">
+                            THE SMART GAME
+                        </h1>
+                    </Link>
+                    <button className="bg-orangeBtn hover:bg-orange-600 text-gray-100 font-bold shadow-2xl mr-10 mt-4 mb-4 px-4 rounded-md">
+                        <Link href="/api/auth/login">Accedi</Link>
+                    </button>
+                </div>
+                <div className="flex flex-col items-center mt-10">
+                    <div className="bg-lightGrayBadge max-w-6xl rounded-xl">
+                        <div className="mx-auto text-justify">
+                            <p className=" text-lg ml-4 mr-4 mt-2">
+                                Sed ut perspiciatis unde omnis iste natus error
+                                sit voluptatem accusantium doloremque
+                                laudantium, totam rem aperiam eaque ipsa, quae
+                                ab illo inventore veritatis et quasi architecto
+                                beatae vitae dicta sunt, explicabo. Nemo enim
+                                ipsam voluptatem, quia voluptas sit, aspernatur
+                                aut odit aut fugit, sed quia consequuntur magni
+                                dolores eos, qui ratione voluptatem sequi
+                                nesciunt, neque porro quisquam est, qui dolorem
+                                ipsum, quia dolor sit, amet, consectetur,
+                                adipisci velit, sed quia non numquam eius modi
+                                tempora incidunt, ut labore et dolore magnam
+                                aliquam quaerat voluptatem. Ut enim ad minima
+                                veniam, quis nostrum exercitationem ullam
+                                corporis suscipit laboriosam, nisi ut aliquid ex
+                                ea commodi consequatur? Quis autem vel eum iure
+                                reprehenderit, qui in ea voluptate velit esse,
+                                quam nihil molestiae consequatur, vel illum, qui
+                                dolorem eum fugiat, quo voluptas nulla pariatur?
+                                AtSed ut perspiciatis unde omnis iste natus
+                                error sit voluptatem accusantium doloremque
+                                laudantium, totam rem aperiam eaque ipsa, quae
+                                ab illo inventore veritatis et quasi architecto
+                                beatae vitae dicta sunt, explicabo. Nemo enim
+                                ipsam voluptatem, quia voluptas sit, aspernatur
+                                aut odit aut fugit, sed quia consequuntur magni
+                                dolores eos, qui ratione voluptatem sequi
+                                nesciunt, neque porro quisquam est, qui dolorem
+                                ipsum, quia dolor sit, amet, consectetur,
+                                adipisci velit, sed quia non numquam eius modi
+                                tempora incidunt, ut labore et dolore magnam
+                                aliquam quaerat voluptatem. Ut enim ad minima
+                                veniam, quis nostrum exercitationem ullam
+                                corporis suscipit laboriosam, nisi ut aliquid ex
+                                ea commodi consequatur? Quis autem vel eum iure
+                                reprehenderit, qui in ea voluptate velit esse,
+                                quam nihil molestiae consequatur, vel illum, qui
+                                dolorem eum fugiat, quo voluptas nulla pariatur?
+                            </p>
+                        </div>
+                        <div className="mx-auto text-center">
+                            <h1 className="text-3xl mt-10 font-bold">
+                                Esegui il login
+                            </h1>
+                            <button className="bg-orangeBtn hover:bg-orange-600 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md">
+                                <Link href="/api/auth/login">Accedi</Link>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </Layout>
+        </>
+    );
 }
 
 // useEffect(()=>{
-  //   if (user){
-  //     axios({
-  //       method: "get",
-  //       url: url + "/user/saveProfile"  ,
-  //       headers: { Authorization: "Bearer " + token }
-  //     }).then((classes)=>{
-  //       setClassroom_tiles([...classes])
-  //     }).catch((err)=>{
-  //       console.log("Errore in richiesta classi")
-  //       console.log(err)
-  //     })
-  //      
-  //   }
-  // },[user])
-
+//   if (user){
+//     axios({
+//       method: "get",
+//       url: url + "/user/saveProfile"  ,
+//       headers: { Authorization: "Bearer " + token }
+//     }).then((classes)=>{
+//       setClassroom_tiles([...classes])
+//     }).catch((err)=>{
+//       console.log("Errore in richiesta classi")
+//       console.log(err)
+//     })
+//
+//   }
+// },[user])
