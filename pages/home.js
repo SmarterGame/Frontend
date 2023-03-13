@@ -41,6 +41,18 @@ export default function Home({token,url}) {
     })
     setClassroom_tiles([...classroom_tiles,newClass]) 
   }
+  
+  const removeBoxHandler = async (id)=>{
+    const newClass  = await axios({
+      method: "get",
+      url: url + "/user/removeClassroom/" + id,
+      headers: { Authorization: "Bearer " + token }
+    })
+    let tileCopy = [...classroom_tiles],
+        pos = tileCopy.findIndex((element) => element._id == id)
+    tileCopy.splice(pos,1)
+    setClassroom_tiles([...tileCopy]) 
+  }
 
   return (
     <Layout user={user} loading={isLoading}>      

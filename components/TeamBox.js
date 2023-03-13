@@ -162,7 +162,6 @@ function createData(className, creationDate) {
 
 const TeamBox = ({ classroomData }) => {
     router = useRouter();
-
     const row = createData(classroomData.className, classroomData.creationDate);
 
     return (
