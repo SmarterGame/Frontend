@@ -4,7 +4,7 @@ const Header = ({ user, loading }) => {
   return (
     <header>
       <nav>
-          {!loading &&
+          {/* !loading &&
             (user ? (
               <button>
                 <a href="/api/auth/logout">Logout</a>
@@ -13,7 +13,7 @@ const Header = ({ user, loading }) => {
               <button>
                 <a href="/api/auth/login">Login</a>
               </button>
-          ))}
+          )) */}
       </nav>
     </header>
   )

@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'sigmar';
+  src: url('../public/fonts/SigmarOne-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+.text-stroke-orange {
+  -webkit-text-stroke: 2px #ff7100;
+}
+
+html,
+body {
+  background-color: #c4e5ff;
+  font-family: 'sigmar';
+}

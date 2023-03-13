@@ -11,7 +11,7 @@ const Layout = ({ user, loading = false, children }) => {
       <Header user={user} loading={loading} />
 
       <main>
-        <div className="container">{children}</div>
+        <div className="">{children}</div>
       </main>
     </>
   )
