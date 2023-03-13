@@ -4,14 +4,16 @@ import axios from "axios"
 export default async function loginHandler(req, res) {
 
   const url = "http://" + process.env.BACKEND_URI + "/user/saveProfile"
-  const token = await getAccessToken(req,res)
+  let token = await getAccessToken(req,res)
+  token = "Bearer " + token.accessToken
   console.log(url)
+  console.log(token)
   try{
     const result = await axios({
       method: "get",
       url: url,
       headers: {
-        Authorization: "Bearer " + token
+        Authorization: token,
       },
     })
 

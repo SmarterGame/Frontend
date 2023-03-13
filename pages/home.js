@@ -1,4 +1,7 @@
 import { useState,useEffect, useRef } from 'react'
+import { useUser } from '@auth0/nextjs-auth0/client';
+import {getSession } from "@auth0/nextjs-auth0"
+
 import Layout from "../components/Layout"
 import Swal from "sweetalert2"
 import TeamBox from "../components/TeamBox"
