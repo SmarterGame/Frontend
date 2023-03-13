@@ -160,7 +160,7 @@ function createData(className, creationDate) {
 
 // const row = createData("Classe 2^A", "09/07/2023");
 
-const TeamBox = ({ classroomData }) => {
+const TeamBox = ({ classroomData,removeHandler}) => {
     router = useRouter();
     const row = createData(classroomData.className, classroomData.creationDate);
 
