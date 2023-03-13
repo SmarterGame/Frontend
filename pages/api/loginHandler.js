@@ -6,8 +6,7 @@ export default async function loginHandler(req, res) {
   const url = "http://" + process.env.BACKEND_URI + "/user/saveProfile"
   let token = await getAccessToken(req,res)
   token = "Bearer " + token.accessToken
-  console.log(url)
-  console.log(token)
+
   try{
     const result = await axios({
       method: "get",
