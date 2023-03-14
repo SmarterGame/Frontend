@@ -1,4 +1,4 @@
-import { useState,useEffect, useRef } from 'react'
+import { useState,useEffect} from 'react'
 import { useUser } from '@auth0/nextjs-auth0/client';
 import {getSession } from "@auth0/nextjs-auth0"
 import Layout from "../components/Layout"
@@ -9,17 +9,27 @@ import axios from "axios"
 export const getServerSideProps = async ({ req, res }) => {
   const url = "http://" + process.env.BACKEND_URI
   const session = await getSession(req,res)
-
-  if(session==null){ 
+  if(session==null){  // exit if the session is null (Not Logged) 
     console.log("Early return")
     return ({ props: {} })
   }
-  return ({ props: { token: session.accessToken, url: url}})
+  // Fetch classrooms on Page Load 
+  const tiles = await axios({
+          method: "get",
+          url: url + "/user/classrooms",
+          headers: {
+            Authorization: token,
+          },
+        })
+  return ({ props: { token: session.accessToken, url: url, tiles:tiles}})
 }
 
-export default function Home({token,url}) {
+export default function Home({token,url,tiles}) {
   const { user, isLoading } = useUser()
   const [classroom_tiles,setClassroom_tiles] = useState([])
+  if (tiles){
+    setClassroom_tiles([...tiles])
+  }
   
    // Handler for the TeamBoxes that uses almost everything 
   const addBoxHandler = async ()=>{

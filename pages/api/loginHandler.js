@@ -19,6 +19,6 @@ export default async function loginHandler(req, res) {
   }catch(error){
     console.log("Errore in ricerca utente")
   }
-  res.writeHead(302, { Location: '/' })
+  res.writeHead(302, { Location: '/home' })
   res.end();
 }

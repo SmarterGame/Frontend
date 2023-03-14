@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
-import { use } from "react";
-import * as React from "react";
+// import { use } from "react"; // ??????
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
@@ -15,10 +14,11 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useState } from "react";
+import { useState } from "react"; // hai già importato useState 
+// import * as React from "react" // non serve importare tutto 
 import Swal from "sweetalert2";
 
-function deleteClass() {
+function deleteClass(deleteHandler) {
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
             confirmButton:
@@ -40,13 +40,23 @@ function deleteClass() {
             reverseButtons: true,
             focusCancel: true,
         })
-        .then((result) => {
+        .then( async (result) => {
             if (result.isConfirmed) {
-                swalWithBootstrapButtons.fire(
+                try{
+                  await deleteHandler() 
+                  swalWithBootstrapButtons.fire(
                     "Deleted!",
                     "Your file has been deleted.",
                     "success"
+                  );
+                }catch(err){
+                  swalWithBootstrapButtons.fire(
+                    "Cancelled",
+                    "Failed to delete :(",
+                    "error"
                 );
+                  console.log(err) 
+                }
             } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel
@@ -67,7 +77,7 @@ const style = {
 };
 
 function Row(props) {
-    const { row } = props;
+    const { row,deleteHandler} = props;
     const [open, setOpen] = useState(false);
 
     return (
@@ -131,7 +141,7 @@ function Row(props) {
                                 </button>
                             </IconButton>
                             <IconButton
-                                onClick={deleteClass}
+                                onClick={deleteClass(deleteHandler)}
                                 className="text-red-600"
                             >
                                 <DeleteIcon />
@@ -163,7 +173,7 @@ function createData(className, creationDate) {
 const TeamBox = ({ classroomData,removeHandler}) => {
     router = useRouter();
     const row = createData(classroomData.className, classroomData.creationDate);
-
+    const deleteHandler = () => removeHandler(classroomData._id)
     return (
         <>
             <div className="flex flex-col justify-center items-center max-w-2xl mx-auto mt-4">
@@ -173,10 +183,8 @@ const TeamBox = ({ classroomData,removeHandler}) => {
                 >
                     <Table aria-label="collapsible table">
                         <TableBody>
-                            {/* {rows.map((row) => (
-                            <Row key={row.className} row={row} />
-                        ))} */}
-                            {<Row key={row.className} row={row} />}
+                            {/* {rows.map((row) => ( <Row key={row.className} row={row} /> ))} */}
+                            {<Row key={row.className} row={row} deleteHandler={deleteHandler}/>}
                         </TableBody>
                     </Table>
                 </TableContainer>
