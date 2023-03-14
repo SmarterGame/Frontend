@@ -22,16 +22,17 @@ export const getServerSideProps = async ({ req, res }) => {
     const token = "Bearer " + session.accessToken
     const tiles = await axios({
             method: "get",
-            url: url + "/user/classrooms",
+            url: url + "/classroom/all",
             headers: {
               Authorization: token,
             },
           })
     console.log(tiles.data)
-    return ({ props: { token: session.accessToken, url: url, tiles:tiles.data}})
+    return ({ props: { token: session.accessToken, url: url, tiles: tiles.data}})
 
   }catch(err){
     console.log(err)
+    console.log(url)
     return ({ props: {} })
   }
 }
@@ -46,7 +47,7 @@ export default function Home({token,url,tiles}) {
   },[])
   
    // Handler for the TeamBoxes that uses almost everything 
-  const addBoxHandler = async ()=>{
+  const addBoxHandler = async (url)=>{
     const { value: newName} = await Swal.fire({
       title: "Create a New Class",
       input: "text",
@@ -58,19 +59,24 @@ export default function Home({token,url,tiles}) {
       confirmButtonText: 'Create',
     })
     if (newName){
-      const newClass  = await axios({
-        method: "get",
-        url: url + "/user/addClassroom/" + newName,
-        headers: { Authorization: "Bearer " + token }
-      })
-      setClassroom_tiles([...classroom_tiles,newClass.data]) 
+      console.log(url)
+      try{
+        const newClass  = await axios({
+          method: "get",
+          url: url + "/classroom/add/" + newName,
+          headers: { Authorization: "Bearer " + token }
+        })
+        setClassroom_tiles([...classroom_tiles,newClass.data]) 
+      }catch(err){
+        console.log(err)
+      }
     }
   }
   
   const removeBoxHandler = async (id)=>{
     const newClass  = await axios({
       method: "get",
-      url: url + "/user/removeClassroom/" + id,
+      url: url + "/classroom/remove/" + id,
       headers: { Authorization: "Bearer " + token }
     })
     let tileCopy = [...classroom_tiles],
@@ -90,7 +96,7 @@ export default function Home({token,url,tiles}) {
         <div className="flex justify-center items-center">
           <button 
             className='rounded-full w-10 h-10 bg-orangeBtn'
-            onClick={addBoxHandler}
+            onClick={()=> addBoxHandler(url)}
             >
               <AddIcon/>
           </button>

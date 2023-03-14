@@ -21,16 +21,7 @@ export default function Home({ token, url }) {
     return (
         <>
             <Layout user={user} loading={isLoading}>
-                <div className="flex flex-row justify-between bg-blue-600 shadow-2xl h-auto">
-                    <Link href="/">
-                        <h1 className="text-4xl font-bold text-gray-100 text-stroke-orange mt-4 mb-4 ml-4">
-                            THE SMART GAME
-                        </h1>
-                    </Link>
-                    <button className="bg-orangeBtn hover:bg-orange-600 text-gray-100 font-bold shadow-2xl mr-10 mt-4 mb-4 px-4 rounded-md">
-                        <Link href="/api/auth/login">Accedi</Link>
-                    </button>
-                </div>
+                
                 <div className="flex flex-col items-center mt-10">
                     <div className="bg-lightGrayBadge max-w-6xl rounded-xl">
                         <div className="mx-auto text-justify">
