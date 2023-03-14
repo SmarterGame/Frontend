@@ -138,10 +138,8 @@ function Row(props) {
                             >
                                 Data
                             </Typography>
-                            <IconButton>
-                                <button className="sigmar bg-orangeBtn text-white text-base rounded-md px-3 py-1">
-                                    Scegli classe
-                                </button>
+                            <IconButton className="sigmar bg-orangeBtn hover:bg-orange-600 text-white text-base rounded-md px-3 py-1">
+                                Scegli classe
                             </IconButton>
                             <IconButton
                                 onClick={() => deleteClass(deleteHandler)}
