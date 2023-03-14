@@ -21,7 +21,6 @@ export default function Home({ token, url }) {
     return (
         <>
             <Layout user={user} loading={isLoading}>
-                
                 <div className="flex flex-col items-center mt-10">
                     <div className="bg-lightGrayBadge max-w-6xl rounded-xl">
                         <div className="mx-auto text-justify">
@@ -70,7 +69,7 @@ export default function Home({ token, url }) {
                             <h1 className="text-3xl mt-10 font-bold">
                                 Esegui il login
                             </h1>
-                            <button className="bg-orangeBtn hover:bg-orange-600 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md">
+                            <button className="transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
                                 <Link href="/api/auth/login">Accedi</Link>
                             </button>
                         </div>

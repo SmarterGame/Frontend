@@ -102,7 +102,7 @@ export default function Home({ token, url, tiles }) {
                 </div>
                 <div className="flex justify-center items-center mt-6">
                     <button
-                        className="rounded-full w-10 h-10 bg-orangeBtn"
+                        className="transition ease-in-out delay-150 rounded-full w-10 h-10 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300"
                         onClick={() => addBoxHandler(url)}
                     >
                         <AddIcon />

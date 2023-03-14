@@ -103,7 +103,7 @@ function Row(props) {
                     sx={style.classNameCell}
                     // className="text-orangeBtn font-bold text-lg"
                 >
-                    <div className="sigmar text-orangeBtn text-lg">
+                    <div className="sigmar text-orangeBtn text-xl">
                         {row.className}
                     </div>
                 </TableCell>
@@ -112,7 +112,7 @@ function Row(props) {
                     sx={style.creationDateCell}
                     // className="text-orangeBtn font-bold text-lg"
                 >
-                    <div className="sigmar text-orangeBtn text-lg">
+                    <div className="sigmar text-orangeBtn text-xl">
                         {row.creationDate}
                     </div>
                 </TableCell>
@@ -138,7 +138,7 @@ function Row(props) {
                             >
                                 Data
                             </Typography>
-                            <IconButton className="sigmar bg-orangeBtn hover:bg-orange-600 text-white text-base rounded-md px-3 py-1">
+                            <IconButton className="sigmar transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-white text-xs shadow-2xl rounded-md duration-300">
                                 Scegli classe
                             </IconButton>
                             <IconButton
@@ -173,7 +173,8 @@ function createData(className, creationDate) {
 
 const TeamBox = ({ classroomData, removeHandler }) => {
     const router = useRouter();
-    const row = createData(classroomData.ClassName, classroomData.CreationDate);
+    const date = new Date(classroomData.CreationDate); //Change date format
+    const row = createData(classroomData.ClassName, date.toLocaleDateString());
     const deleteHandler = () => removeHandler(classroomData._id);
     return (
         <>
