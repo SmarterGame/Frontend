@@ -13,11 +13,11 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import DeleteIcon from "@mui/icons-material/Delete";
-import * as React from "react" 
-import { useState } from "react"; 
+import * as React from "react";
+import { useState } from "react";
 import Swal from "sweetalert2";
 
-function deleteClass(deleteHandler) {
+function deleteClass({ deleteHandler }) {
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
             confirmButton:
@@ -39,22 +39,22 @@ function deleteClass(deleteHandler) {
             reverseButtons: true,
             focusCancel: true,
         })
-        .then( async (result) => {
+        .then(async (result) => {
             if (result.isConfirmed) {
-                try{
-                  await deleteHandler() 
-                  swalWithBootstrapButtons.fire(
-                    "Deleted!",
-                    "Your file has been deleted.",
-                    "success"
-                  );
-                }catch(err){
-                  swalWithBootstrapButtons.fire(
-                    "Cancelled",
-                    "Failed to delete :(",
-                    "error"
-                );
-                  console.log(err) 
+                try {
+                    await deleteHandler();
+                    swalWithBootstrapButtons.fire(
+                        "Deleted!",
+                        "Your file has been deleted.",
+                        "success"
+                    );
+                } catch (err) {
+                    swalWithBootstrapButtons.fire(
+                        "Cancelled",
+                        "Failed to delete :(",
+                        "error"
+                    );
+                    console.log(err);
                 }
             } else if (
                 /* Read more about handling dismissals below */
@@ -76,7 +76,7 @@ const style = {
 };
 
 function Row(props) {
-    const { row,deleteHandler} = props;
+    const { row, deleteHandler } = props;
     const [open, setOpen] = useState(false);
 
     return (
@@ -101,16 +101,20 @@ function Row(props) {
                     component="th"
                     scope="row"
                     sx={style.classNameCell}
-                    className="text-orangeBtn font-bold text-lg"
+                    // className="text-orangeBtn font-bold text-lg"
                 >
-                    {row.className}
+                    <div className="sigmar text-orangeBtn text-lg">
+                        {row.className}
+                    </div>
                 </TableCell>
                 <TableCell
                     align="center"
                     sx={style.creationDateCell}
-                    className="text-orangeBtn font-bold text-lg"
+                    // className="text-orangeBtn font-bold text-lg"
                 >
-                    {row.creationDate}
+                    <div className="sigmar text-orangeBtn text-lg">
+                        {row.creationDate}
+                    </div>
                 </TableCell>
             </TableRow>
             <TableRow>
@@ -135,15 +139,17 @@ function Row(props) {
                                 Data
                             </Typography>
                             <IconButton>
-                                <button className="bg-orangeBtn text-white rounded-md px-3 py-1">
+                                <button className="sigmar bg-orangeBtn text-white text-base rounded-md px-3 py-1">
                                     Scegli classe
                                 </button>
                             </IconButton>
                             <IconButton
-                                onClick={deleteClass(deleteHandler)}
-                                className="text-red-600"
+                                onClick={() => deleteClass(deleteHandler)}
+                                // className="text-red-600"
                             >
-                                <DeleteIcon />
+                                <div className=" text-red-600">
+                                    <DeleteIcon />
+                                </div>
                             </IconButton>
                         </Box>
                     </Collapse>
@@ -167,12 +173,10 @@ function createData(className, creationDate) {
     };
 }
 
-// const row = createData("Classe 2^A", "09/07/2023");
-
-const TeamBox = ({ classroomData,removeHandler}) => {
+const TeamBox = ({ classroomData, removeHandler }) => {
     const router = useRouter();
     const row = createData(classroomData.ClassName, classroomData.CreationDate);
-    const deleteHandler = () => removeHandler(classroomData._id)
+    const deleteHandler = () => removeHandler(classroomData._id);
     return (
         <>
             <div className="flex flex-col justify-center items-center max-w-2xl mx-auto mt-4">
@@ -183,7 +187,11 @@ const TeamBox = ({ classroomData,removeHandler}) => {
                     <Table aria-label="collapsible table">
                         <TableBody>
                             {/* {rows.map((row) => ( <Row key={row.className} row={row} /> ))} */}
-                            {<Row key={row.className} row={row} deleteHandler={deleteHandler}/>}
+                            <Row
+                                key={row.className}
+                                row={row}
+                                deleteHandler={deleteHandler}
+                            />
                         </TableBody>
                     </Table>
                 </TableContainer>
