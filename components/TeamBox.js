@@ -145,7 +145,7 @@ function Row(props) {
                                 onClick={() => deleteClass(deleteHandler)}
                                 // className="text-red-600"
                             >
-                                <div className=" text-red-600">
+                                <div className=" transition ease-in-out delay-150 text-red-600 hover:text-red-700 hover:-translatey-1 hover:scale-110 duration-300">
                                     <DeleteIcon />
                                 </div>
                             </IconButton>
