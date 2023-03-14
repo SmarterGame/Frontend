@@ -14,8 +14,8 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useState } from "react"; // hai già importato useState 
-// import * as React from "react" // non serve importare tutto 
+import * as React from "react" 
+import { useState } from "react"; 
 import Swal from "sweetalert2";
 
 function deleteClass(deleteHandler) {
@@ -171,8 +171,8 @@ function createData(className, creationDate) {
 // const row = createData("Classe 2^A", "09/07/2023");
 
 const TeamBox = ({ classroomData,removeHandler}) => {
-    router = useRouter();
-    const row = createData(classroomData.className, classroomData.creationDate);
+    const router = useRouter();
+    const row = createData(classroomData.ClassName, classroomData.CreationDate);
     const deleteHandler = () => removeHandler(classroomData._id)
     return (
         <>
