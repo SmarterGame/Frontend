@@ -17,7 +17,7 @@ import * as React from "react";
 import { useState } from "react";
 import Swal from "sweetalert2";
 
-function deleteClass({ deleteHandler }) {
+function deleteClass( deleteHandler ) {
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
             confirmButton:
