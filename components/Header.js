@@ -6,7 +6,7 @@ const Header = ({ user, loading }) => {
             <nav>
                 <div className="flex flex-row justify-between bg-blue-600 shadow-2xl h-auto">
                     <Link href="/">
-                        <h1 className="transition ease-in-out delay-150 text-4xl font-bold text-gray-100 text-stroke-orange mt-4 mb-4 ml-6 hover:-translatey-1 hover:scale-110 duration-300">
+                        <h1 className="pl-4 transition ease-in-out delay-150 text-4xl font-bold text-gray-100 text-stroke-orange mt-4 mb-4 ml-6 hover:-translatey-1 hover:scale-110 duration-300">
                             THE SMART GAME
                         </h1>
                     </Link>

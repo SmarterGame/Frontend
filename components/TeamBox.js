@@ -130,14 +130,14 @@ function Row(props) {
                                 justifyContent: "space-between",
                             }}
                         >
-                            <Typography
-                                variant="h6"
-                                gutterBottom
-                                component="div"
-                                className="text-gray-700"
-                            >
-                                Data
-                            </Typography>
+                            {/* <Typography */}
+                            {/*     variant="h6" */}
+                            {/*     gutterBottom */}
+                            {/*     component="div" */}
+                            {/*     className="text-gray-700" */}
+                            {/* > */}
+                            {/*     Data   */}
+                            {/* </Typography> */}
                             <IconButton className="sigmar transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-white text-xs shadow-2xl rounded-md duration-300">
                                 Scegli classe
                             </IconButton>

@@ -55,8 +55,8 @@ export default function Home({ token, url, tiles }) {
             inputPlaceholder: "Name the class",
             showCancelButton: true,
             closeOnCancel: true,
-            confirmButtonColor: "#FFB900",
-            cancelButtonColor: "#374151",
+            confirmButtonColor: "#ff7100",
+            cancelButtonColor: "#575757",
             confirmButtonText: "Create",
         });
         if (newName) {

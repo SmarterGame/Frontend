@@ -65,14 +65,23 @@ export default function Home({ token, url }) {
                                 dolorem eum fugiat, quo voluptas nulla pariatur?
                             </p>
                         </div>
-                        <div className="mx-auto text-center">
-                            <h1 className="text-3xl mt-10 font-bold">
-                                Esegui il login
-                            </h1>
-                            <button className="transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
-                                <Link href="/api/auth/login">Accedi</Link>
-                            </button>
-                        </div>
+                        {(!user) ? 
+                          (<div className="mx-auto text-center">
+                              <h1 className="text-3xl mt-10 font-bold">
+                                  Esegui il Login
+                              </h1>
+                              <button className="transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
+                                  <Link href="/api/auth/login">Accedi</Link>
+                              </button>
+                          </div>)
+                        : (<div className="mx-auto text-center">
+                              <h1 className="text-3xl mt-10 font-bold">
+                                  Esegui il Logout 
+                              </h1>
+                              <button className="transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
+                                  <Link href="/api/auth/logout">Esci</Link>
+                              </button>
+                          </div>)}
                     </div>
                 </div>
             </Layout>
