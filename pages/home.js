@@ -26,17 +26,17 @@ export const getServerSideProps = async ({ req, res }) => {
             headers: {
                 Authorization: token,
             },
-        });
+        })
         console.log(tiles.data);
         return {
             props: { token: session.accessToken, url: url, tiles: tiles.data },
-        };
+        }
     } catch (err) {
         console.log(err);
         console.log(url);
         return { props: {} };
     }
-};
+}
 
 export default function Home({ token, url, tiles }) {
     const { user, isLoading } = useUser();
@@ -45,7 +45,7 @@ export default function Home({ token, url, tiles }) {
         if (tiles) {
             setClassroom_tiles([...tiles]);
         }
-    }, []);
+    }, [])
 
     // Handler for the TeamBoxes that uses almost everything
     const addBoxHandler = async (url) => {
@@ -60,7 +60,7 @@ export default function Home({ token, url, tiles }) {
             confirmButtonText: "Create",
         });
         if (newName) {
-            console.log(url);
+            console.log(url)
             try {
                 const newClass = await axios({
                     method: "get",
@@ -69,7 +69,7 @@ export default function Home({ token, url, tiles }) {
                 });
                 setClassroom_tiles([...classroom_tiles, newClass.data]);
             } catch (err) {
-                console.log(err);
+                console.log(err)
             }
         }
     };
@@ -110,5 +110,5 @@ export default function Home({ token, url, tiles }) {
                 </div>
             </div>
         </Layout>
-    );
+    )
 }

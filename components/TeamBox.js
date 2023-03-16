@@ -154,7 +154,7 @@ function Row(props) {
                 </TableCell>
             </TableRow>
         </React.Fragment>
-    );
+    )
 }
 
 Row.propTypes = {
