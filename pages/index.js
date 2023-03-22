@@ -21,8 +21,18 @@ export default function Home({ token, url }) {
     return (
         <>
             <Layout user={user} loading={isLoading}>
-                <div className="flex flex-col items-center mt-10">
-                    <div className="bg-lightGrayBadge max-w-6xl rounded-xl">
+                <div className="flex flex-col items-center py-10">
+                    <h2 className="text-slate-100 text-xl mb-2">BENVENUTO SU</h2>
+                    <div className="flex flex-row transition ease-in-out hover:-translatey-1 hover:scale-110 duration-300">
+                        <h1 className="text-7xl text-gray-100 text-stroke-orange">
+                            SMART
+                        </h1>
+                        <h1 className="text-5xl text-gray-100 text-stroke-orange mt-[18px]">
+                            GAME
+                        </h1>
+                    </div>
+
+                    <div className="bg-lightGrayBadge max-w-6xl rounded-xl mt-6 shadow-2xl">
                         <div className="mx-auto text-justify">
                             <p className=" text-lg ml-4 mr-4 mt-2">
                                 Sed ut perspiciatis unde omnis iste natus error
@@ -65,23 +75,25 @@ export default function Home({ token, url }) {
                                 dolorem eum fugiat, quo voluptas nulla pariatur?
                             </p>
                         </div>
-                        {(!user) ? 
-                          (<div className="mx-auto text-center">
-                              <h1 className="text-3xl mt-10 font-bold">
-                                  Esegui il Login
-                              </h1>
-                              <button className="transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
-                                  <Link href="/api/auth/login">Accedi</Link>
-                              </button>
-                          </div>)
-                        : (<div className="mx-auto text-center">
-                              <h1 className="text-3xl mt-10 font-bold">
-                                  Esegui il Logout 
-                              </h1>
-                              <button className="transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
-                                  <Link href="/api/auth/logout">Esci</Link>
-                              </button>
-                          </div>)}
+                        {!user ? (
+                            <div className="mx-auto text-center">
+                                <h1 className="text-3xl mt-10 font-bold">
+                                    Esegui il Login
+                                </h1>
+                                <button className="transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
+                                    <Link href="/api/auth/login">Accedi</Link>
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="mx-auto text-center">
+                                <h1 className="text-3xl mt-10 font-bold">
+                                    Esegui il Logout
+                                </h1>
+                                <button className="transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
+                                    <Link href="/api/auth/logout">Esci</Link>
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </Layout>

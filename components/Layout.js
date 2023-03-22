@@ -1,20 +1,31 @@
-import Head from 'next/head'
-import Header from './Header'
+import Head from "next/head";
+import Header from "./Header";
+import Image from "next/image";
+import rectangleBG from "../public/rectangleBG.png";
 
 const Layout = ({ user, loading = false, children }) => {
-  return (
-    <>
-      <Head>
-        <title>SmartGame</title>
-      </Head>
+    const styles = {
+        backgroundColor: "#466ED7",
+        backgroundImage: "url(/rectangleBG.png)",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "center 150px",
+        backgroundSize: "cover"
+    };
 
-      <Header user={user} loading={loading} />
+    return (
+        <>
+            <Head>
+                <title>SmartGame</title>
+            </Head>
 
-      <main>
-        <div className="">{children}</div>
-      </main>
-    </>
-  )
-}
+            {/* <Header user={user} loading={loading} /> */}
 
-export default Layout
+            <main style={styles}>
+                <div className="h-screen">{children}</div>
+            </main>
+        </>
+    );
+};
+
+export default Layout;

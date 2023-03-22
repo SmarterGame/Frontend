@@ -8,7 +8,6 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
-import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -17,7 +16,7 @@ import * as React from "react";
 import { useState } from "react";
 import Swal from "sweetalert2";
 
-function deleteClass( deleteHandler ) {
+function deleteClass(deleteHandler) {
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
             confirmButton:
@@ -90,9 +89,9 @@ function Row(props) {
                         className="text-orangeBtn font-bold"
                     >
                         {open ? (
-                            <KeyboardArrowUpIcon />
+                            <KeyboardArrowUpIcon fontSize="large" />
                         ) : (
-                            <KeyboardArrowDownIcon />
+                            <KeyboardArrowDownIcon fontSize="large" />
                         )}
                     </IconButton>
                 </TableCell>
@@ -103,7 +102,7 @@ function Row(props) {
                     sx={style.classNameCell}
                     // className="text-orangeBtn font-bold text-lg"
                 >
-                    <div className="sigmar text-orangeBtn text-xl">
+                    <div className="sigmar text-orangeBtn text-3xl">
                         {row.className}
                     </div>
                 </TableCell>
@@ -112,7 +111,7 @@ function Row(props) {
                     sx={style.creationDateCell}
                     // className="text-orangeBtn font-bold text-lg"
                 >
-                    <div className="sigmar text-orangeBtn text-xl">
+                    <div className="sigmar text-orangeBtn text-2xl">
                         {row.creationDate}
                     </div>
                 </TableCell>
@@ -138,15 +137,15 @@ function Row(props) {
                             {/* > */}
                             {/*     Data   */}
                             {/* </Typography> */}
-                            <IconButton className="sigmar transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-white text-xs shadow-2xl rounded-md duration-300">
+                            <IconButton className="sigmar transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-sm shadow-2xl rounded-md duration-300">
                                 Scegli classe
                             </IconButton>
                             <IconButton
                                 onClick={() => deleteClass(deleteHandler)}
                                 // className="text-red-600"
                             >
-                                <div className=" transition ease-in-out delay-150 text-red-600 hover:text-red-700 hover:-translatey-1 hover:scale-110 duration-300">
-                                    <DeleteIcon />
+                                <div className=" transition ease-in-out text-red-600 hover:text-red-700 hover:-translatey-1 hover:scale-110 duration-300">
+                                    <DeleteIcon fontSize="large" />
                                 </div>
                             </IconButton>
                         </Box>
@@ -154,7 +153,7 @@ function Row(props) {
                 </TableCell>
             </TableRow>
         </React.Fragment>
-    )
+    );
 }
 
 Row.propTypes = {
@@ -178,7 +177,7 @@ const TeamBox = ({ classroomData, removeHandler }) => {
     const deleteHandler = () => removeHandler(classroomData._id);
     return (
         <>
-            <div className="flex flex-col justify-center items-center max-w-2xl mx-auto mt-4">
+            <div className="flex flex-col justify-center items-center w-[35%] mb-10">
                 <TableContainer
                     component={Paper}
                     className="rounded-2xl bg-lightGrayBadge hover:bg-gray-200 hover:cursor-pointer"

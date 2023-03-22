@@ -11,15 +11,44 @@
 
 
 .text-stroke-orange {
-  -webkit-text-stroke: 2px #ff7100;
+  -webkit-text-stroke: 3px #ff7100;
 }
 
 html,
 body {
-  background-color: #c4e5ff;
+  /* background-color: #466ED7; */
+  /* background-image: url('../public/rectangleBG.png'); */
   font-family: 'sigmar';
 }
 
 .sigmar {
   font-family: 'sigmar';
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-main {
+  position: fixed;
+  background-color: white;
+  width: 40%;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  padding: 20px;
+}
+
+.display-block {
+  display: block;
+}
+
+.display-none {
+  display: none;
 }

@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import TeamBox from "../components/TeamBox";
 import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import PopUp from "@/components/settingsPopUp";
 
 export const getServerSideProps = async ({ req, res }) => {
     const url = "http://" + process.env.BACKEND_URI;
@@ -26,28 +28,35 @@ export const getServerSideProps = async ({ req, res }) => {
             headers: {
                 Authorization: token,
             },
-        })
+        });
         console.log(tiles.data);
         return {
             props: { token: session.accessToken, url: url, tiles: tiles.data },
-        }
+        };
     } catch (err) {
         console.log(err);
         console.log(url);
         return { props: {} };
     }
-}
+};
 
 export default function Home({ token, url, tiles }) {
     const { user, isLoading } = useUser();
-    const [classroom_tiles, setClassroom_tiles] = useState([]);
+    const [classroom_tiles, setClassroom_tiles] = useState([]); //Array of TeamBox
+    const [showPopUp, setShowPopUp] = useState(false);
+
     useEffect(() => {
         if (tiles) {
             setClassroom_tiles([...tiles]);
         }
-    }, [])
+    }, []);
 
-    // Handler for the TeamBoxes that uses almost everything
+    //Toggle settings popup
+    function togglePopUp() {
+        setShowPopUp(!showPopUp);
+    }
+
+    //Add a new classroom
     const addBoxHandler = async (url) => {
         const { value: newName } = await Swal.fire({
             title: "Create a New Class",
@@ -60,7 +69,7 @@ export default function Home({ token, url, tiles }) {
             confirmButtonText: "Create",
         });
         if (newName) {
-            console.log(url)
+            console.log(url);
             try {
                 const newClass = await axios({
                     method: "get",
@@ -69,11 +78,12 @@ export default function Home({ token, url, tiles }) {
                 });
                 setClassroom_tiles([...classroom_tiles, newClass.data]);
             } catch (err) {
-                console.log(err)
+                console.log(err);
             }
         }
     };
 
+    //Remove a classroom
     const removeBoxHandler = async (id) => {
         const newClass = await axios({
             method: "get",
@@ -88,27 +98,41 @@ export default function Home({ token, url, tiles }) {
 
     return (
         <Layout user={user} loading={isLoading}>
-            <div className="flex-col items-center">
-                <div className="flex-col items-center">
-                    {classroom_tiles.map((element) => {
-                        return (
-                            <TeamBox
-                                key={element._id}
-                                classroomData={element}
-                                removeHandler={removeBoxHandler}
-                            />
-                        );
-                    })}
-                </div>
+            <div className="flex flex-col items-center w-full py-10">
+                <h1 className="text-7xl text-gray-100 text-stroke-orange mb-14 transition ease-in-out hover:-translatey-1 hover:scale-110 duration-300">
+                    SMART GAME
+                </h1>
+
+                {classroom_tiles.map((element) => {
+                    return (
+                        <TeamBox
+                            key={element._id}
+                            classroomData={element}
+                            removeHandler={removeBoxHandler}
+                        />
+                    );
+                })}
+
                 <div className="flex justify-center items-center mt-6">
                     <button
-                        className="transition ease-in-out delay-150 rounded-full w-10 h-10 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300"
+                        className="transition ease-in-out rounded-full w-14 h-14 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300"
                         onClick={() => addBoxHandler(url)}
                     >
-                        <AddIcon />
+                        <AddIcon fontSize="large" />
                     </button>
                 </div>
             </div>
+
+            <div className="absolute top-5 right-5 bg-slate-400 bg-opacity-50 rounded-lg transition ease-in-out hover:bg-slate-500 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300">
+                <button onClick={togglePopUp}>
+                    <SettingsOutlinedIcon
+                        className="text-slate-100 text-opacity-80 text-5xl ml-1 mr-1 mt-1 mb-1"
+                        fontSize="large"
+                    />
+                </button>
+            </div>
+
+            <PopUp show={showPopUp} onClose={togglePopUp}></PopUp>
         </Layout>
-    )
+    );
 }
