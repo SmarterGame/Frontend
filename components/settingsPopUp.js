@@ -50,7 +50,7 @@ export default function PopUp({ show, onClose, children }) {
 
                         <div className="flex flex-row items-center gap-x-10 mb-4">
                             <h1 className="text-3xl text-grayText">
-                                SMARTER 1
+                                SMARTER 2
                             </h1>
                             <select className="w-96 h-12 bg-grayLight text-center">
                                 <option className="">
@@ -61,21 +61,40 @@ export default function PopUp({ show, onClose, children }) {
 
                         <div className="flex flex-row items-center gap-x-10 mb-4">
                             <h1 className="text-3xl text-grayText">
-                                SMARTER 1
+                                MODALITA'
                             </h1>
                             <select className="w-96 h-12 bg-grayLight text-center">
                                 <option className="">
-                                    Nessuno smarter selezionato
+                                    High positive interdependence
+                                </option>
+                                <option className="">
+                                    Low positive interdependence
                                 </option>
                             </select>
                         </div>
 
-                        <button
-                            onClick={onClose}
-                            className="h-12 w-56 mt-6 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-3xl shadow-2xl rounded-md duration-300"
-                        >
-                            Entra
-                        </button>
+                        <div className="flex flex-row gap-x-6">
+                            <div className="grid grid-cols-2 gap-x-4">
+                                <button
+                                    onClick={onClose}
+                                    className="h-12 w-56 mt-6 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-3xl shadow-2xl rounded-md duration-300"
+                                >
+                                    Conferma
+                                </button>
+                                <button
+                                    onClick={onClose}
+                                    className="h-12 w-56 mt-6 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-3xl shadow-2xl rounded-md duration-300"
+                                >
+                                    Annulla
+                                </button>
+                                <button className="h-12 w-56 mt-6 transition ease-in-out bg-red-600 hover:bg-red-700 hover:-translatey-1 hover:scale-110 text-white text-3xl shadow-2xl rounded-md duration-300">
+                                    Logout
+                                </button>
+                                <button className="h-12 w-56 mt-6 transition ease-in-out bg-slate-600 hover:bg-slate-700 hover:-translatey-1 hover:scale-110 text-white text-xl shadow-2xl rounded-md duration-300">
+                                    Cambia classe
+                                </button>
+                            </div>
+                        </div>
                         {children}
                     </div>
                 </section>

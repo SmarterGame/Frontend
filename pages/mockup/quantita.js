@@ -1,10 +1,10 @@
-import Layout from "../../components/Layout";
+import LayoutGames from "../../components/LayoutGames";
 
 export default function Quantita() {
     return (
         <>
-            <Layout>
-                <div className="flex flex-col mx-auto h-[70%] w-1/2 bg-slate-200 mt-6 rounded-xl shadow-2xl">
+            <LayoutGames>
+                <div className="flex flex-col mx-auto h-[70%] w-1/2 bg-slate-200 rounded-xl shadow-2xl">
                     <div className="flex flex-col items-center h-full mt-6">
                         <h1 className="text-4xl text-orangeBtn">
                             LE QUANTITA' - LIVELLO 4
@@ -37,7 +37,7 @@ export default function Quantita() {
                         </div>
                     </div>
                 </div>
-            </Layout>
+            </LayoutGames>
         </>
     );
 }

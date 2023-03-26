@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { getSession } from "@auth0/nextjs-auth0";
-import Layout from "../components/Layout";
+import LayoutLogin from "../components/LayoutLogin";
 import Link from "next/link";
 
 export const getServerSideProps = async ({ req, res }) => {
@@ -20,9 +20,11 @@ export default function Home({ token, url }) {
     const { user, isLoading } = useUser();
     return (
         <>
-            <Layout user={user} loading={isLoading}>
+            <LayoutLogin user={user} loading={isLoading}>
                 <div className="flex flex-col items-center py-10">
-                    <h2 className="text-slate-100 text-xl mb-2">BENVENUTO SU</h2>
+                    <h2 className="text-slate-100 text-xl mb-2">
+                        BENVENUTO SU
+                    </h2>
                     <div className="flex flex-row transition ease-in-out hover:-translatey-1 hover:scale-110 duration-300">
                         <h1 className="text-7xl text-gray-100 text-stroke-orange">
                             SMART
@@ -96,7 +98,7 @@ export default function Home({ token, url }) {
                         )}
                     </div>
                 </div>
-            </Layout>
+            </LayoutLogin>
         </>
     );
 }

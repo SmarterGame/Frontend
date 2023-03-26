@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { getSession } from "@auth0/nextjs-auth0";
-import Layout from "../components/Layout";
+import LayoutLogin from "../components/LayoutLogin";
 import Swal from "sweetalert2";
 import TeamBox from "../components/TeamBox";
 import AddIcon from "@mui/icons-material/Add";
@@ -97,7 +97,7 @@ export default function Home({ token, url, tiles }) {
     };
 
     return (
-        <Layout user={user} loading={isLoading}>
+        <LayoutLogin user={user} loading={isLoading}>
             <div className="flex flex-col items-center w-full py-10">
                 <h1 className="text-7xl text-gray-100 text-stroke-orange mb-14 transition ease-in-out hover:-translatey-1 hover:scale-110 duration-300">
                     SMART GAME
@@ -133,6 +133,6 @@ export default function Home({ token, url, tiles }) {
             </div>
 
             <PopUp show={showPopUp} onClose={togglePopUp}></PopUp>
-        </Layout>
+        </LayoutLogin>
     );
 }

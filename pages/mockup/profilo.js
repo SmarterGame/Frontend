@@ -1,10 +1,10 @@
-import Layout from "../../components/Layout";
+import LayoutGames from "../../components/LayoutGames";
 
 export default function Profilo() {
     return (
         <>
-            <Layout>
-                <div className="flex flex-col  mx-auto h-[70%] w-1/2 bg-slate-200 mt-6 rounded-xl shadow-2xl">
+            <LayoutGames>
+                <div className="flex flex-col mx-auto h-[70%] w-1/2 bg-slate-200 rounded-xl shadow-2xl">
                     <div className="relative">
                         <h1 className="absolute top-11 right-40 text-2xl text-slate-700">
                             x 56
@@ -34,7 +34,7 @@ export default function Profilo() {
                         </div>
                     </div>
                 </div>
-            </Layout>
+            </LayoutGames>
         </>
     );
 }

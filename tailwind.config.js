@@ -17,6 +17,7 @@ module.exports = {
         'grayLight': '#D9D9D9',
         'lightGrayBadge': '#f1f1f2',
         'blueBackGround': '#466ED7',
+        'yellowLevel': '#FFA755',
       },
     },
   },
