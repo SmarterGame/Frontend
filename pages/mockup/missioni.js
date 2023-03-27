@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Link from "next/link";
 import LayoutProfile from "../../components/LayoutProfile";
 import Badge from "../../components/Badge";
 import PopUp from "@/components/settingsPopUp";
@@ -29,10 +30,10 @@ export default function BadgePage() {
 
                     <div className="flex justify-center gap-x-4 mb-4 h-[20%] w-full">
                         <button className="self-end h-[50%] w-[20%] transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl rounded-md duration-300">
-                            SFIDE
+                            <Link href="./attivita">GIOCHI</Link>
                         </button>
                         <button className="self-end h-[50%] w-[20%] transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl rounded-md duration-300">
-                            PROFILO
+                            <Link href="./profilo">PROFILO</Link>
                         </button>
                     </div>
                 </div>
