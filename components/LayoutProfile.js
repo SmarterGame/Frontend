@@ -1,7 +1,7 @@
 import Head from "next/head";
-import HeaderGames from "./HeaderGames";
+import HeaderProfile from "@/components/HeaderProfile";
 import Image from "next/image";
-import procione1 from "../public/procione1.png";
+import procione1 from "@/public/procione1.png";
 
 const Layout = ({ user, loading = false, children }) => {
     const styles = {
@@ -20,7 +20,7 @@ const Layout = ({ user, loading = false, children }) => {
 
             <main style={styles}>
                 <div className="h-screen">
-                    <HeaderGames user={user} loading={loading} />
+                    <HeaderProfile user={user} loading={loading} />
                     {children}
 
                     <div className="absolute bottom-4 left-10">
