@@ -43,8 +43,8 @@ function deleteClass(deleteHandler) {
                 try {
                     await deleteHandler();
                     swalWithBootstrapButtons.fire(
-                        "Deleted!",
-                        "Your file has been deleted.",
+                        "Eliminata!",
+                        "La classe è stata cancellata.",
                         "success"
                     );
                 } catch (err) {
@@ -60,8 +60,8 @@ function deleteClass(deleteHandler) {
                 result.dismiss === Swal.DismissReason.cancel
             ) {
                 swalWithBootstrapButtons.fire(
-                    "Cancelled",
-                    "Your imaginary file is safe :)",
+                    "Annullato",
+                    "La classe non è stata cancellata.",
                     "error"
                 );
             }
@@ -75,7 +75,7 @@ const style = {
 };
 
 function Row(props) {
-    const { row, deleteHandler } = props;
+    const { row, deleteHandler, toggleScegliClasse } = props;
     const [open, setOpen] = useState(false);
 
     return (
@@ -137,7 +137,10 @@ function Row(props) {
                             {/* > */}
                             {/*     Data   */}
                             {/* </Typography> */}
-                            <IconButton className="sigmar transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-sm shadow-2xl rounded-md duration-300">
+                            <IconButton
+                                className="sigmar transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-sm shadow-2xl rounded-md duration-300"
+                                onClick={() => toggleScegliClasse()}
+                            >
                                 Scegli classe
                             </IconButton>
                             <IconButton
@@ -170,11 +173,12 @@ function createData(className, creationDate) {
     };
 }
 
-const TeamBox = ({ classroomData, removeHandler }) => {
+const TeamBox = ({ classroomData, removeHandler, togglePopUp }) => {
     const router = useRouter();
     const date = new Date(classroomData.CreationDate); //Change date format
     const row = createData(classroomData.ClassName, date.toLocaleDateString());
     const deleteHandler = () => removeHandler(classroomData._id);
+    const toggleScegliClasse = () => togglePopUp();
     return (
         <>
             <div className="flex flex-col justify-center items-center w-[35%] mb-10">
@@ -184,11 +188,11 @@ const TeamBox = ({ classroomData, removeHandler }) => {
                 >
                     <Table aria-label="collapsible table">
                         <TableBody>
-                            {/* {rows.map((row) => ( <Row key={row.className} row={row} /> ))} */}
                             <Row
                                 key={row.className}
                                 row={row}
                                 deleteHandler={deleteHandler}
+                                toggleScegliClasse={toggleScegliClasse}
                             />
                         </TableBody>
                     </Table>

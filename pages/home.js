@@ -59,14 +59,15 @@ export default function Home({ token, url, tiles }) {
     //Add a new classroom
     const addBoxHandler = async (url) => {
         const { value: newName } = await Swal.fire({
-            title: "Create a New Class",
+            title: "Crea una nuova classe",
             input: "text",
-            inputPlaceholder: "Name the class",
+            inputPlaceholder: "Nome della classe",
             showCancelButton: true,
             closeOnCancel: true,
             confirmButtonColor: "#ff7100",
             cancelButtonColor: "#575757",
-            confirmButtonText: "Create",
+            confirmButtonText: "Crea",
+            cancelButtonText: "Annulla",
         });
         if (newName) {
             console.log(url);
@@ -109,6 +110,7 @@ export default function Home({ token, url, tiles }) {
                             key={element._id}
                             classroomData={element}
                             removeHandler={removeBoxHandler}
+                            togglePopUp={togglePopUp}
                         />
                     );
                 })}
@@ -132,7 +134,8 @@ export default function Home({ token, url, tiles }) {
                 </button>
             </div>
 
-            <PopUp show={showPopUp} onClose={togglePopUp}></PopUp>
+            <PopUp show={showPopUp} onClose={togglePopUp} />
+            <div className={`${showPopUp ? 'modal display-block' : 'modal display-none'} transition-transform duration-300 fixed inset-0`}></div>
         </LayoutLogin>
     );
 }

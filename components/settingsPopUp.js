@@ -30,7 +30,7 @@ export default function PopUp({ show, onClose, children }) {
 
     return (
         <>
-            <div className={`${showHideClassName}`}>
+            <div className={`${show ? 'scale-100' : 'scale-0'} transition-transform duration-300 ease-in-out fixed inset-0 z-50`}>
                 <section className="modal-main rounded-2xl" ref={popUpRef}>
                     <div className="flex flex-col items-center">
                         <h1 className="text-grayText text-4xl mt-4 mb-10">
