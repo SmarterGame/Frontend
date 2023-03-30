@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import PopUp from "@/components/settingsPopUp";
 
@@ -33,7 +33,12 @@ export default function HeaderProfile() {
                         </div>
                     </div>
                 </nav>
-                <PopUp show={showPopUp} onClose={togglePopUp}></PopUp>
+                <PopUp show={showPopUp} onClose={togglePopUp} />
+                <div
+                    className={`${
+                        showPopUp ? "modal display-block" : "modal display-none"
+                    } transition-transform duration-300 fixed inset-0`}
+                ></div>
             </header>
         </>
     );

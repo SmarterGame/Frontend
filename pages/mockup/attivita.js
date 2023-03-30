@@ -43,7 +43,7 @@ export default function Giochi() {
                                 <h1 className="text-grayText text-2xl">
                                     LE QUANTITA'
                                 </h1>
-                                <button>
+                                <button className="disabled:cursor-not-allowed" disabled>
                                     <div className="flex justify-center items-center bg-neutral-500 hover:bg-neutral-600 h-20 w-20 rounded-full z-auto">
                                         <LockOutlinedIcon
                                             fontSize="large"
@@ -52,7 +52,7 @@ export default function Giochi() {
                                     </div>
                                 </button>
                                 <div class="border-2 border-solid border-neutral-500 bg-neutral-500 w-4 h-14 -mt-[3px]"></div>
-                                <button>
+                                <button className="disabled:cursor-not-allowed" disabled>
                                     <div className="flex justify-center items-center bg-neutral-500 hover:bg-neutral-600 h-20 w-20 rounded-full -mt-[3px]">
                                         <LockOutlinedIcon
                                             fontSize="large"
@@ -80,7 +80,7 @@ export default function Giochi() {
                                 <h1 className="text-grayText text-2xl">
                                     ORDINAMENTI
                                 </h1>
-                                <button>
+                                <button className="disabled:cursor-not-allowed" disabled>
                                     <div className="flex justify-center items-center bg-neutral-500 hover:bg-neutral-600 h-20 w-20 rounded-full z-auto">
                                         <LockOutlinedIcon
                                             fontSize="large"
@@ -89,7 +89,7 @@ export default function Giochi() {
                                     </div>
                                 </button>
                                 <div class="border-2 border-solid border-neutral-500 bg-neutral-500 w-4 h-14 -mt-[3px]"></div>
-                                <button>
+                                <button className="disabled:cursor-not-allowed" disabled>
                                     <div className="flex justify-center items-center bg-neutral-500 hover:bg-neutral-600 h-20 w-20 rounded-full -mt-[3px]">
                                         <LockOutlinedIcon
                                             fontSize="large"

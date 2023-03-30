@@ -29,30 +29,30 @@ export default function AddBox({ token, url }) {
     const [message, setMessage] = useState("");
     const [finished, setFinished] = useState(false);
 
-    useEffect(() => {
-        const asyncFn = async () => {
-            const result = await axios({
-                method: "get",
-                url: url + "/box/add/" + id,
-                headers: { authorization: "Bearer " + token },
-            });
-            console.log(result.data);
-            setError(result.data.error);
-            setMessage(result.data.message);
-            setTimeout(() => {
-                setFinished(true);
-            }, 1000);
-        };
-        asyncFn();
-    }, []);
+    // useEffect(() => {
+    //     const asyncFn = async () => {
+    //         const result = await axios({
+    //             method: "get",
+    //             url: url + "/box/add/" + id,
+    //             headers: { authorization: "Bearer " + token },
+    //         });
+    //         console.log(result.data);
+    //         setError(result.data.error);
+    //         setMessage(result.data.message);
+    //         setTimeout(() => {
+    //             setFinished(true);
+    //         }, 1000);
+    //     };
+    //     asyncFn();
+    // }, []);
 
-    useEffect(() => {
-        if (finished) {
-            error
-                ? Swal.fire("Error", `${message}`, "error")
-                : Swal.fire("You did it!", "You connected the box!", "success");
-        }
-    }, [finished]);
+    // useEffect(() => {
+    //     if (finished) {
+    //         error
+    //             ? Swal.fire("Error", `${message}`, "error")
+    //             : Swal.fire("You did it!", "You connected the box!", "success");
+    //     }
+    // }, [finished]);
 
     return (
         <Layout user={user} loading={isLoading}>
