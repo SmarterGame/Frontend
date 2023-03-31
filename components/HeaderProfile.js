@@ -4,7 +4,7 @@ import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
 import Link from "next/link";
 
-export default function HeaderProfile({ boxes }) {
+export default function HeaderProfile({ token, url, boxes }) {
     const [showPopUp, setShowPopUp] = useState(false);
     const [showSideBar, setShowSideBar] = useState(false);
 
@@ -59,7 +59,7 @@ export default function HeaderProfile({ boxes }) {
                         </button>
                     </SideBar>
                 </nav>
-                <PopUp show={showPopUp} onClose={togglePopUp} boxes={boxes} />
+                <PopUp show={showPopUp} onClose={togglePopUp} boxes={boxes} token={token} url={url} />
                 <div
                     className={`${
                         showPopUp ? "modal display-block" : "modal display-none"

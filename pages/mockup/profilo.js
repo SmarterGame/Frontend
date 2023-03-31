@@ -30,6 +30,8 @@ export const getServerSideProps = async ({ req, res }) => {
 
         return {
             props: {
+                token: session.accessToken,
+                url: url,
                 boxes: boxes.data,
             },
         };
@@ -40,10 +42,10 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Profilo({ boxes }) {
+export default function Profilo({ token, url, boxes }) {
     return (
         <>
-            <LayoutProfile boxes={boxes}>
+            <LayoutProfile boxes={boxes} token={token} url={url}>
                 <div className="flex flex-col mx-auto h-[70%] w-1/2 bg-slate-200 rounded-xl shadow-2xl mt-10">
                     <div className="relative">
                         <h1 className="absolute top-8 right-32 text-2xl text-slate-700">

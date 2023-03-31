@@ -3,7 +3,7 @@ import HeaderProfile from "@/components/HeaderProfile";
 import Image from "next/image";
 import procione1 from "@/public/procione1.png";
 
-const Layout = ({ user, loading = false, children, boxes }) => {
+const Layout = ({ token, url, loading = false, children, boxes }) => {
     const styles = {
         backgroundColor: "#c4e5ff",
         backgroundImage: "url(/grass.png)",
@@ -20,7 +20,7 @@ const Layout = ({ user, loading = false, children, boxes }) => {
 
             <main style={styles}>
                 <div className="h-screen">
-                    <HeaderProfile user={user} loading={loading} boxes={boxes} />
+                    <HeaderProfile loading={loading} boxes={boxes} token={token} url={url} />
                     {children}
 
                     <div className="absolute bottom-4 left-10">

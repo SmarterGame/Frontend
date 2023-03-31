@@ -1,8 +1,17 @@
 import { useRef, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
+import axios from "axios";
 
-export default function PopUp({ show, onClose, children, boxes }) {
+export default function PopUp({
+    token,
+    url,
+    show,
+    onClose,
+    children,
+    boxes,
+    classId,
+}) {
     const router = useRouter();
 
     const popUpRef = useRef(null);
@@ -11,11 +20,17 @@ export default function PopUp({ show, onClose, children, boxes }) {
     const [smarter2, setSmarter2] = useState(null);
     const [modalita, setModalita] = useState(null);
 
+    const [swalPopup, setSwalPopup] = useState(false);
+
     //Check if the click was outside of the modal
     useEffect(() => {
         function handleClickOutside(event) {
             //If the click was outside of the modal, close it
-            if (popUpRef.current && !popUpRef.current.contains(event.target)) {
+            if (
+                popUpRef.current &&
+                !popUpRef.current.contains(event.target) &&
+                !swalPopup
+            ) {
                 onClose();
             }
         }
@@ -29,7 +44,7 @@ export default function PopUp({ show, onClose, children, boxes }) {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [show]);
+    }, [show, swalPopup]);
 
     function handleChangeSmarter1(event) {
         const selectedOption = event.target.value;
@@ -45,34 +60,66 @@ export default function PopUp({ show, onClose, children, boxes }) {
 
     function handleChangeModalita(event) {
         const selectedOption = event.target.value;
-        setModalita(selectedOption);
+        if (selectedOption === "Nessuna modalità selezionata") {
+            setModalita(null);
+        } else {
+            if (selectedOption === "Low positive interdependence")
+                setModalita(1);
+            else if (selectedOption === "High positive interdependence")
+                setModalita(2);
+        }
     }
 
-    function handleConferma() {
+    async function handleConferma() {
+        setSwalPopup(true);
         if (smarter1 === null && smarter2 === null) {
             Swal.fire({
                 icon: "error",
                 title: "Selezionare almeno uno smarter",
+            }).then(() => {
+                setSwalPopup(false);
             });
             return;
         }
-
+        if (modalita === null) {
+            Swal.fire({
+                icon: "error",
+                title: "Selezionare una modalità",
+            }).then(() => {
+                setSwalPopup(false);
+            });
+            return;
+        }
         if (smarter1 === smarter2) {
             Swal.fire({
                 icon: "error",
                 title: "Selezionare due smarter diversi",
+            }).then(() => {
+                setSwalPopup(false);
             });
             return;
         }
 
-        /*
-        Dati da inviare al backend:
-            smarter1
-            smarter2
-            modalita
-        */
+        const data = {
+            selectedSmarters: [smarter1, smarter2],
+            mode: modalita,
+            classId: classId,
+        };
+        try {
+            const result = await axios({
+                method: "post",
+                url: url + "/user/saveSmarterModeClass",
+                data: data,
+                headers: { Authorization: "Bearer " + token },
+            });
+            // console.log(result.data);
 
-        router.push("/mockup/profilo");
+            if (router.asPath === "/home") router.push("/mockup/profilo");
+            //Close the popup
+            onClose();
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (
@@ -138,6 +185,7 @@ export default function PopUp({ show, onClose, children, boxes }) {
                                 className="w-96 h-12 bg-grayLight text-center"
                                 onChange={handleChangeModalita}
                             >
+                                <option>Nessuna modalità selezionata</option>
                                 <option>High positive interdependence</option>
                                 <option>Low positive interdependence</option>
                             </select>

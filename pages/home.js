@@ -62,6 +62,7 @@ export default function Home({ token, url, tiles, boxes }) {
     const [classroom_tiles, setClassroom_tiles] = useState([]); //Array of TeamBox
     const [showPopUp, setShowPopUp] = useState(false);
     const [showSideBar, setShowSideBar] = useState(false);
+    const [popupData, setPopupData] = useState(null);
 
     useEffect(() => {
         if (tiles) {
@@ -70,9 +71,10 @@ export default function Home({ token, url, tiles, boxes }) {
     }, []);
 
     //Toggle settings popup
-    function togglePopUp() {
+    const togglePopUp = (id) => {
         setShowPopUp(!showPopUp);
-    }
+        setPopupData(id);
+      };
 
     //Add a new classroom
     const addBoxHandler = async (url) => {
@@ -185,7 +187,7 @@ export default function Home({ token, url, tiles, boxes }) {
                             key={element._id}
                             classroomData={element}
                             removeHandler={removeBoxHandler}
-                            togglePopUp={togglePopUp}
+                            togglePopUp={() => togglePopUp(element._id)}
                         />
                     );
                 })}
@@ -222,12 +224,12 @@ export default function Home({ token, url, tiles, boxes }) {
                 >
                     X Chiudi
                 </button>
-                <button
+                {/* <button
                     onClick={togglePopUp}
                     className="h-10 w-52 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300"
                 >
                     Seleziona smarter
-                </button>
+                </button> */}
                 <button
                     onClick={addSmarter}
                     className="h-10 w-52 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300"
@@ -236,7 +238,7 @@ export default function Home({ token, url, tiles, boxes }) {
                 </button>
             </SideBar>
 
-            <PopUp show={showPopUp} onClose={togglePopUp} boxes={boxes} />
+            <PopUp show={showPopUp} onClose={togglePopUp} classId={popupData} boxes={boxes} token={token} url={url} />
             <div
                 className={`${
                     showPopUp ? "modal display-block" : "modal display-none"
