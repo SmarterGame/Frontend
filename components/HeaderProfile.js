@@ -1,9 +1,12 @@
 import { useState } from "react";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import PopUp from "@/components/settingsPopUp";
+import SideBar from "@/components/SideBar";
+import Link from "next/link";
 
-export default function HeaderProfile() {
+export default function HeaderProfile({ boxes }) {
     const [showPopUp, setShowPopUp] = useState(false);
+    const [showSideBar, setShowSideBar] = useState(false);
 
     //Toggle settings popup
     function togglePopUp() {
@@ -23,7 +26,11 @@ export default function HeaderProfile() {
                                 CLASSE_1^A
                             </h1>
                             <div className="mr-6 bg-slate-400 bg-opacity-50 rounded-lg transition ease-in-out hover:bg-slate-500 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300">
-                                <button onClick={togglePopUp}>
+                                <button
+                                    onClick={() => {
+                                        setShowSideBar(!showSideBar);
+                                    }}
+                                >
                                     <DensityMediumIcon
                                         className="text-slate-100 text-opacity-80 text-5xl ml-1 mr-1 mt-1 mb-1"
                                         fontSize="large"
@@ -32,8 +39,27 @@ export default function HeaderProfile() {
                             </div>
                         </div>
                     </div>
+                    <SideBar show={showSideBar}>
+                        <button
+                            onClick={() => {
+                                setShowSideBar(!showSideBar);
+                            }}
+                            className="h-10 w-52 transition ease-in-out bg-gray-500 hover:bg-gray-600 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300"
+                        >
+                            X CHIUDI
+                        </button>
+                        <button
+                            onClick={togglePopUp}
+                            className="h-10 w-52 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300"
+                        >
+                            SELEZIONA SMARTER
+                        </button>
+                        <button className="h-10 w-52 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300">
+                            <Link href="/home">CAMBIA CLASSE</Link>
+                        </button>
+                    </SideBar>
                 </nav>
-                <PopUp show={showPopUp} onClose={togglePopUp} />
+                <PopUp show={showPopUp} onClose={togglePopUp} boxes={boxes} />
                 <div
                     className={`${
                         showPopUp ? "modal display-block" : "modal display-none"

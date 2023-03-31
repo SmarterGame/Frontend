@@ -157,12 +157,6 @@ export default function PopUp({ show, onClose, children, boxes }) {
                                 >
                                     Annulla
                                 </button>
-                                {/* <button className="h-12 w-56 mt-6 transition ease-in-out bg-red-600 hover:bg-red-700 hover:-translatey-1 hover:scale-110 text-white text-3xl shadow-2xl rounded-md duration-300">
-                                    <Link href="/api/auth/logout">LOGOUT</Link>
-                                </button>
-                                <button className="h-12 w-56 mt-6 transition ease-in-out bg-slate-600 hover:bg-slate-700 hover:-translatey-1 hover:scale-110 text-white text-lg shadow-2xl rounded-md duration-300">
-                                    <Link href="./addBox">AGGIUNGI SMARTER</Link>
-                                </button> */}
                             </div>
                         </div>
                         {children}

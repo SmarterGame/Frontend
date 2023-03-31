@@ -2,11 +2,48 @@ import LayoutProfile from "../../components/LayoutProfile";
 import Image from "next/image";
 import Link from "next/link";
 import ghianda from "../../public/ghianda.svg";
+import { getSession } from "@auth0/nextjs-auth0";
+import axios from "axios";
 
-export default function Profilo() {
+export const getServerSideProps = async ({ req, res }) => {
+    const url = "http://" + process.env.BACKEND_URI;
+    try {
+        const session = await getSession(req, res);
+
+        // EXIT if the session is null (Not Logged)
+        if (session == null) {
+            console.log("Early return");
+            return { props: {} };
+        }
+
+        const token = "Bearer " + session.accessToken;
+
+        //Fetch boxes on Page Load
+        const boxes = await axios({
+            method: "get",
+            url: url + "/box/all",
+            headers: {
+                Authorization: token,
+            },
+        });
+        // console.log(boxes.data);
+
+        return {
+            props: {
+                boxes: boxes.data,
+            },
+        };
+    } catch (err) {
+        console.log(err);
+        console.log(url);
+        return { props: {} };
+    }
+};
+
+export default function Profilo({ boxes }) {
     return (
         <>
-            <LayoutProfile>
+            <LayoutProfile boxes={boxes}>
                 <div className="flex flex-col mx-auto h-[70%] w-1/2 bg-slate-200 rounded-xl shadow-2xl mt-10">
                     <div className="relative">
                         <h1 className="absolute top-8 right-32 text-2xl text-slate-700">

@@ -7,7 +7,7 @@ export default function SiedBar({ show, children }) {
                 <div className="flex flex-col gap-y-6 mt-4">
                     {children}
                     <button className="h-10 w-52 transition ease-in-out bg-red-500 hover:bg-red-600 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300">
-                        <Link href="/api/auth/logout">Esci</Link>
+                        <Link href="/api/auth/logout">ESCI</Link>
                     </button>
                 </div>
             </div>
