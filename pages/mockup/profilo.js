@@ -53,15 +53,16 @@ export default function Profilo({ token, url, boxes }) {
                         </h1>
                         <Image
                             src={ghianda}
+                            alt="ghianda"
                             width={60}
-                            className="absolute top-4 right-14"
+                            className="absolute top-4 right-14 z-0"
                         />
                     </div>
 
                     <div className="w-40 h-40 mx-auto bg-gray-700 rounded-full mt-10 shadow-xl"></div>
 
-                    <div class="mx-auto bg-slate-400 h-4 w-[60%] mt-14 rounded-full">
-                        <div class="bg-yellow-400 h-4 rounded-full w-[50%]"></div>
+                    <div className="mx-auto bg-slate-400 h-4 w-[60%] mt-14 rounded-full">
+                        <div className="bg-yellow-400 h-4 rounded-full w-[50%]"></div>
                     </div>
 
                     <div className="mx-auto">

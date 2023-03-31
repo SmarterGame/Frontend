@@ -35,7 +35,7 @@ const Layout = ({ token, url, loading = false, children, boxes }) => {
                     </div>
 
                     <div className="absolute bottom-6 right-10">
-                        <Image src={procione1}></Image>
+                        <Image src={procione1} alt="procione"></Image>
                     </div>
                 </div>
             </main>
