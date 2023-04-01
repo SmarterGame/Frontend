@@ -1,7 +1,7 @@
 import Head from "next/head";
 import HeaderGames from "./HeaderGames";
 import Image from "next/image";
-import procione1 from "../public/procione1.png";
+import procione1 from "@/public/procione1.png";
 
 const Layout = ({ user, loading = false, children }) => {
     const styles = {

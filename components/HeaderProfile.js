@@ -4,9 +4,11 @@ import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
 import Link from "next/link";
 
-export default function HeaderProfile({ token, url, boxes }) {
+export default function HeaderProfile({ token, url, boxes, classRoom }) {
     const [showPopUp, setShowPopUp] = useState(false);
     const [showSideBar, setShowSideBar] = useState(false);
+
+    const className = classRoom.ClassName;
 
     //Toggle settings popup
     function togglePopUp() {
@@ -22,7 +24,7 @@ export default function HeaderProfile({ token, url, boxes }) {
                     </h1>
                     <div className="flex flex-row items-center">
                         <h1 className="text-4xl text-slate-100 mr-4">
-                            CLASSE_1^A
+                            CLASSE {className}
                         </h1>
                         <div className="mr-6 bg-slate-400 bg-opacity-50 rounded-lg transition ease-in-out hover:bg-slate-500 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300">
                             <button

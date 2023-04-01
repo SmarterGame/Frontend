@@ -1,9 +1,7 @@
 import Head from "next/head";
-import HeaderGames from "./HeaderGames";
-import Image from "next/image";
-import montagna from "@/public/montagnaSMARTER.png";
+import HeaderGames from "@/components/HeaderGames";
 
-const Layout = ({ user, loading = false, children }) => {
+const Layout = ({ loading = false, children, title, classRoom }) => {
     const styles = {
         backgroundColor: "#c4e5ff",
         // backgroundImage: "url(/grass.png)",
@@ -18,13 +16,16 @@ const Layout = ({ user, loading = false, children }) => {
                 <title>SmartGame</title>
             </Head>
 
-            {/* <HeaderGames user={user} loading={loading} /> */}
-
             <main style={styles} class="tmp">
                 <div className="h-screen">
+                    <HeaderGames
+                        loading={loading}
+                        title={title}
+                        classRoom={classRoom}
+                    />
                     {children}
 
-                    <div className="absolute bottom-4 left-10">
+                    <div className="fixed bottom-4 left-10">
                         <div className="flex flex-row transition ease-in-out hover:-translatey-1 hover:scale-110 duration-300 items-end">
                             <h1 className="text-4xl text-gray-100 text-stroke-orange">
                                 SMART

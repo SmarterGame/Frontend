@@ -74,7 +74,7 @@ export default function Home({ token, url, tiles, boxes }) {
     const togglePopUp = (id) => {
         setShowPopUp(!showPopUp);
         setPopupData(id);
-      };
+    };
 
     //Add a new classroom
     const addBoxHandler = async (url) => {
@@ -224,12 +224,6 @@ export default function Home({ token, url, tiles, boxes }) {
                 >
                     X Chiudi
                 </button>
-                {/* <button
-                    onClick={togglePopUp}
-                    className="h-10 w-52 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300"
-                >
-                    Seleziona smarter
-                </button> */}
                 <button
                     onClick={addSmarter}
                     className="h-10 w-52 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300"
@@ -238,7 +232,14 @@ export default function Home({ token, url, tiles, boxes }) {
                 </button>
             </SideBar>
 
-            <PopUp show={showPopUp} onClose={togglePopUp} classId={popupData} boxes={boxes} token={token} url={url} />
+            <PopUp
+                show={showPopUp}
+                onClose={togglePopUp}
+                classId={popupData}
+                boxes={boxes}
+                token={token}
+                url={url}
+            />
             <div
                 className={`${
                     showPopUp ? "modal display-block" : "modal display-none"
