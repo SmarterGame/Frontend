@@ -1,7 +1,7 @@
 import Image from "next/image";
 import ghianda from "@/public/ghianda.png";
 
-export default function HeaderGames({ loading, title = false, classRoom }) {
+export default function HeaderGames({ loading, title = false, classRoom= {Ghiande: 0} }) {
     const numGhiande = classRoom.Ghiande;
 
     return (
