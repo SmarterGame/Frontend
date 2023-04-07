@@ -1,10 +1,8 @@
 import LayoutSelezioneGiochi from "@/components/LayoutSelezioneGiochi";
 import Image from "next/image";
-import ghianda from "@/public/ghianda.svg";
 import montagna from "@/public/montagnaSMARTER.png";
 import orsoFaccia from "@/public/orsoFaccia.svg";
 import procioneFaccia from "@/public/procioneFaccia.svg";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import grass from "@/public/grass.png";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";

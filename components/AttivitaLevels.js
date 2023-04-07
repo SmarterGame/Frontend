@@ -41,7 +41,7 @@ export default function AttivitaLevels({ children, classRoom, title, left }) {
             break;
     }
 
-    //If left, render the left side of the levels
+    //If left, render quantità
     if (left)
         return (
             <>
@@ -129,6 +129,7 @@ export default function AttivitaLevels({ children, classRoom, title, left }) {
                 </div>
             </>
         );
+    //If right, render ordinamenti
     else
         return (
             <>
