@@ -9,7 +9,8 @@ import axios from "axios";
 import Levels from "@/components/AttivitaLevels";
 
 export const getServerSideProps = async ({ req, res }) => {
-    const url = "http://" + process.env.BACKEND_URI;
+    // const url = "http://" + process.env.BACKEND_URI;
+    const url = process.env.BACKEND_URI;
     try {
         const session = await getSession(req, res);
 

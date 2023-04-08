@@ -7,7 +7,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 
 export const getServerSideProps = async ({ req, res }) => {
-    const url = "http://" + process.env.BACKEND_URI;
+    // const url = "http://" + process.env.BACKEND_URI;
+    const url = process.env.BACKEND_URI;
     try {
         const session = await getSession(req, res);
         if (session == null) {

@@ -5,7 +5,8 @@ import LayoutLogin from "../components/LayoutLogin";
 import Link from "next/link";
 
 export const getServerSideProps = async ({ req, res }) => {
-    const url = "http://" + process.env.BACKEND_URI;
+    // const url = "http://" + process.env.BACKEND_URI;
+    const url = process.env.BACKEND_URI;
     const session = await getSession(req, res);
 
     if (session == null) {
