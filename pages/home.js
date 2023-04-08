@@ -58,6 +58,7 @@ export const getServerSideProps = async ({ req, res }) => {
 };
 
 export default function Home({ token, url, tiles, boxes }) {
+    console.log("url: " + url);
     const { user, isLoading } = useUser();
     const [classroom_tiles, setClassroom_tiles] = useState([]); //Array of TeamBox
     const [showPopUp, setShowPopUp] = useState(false);
