@@ -28,7 +28,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 Authorization: token,
             },
         });
-        // console.log(user.data.SelectedClass);
+        //console.log(user.data);
 
         //Fetch classroom data
         const classData = await axios({
@@ -45,6 +45,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 token: session.accessToken,
                 url: url,
                 classRoom: classData.data,
+                selectedMode: user.data.SelectedMode,
             },
         };
     } catch (err) {
@@ -54,8 +55,7 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Giochi({ classRoom }) {
-
+export default function Giochi({ classRoom, selectedMode }) {
     return (
         <>
             <LayoutSelezioneGiochi classRoom={classRoom} title={"GIOCHI"}>
@@ -64,18 +64,28 @@ export default function Giochi({ classRoom }) {
                         SCEGLI UN GIOCO
                     </h1>
                     <div className="flex flex-row justify-center items-center h-full">
-                        <Levels classRoom={classRoom} title={"LE QUANTITA'"} left={true}>
-                            <Image src={procioneFaccia} width={100}></Image>
+                        <Levels
+                            classRoom={classRoom}
+                            selectedMode={selectedMode}
+                            title={"LE QUANTITA'"}
+                            left={true}
+                        >
+                            <Image src={procioneFaccia} width={100} />
                         </Levels>
 
                         <Image
                             src={montagna}
                             width={800}
                             className="self-end"
-                        ></Image>
+                        />
 
-                        <Levels classRoom={classRoom} title={"ORDINAMENTI"} left={false}>
-                            <Image src={orsoFaccia} width={100}></Image>
+                        <Levels
+                            classRoom={classRoom}
+                            selectedMode={selectedMode}
+                            title={"ORDINAMENTI"}
+                            left={false}
+                        >
+                            <Image src={orsoFaccia} width={100} />
                         </Levels>
                     </div>
                 </div>

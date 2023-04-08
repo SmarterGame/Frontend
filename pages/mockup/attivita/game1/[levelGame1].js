@@ -1,6 +1,6 @@
-import LayoutGames from "../../components/LayoutGames";
+import LayoutGames from "@/components/LayoutGames";
 import Image from "next/image";
-import leone from "../../public/leone.svg";
+import leone from "@/public/leone.svg";
 
 export default function Game1() {
     return (

@@ -1,4 +1,4 @@
-import LayoutGames from "../../components/LayoutGames";
+import LayoutGames from "@/components/LayoutGames";
 
 export default function Game() {
     return (

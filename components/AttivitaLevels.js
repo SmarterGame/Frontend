@@ -1,7 +1,16 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-export default function AttivitaLevels({ children, classRoom, title, left }) {
+export default function AttivitaLevels({
+    children,
+    classRoom,
+    selectedMode,
+    title,
+    left,
+}) {
+    const router = useRouter();
+
     const livQuantita = classRoom.Levels[0];
     const livOrdinamenti = classRoom.Levels[1];
 
@@ -60,6 +69,16 @@ export default function AttivitaLevels({ children, classRoom, title, left }) {
                                     : "disabled:cursor-not-allowed"
                             }`}
                             disabled={livQuantita2 ? false : true}
+                            onClick={() => {
+                                if (selectedMode === "1")
+                                    router.push(
+                                        "./attivita/game1/3?game=quantita"
+                                    );
+                                else
+                                    router.push(
+                                        "./attivita/game2/3?game=quantita"
+                                    );
+                            }}
                         >
                             <div
                                 className={`${
@@ -92,6 +111,16 @@ export default function AttivitaLevels({ children, classRoom, title, left }) {
                                     : "disabled:cursor-not-allowed"
                             }`}
                             disabled={livQuantita2 ? false : true}
+                            onClick={() => {
+                                if (selectedMode === "1")
+                                    router.push(
+                                        "./attivita/game1/2?game=quantita"
+                                    );
+                                else
+                                    router.push(
+                                        "./attivita/game2/2?game=quantita"
+                                    );
+                            }}
                         >
                             <div
                                 className={`${
@@ -117,15 +146,23 @@ export default function AttivitaLevels({ children, classRoom, title, left }) {
                                     : "border-neutral-500 bg-neutral-500"
                             } border-2 border-solid w-4 h-14 -mt-[2px]`}
                         ></div>
-                        <button className="">
+                        <button
+                            onClick={() => {
+                                if (selectedMode === "1")
+                                    router.push(
+                                        "./attivita/game1/1?game=quantita"
+                                    );
+                                else
+                                    router.push(
+                                        "./attivita/game2/1?game=quantita"
+                                    );
+                            }}
+                        >
                             <div className="flex justify-center items-center text-neutral-500 text-lg bg-yellowLevel hover:bg-orange-400 h-20 w-20 rounded-full -mt-1 z-10">
                                 Liv. 1
                             </div>
                         </button>
                     </div>
-                    <div
-                        className={`flex flex-col ${offsetOrso} mt-7 gap-y-9`}
-                    ></div>
                 </div>
             </>
         );
@@ -146,6 +183,16 @@ export default function AttivitaLevels({ children, classRoom, title, left }) {
                                     : "disabled:cursor-not-allowed"
                             }`}
                             disabled={livQuantita2 ? false : true}
+                            onClick={() => {
+                                if (selectedMode === "1")
+                                    router.push(
+                                        "./attivita/game1/3?game=ordinamenti"
+                                    );
+                                else
+                                    router.push(
+                                        "./attivita/game2/3?game=ordinamenti"
+                                    );
+                            }}
                         >
                             <div
                                 className={`${
@@ -178,6 +225,16 @@ export default function AttivitaLevels({ children, classRoom, title, left }) {
                                     : "disabled:cursor-not-allowed"
                             }`}
                             disabled={livOrdinamenti2 ? false : true}
+                            onClick={() => {
+                                if (selectedMode === "1")
+                                    router.push(
+                                        "./attivita/game1/2?game=ordinamenti"
+                                    );
+                                else
+                                    router.push(
+                                        "./attivita/game2/2?game=ordinamenti"
+                                    );
+                            }}
                         >
                             <div
                                 className={`${
@@ -203,7 +260,18 @@ export default function AttivitaLevels({ children, classRoom, title, left }) {
                                     : "border-neutral-500 bg-neutral-500"
                             } border-2 border-solid w-4 h-14 -mt-[2px]`}
                         ></div>
-                        <button className="">
+                        <button
+                            onClick={() => {
+                                if (selectedMode === "1")
+                                    router.push(
+                                        "./attivita/game1/1?game=ordinamenti"
+                                    );
+                                else
+                                    router.push(
+                                        "./attivita/game2/1?game=ordinamenti"
+                                    );
+                            }}
+                        >
                             <div className="flex justify-center items-center text-neutral-500 text-lg bg-yellowLevel hover:bg-orange-400 h-20 w-20 rounded-full -mt-1 z-10">
                                 Liv. 1
                             </div>
