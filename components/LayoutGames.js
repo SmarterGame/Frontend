@@ -3,7 +3,7 @@ import HeaderGames from "./HeaderGames";
 import Image from "next/image";
 import procione1 from "@/public/procione1.png";
 
-const Layout = ({ user, loading = false, children }) => {
+const Layout = ({ user, loading = false, children, title, liv }) => {
     const styles = {
         backgroundColor: "#c4e5ff",
         backgroundImage: "url(/grass.png)",
@@ -20,7 +20,7 @@ const Layout = ({ user, loading = false, children }) => {
 
             <main style={styles}>
                 <div className="h-screen">
-                    <HeaderGames user={user} loading={loading} />
+                    <HeaderGames user={user} loading={loading} title={title} liv={liv} />
                     {children}
 
                     <div className="absolute bottom-4 left-10">

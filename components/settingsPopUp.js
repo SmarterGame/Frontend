@@ -72,10 +72,10 @@ export default function PopUp({
 
     async function handleConferma() {
         setSwalPopup(true);
-        if (smarter1 === null && smarter2 === null) {
+        if (smarter1 === null || smarter2 === null) {
             Swal.fire({
                 icon: "error",
-                title: "Selezionare almeno uno smarter",
+                title: "Selezionare entrambi gli smarter",
             }).then(() => {
                 setSwalPopup(false);
             });
@@ -186,8 +186,8 @@ export default function PopUp({
                                 onChange={handleChangeModalita}
                             >
                                 <option>Nessuna modalità selezionata</option>
-                                <option>High positive interdependence</option>
                                 <option>Low positive interdependence</option>
+                                <option>High positive interdependence</option>
                             </select>
                         </div>
 

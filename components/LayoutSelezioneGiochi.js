@@ -1,7 +1,7 @@
 import Head from "next/head";
 import HeaderGames from "@/components/HeaderGames";
 
-const Layout = ({ loading = false, children, title, classRoom }) => {
+const Layout = ({ loading = false, children, title, classRoom, pageAttivita }) => {
     const styles = {
         backgroundColor: "#c4e5ff",
         // backgroundImage: "url(/grass.png)",
@@ -16,12 +16,13 @@ const Layout = ({ loading = false, children, title, classRoom }) => {
                 <title>SmartGame</title>
             </Head>
 
-            <main style={styles} class="tmp">
+            <main style={styles}>
                 <div className="h-screen">
                     <HeaderGames
                         loading={loading}
                         title={title}
                         classRoom={classRoom}
+                        pageAttivita={pageAttivita}
                     />
                     {children}
 

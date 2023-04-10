@@ -59,7 +59,7 @@ export const getServerSideProps = async ({ req, res }) => {
 export default function Giochi({ classRoom, selectedMode }) {
     return (
         <>
-            <LayoutSelezioneGiochi classRoom={classRoom} title={"GIOCHI"}>
+            <LayoutSelezioneGiochi classRoom={classRoom} title={"GIOCHI"} pageAttivita={true}>
                 <div className="flex flex-col items-center mx-auto h-[80%] w-[80%] bg-slate-200 rounded-xl shadow-2xl mt-6">
                     <h1 className="mt-10 text-4xl text-orangeBtn">
                         SCEGLI UN GIOCO
@@ -91,7 +91,7 @@ export default function Giochi({ classRoom, selectedMode }) {
                     </div>
                 </div>
 
-                <Image src={grass} className="w-full object-fill -mt-[51px]" />
+                <Image src={grass} className="w-full object-fill -mt-[49px]" />
             </LayoutSelezioneGiochi>
         </>
     );
