@@ -215,7 +215,7 @@ export default function Game1({ token, url, selectedClass }) {
             } else {
                 Swal.fire({
                     title: "COMPLIMENTI!",
-                    html: "Livello " + levelGame1 + "completato",
+                    html: "Livello " + levelGame1 + " completato",
                     timer: 2000,
                     timerProgressBar: true,
                     didOpen: () => {
@@ -224,7 +224,6 @@ export default function Game1({ token, url, selectedClass }) {
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
                         gameFinished();
-                        router.push("/mockup/attivita");
                     }
                 });
             }
@@ -246,7 +245,8 @@ export default function Game1({ token, url, selectedClass }) {
                     Authorization: "Bearer " + token,
                 },
             });
-            console.log(res);
+            // console.log(res);
+            router.push("/mockup/attivita");
         } catch (err) {
             console.log(err);
         }
@@ -254,9 +254,9 @@ export default function Game1({ token, url, selectedClass }) {
 
     return (
         <>
-            {/* <button onClick={gameFinished} className="bg-red-500">
+            <button onClick={gameFinished} className="bg-red-500">
                 test API
-            </button> */}
+            </button>
 
             <LayoutGames title={game} liv={levelGame1}>
                 <div className="flex flex-row justify-center gap-x-20 w-full">
