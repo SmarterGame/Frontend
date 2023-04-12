@@ -34,7 +34,7 @@ export const getServerSideProps = async ({ req, res }) => {
         //Fetch classroom data
         const classData = await axios({
             method: "get",
-            url: url + "/classroom/" + user.data.SelectedClass,
+            url: url + "/classroom/getClassroomData/" + user.data.SelectedClass,
             headers: {
                 Authorization: token,
             },
@@ -91,7 +91,7 @@ export default function Giochi({ classRoom, selectedMode }) {
                     </div>
                 </div>
 
-                <Image src={grass} className="w-full object-fill -mt-[49px]" />
+                <Image src={grass} className="w-full object-fill -mt-[43px]" />
             </LayoutSelezioneGiochi>
         </>
     );

@@ -182,7 +182,7 @@ export default function AttivitaLevels({
                                     ? ""
                                     : "disabled:cursor-not-allowed"
                             }`}
-                            disabled={livQuantita2 ? false : true}
+                            disabled={livOrdinamenti3 ? false : true}
                             onClick={() => {
                                 if (selectedMode === "1")
                                     router.push(

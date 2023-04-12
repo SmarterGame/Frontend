@@ -12,10 +12,13 @@ export default function HeaderGames({
 }) {
     const numGhiande = classRoom.Ghiande;
 
+    let tmp = false;
     if (title === "quantita") {
         title = "LE QUANTITA'";
+        tmp = true;
     } else if (title === "ordinamenti") {
         title = "GLI ORDINAMENTI";
+        tmp = true;
     }
 
     return (
@@ -24,13 +27,13 @@ export default function HeaderGames({
                 <nav>
                     <div className="flex flex-row justify-between bg-blue-600 shadow-2xl py-1">
                         <h1 className="pl-4 transition ease-in-out text-4xl text-gray-100 text-stroke-orange mt-4 mb-4 ml-6 hover:-translatey-1 hover:scale-110 duration-300">
-                            {title + " - LIVELLO " + liv}
+                            {tmp ? title + " - LIVELLO " + liv : title}
                         </h1>
                         <div className="flex flex-row items-center mr-4">
                             <h1 className="text-4xl text-slate-100 mr-4">
                                 {numGhiande}
                             </h1>
-                            <Image src={ghianda} width={60}></Image>
+                            <Image src={ghianda} width={60} alt="ghianda"></Image>
                             <div className="w-20 h-20 bg-gray-700 rounded-full ml-4 mr-4"></div>
                             <div className="bg-red-500 bg-opacity-50 rounded-lg transition ease-in-out hover:bg-red-600 hover:bg-opacity-50 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300">
                                 <button>

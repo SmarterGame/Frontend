@@ -41,7 +41,7 @@ export const getServerSideProps = async ({ req, res }) => {
         //Fetch classroom data
         const classData = await axios({
             method: "get",
-            url: url + "/classroom/" + user.data.SelectedClass,
+            url: url + "/classroom/getClassroomData/" + user.data.SelectedClass,
             headers: {
                 Authorization: token,
             }

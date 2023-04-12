@@ -35,7 +35,7 @@ const Layout = ({ user, loading = false, children, title, liv }) => {
                     </div>
 
                     <div className="absolute bottom-6 right-10">
-                        <Image src={procione1}></Image>
+                        <Image src={procione1} alt="procione1"></Image>
                     </div>
                 </div>
             </main>
