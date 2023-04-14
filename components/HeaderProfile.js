@@ -9,7 +9,7 @@ export default function HeaderProfile({ token, url, boxes, classRoom }) {
     const [showSideBar, setShowSideBar] = useState(false);
 
     const className = classRoom.ClassName;
-
+    
     //Toggle settings popup
     function togglePopUp() {
         setShowPopUp(!showPopUp);
@@ -65,6 +65,7 @@ export default function HeaderProfile({ token, url, boxes, classRoom }) {
                     boxes={boxes}
                     token={token}
                     url={url}
+                    classId={classRoom._id}
                 />
                 <div
                     className={`${

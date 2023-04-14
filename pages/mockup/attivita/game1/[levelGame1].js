@@ -6,7 +6,7 @@ import { getSession } from "@auth0/nextjs-auth0";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import _ from 'lodash';
+import _ from "lodash";
 
 export const getServerSideProps = async ({ req, res }) => {
     const url = process.env.BACKEND_URI;
@@ -91,6 +91,8 @@ export default function Game1({ token, url, selectedClass }) {
         });
         setisCorrectLeft([false, false, false, false, false]);
         setisCorrectRight([false, false, false, false, false]);
+        setinputValuesLeft({});
+        setinputValuesRight({});
     }, [subLvl]);
 
     //Handle left input change
