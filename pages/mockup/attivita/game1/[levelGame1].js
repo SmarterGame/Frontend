@@ -58,8 +58,22 @@ export default function Game1({ token, url, selectedClass }) {
         false,
         false,
     ]);
+    const [isWrongLeft, setisWrongLeft] = useState([
+        false,
+        false,
+        false,
+        false,
+        false,
+    ]);
     const [inputValuesRight, setinputValuesRight] = useState({});
     const [isCorrectRight, setisCorrectRight] = useState([
+        false,
+        false,
+        false,
+        false,
+        false,
+    ]);
+    const [isWrongRight, setisWrongRight] = useState([
         false,
         false,
         false,
@@ -137,8 +151,29 @@ export default function Game1({ token, url, selectedClass }) {
                     newState[i] = true;
                     return newState;
                 });
+                setisWrongLeft((prevState) => {
+                    const newState = [...prevState];
+                    newState[i] = false;
+                    return newState;
+                });
             } else {
                 setisCorrectLeft((prevState) => {
+                    const newState = [...prevState];
+                    newState[i] = false;
+                    return newState;
+                });
+                if (inputValuesLeft[i] != undefined) {
+                    setisWrongLeft((prevState) => {
+                        const newState = [...prevState];
+                        newState[i] = true;
+                        return newState;
+                    });
+                }
+            }
+
+            //If left input is empty set isWrong to false
+            if (inputValuesLeft[i] == "") {
+                setisWrongLeft((prevState) => {
                     const newState = [...prevState];
                     newState[i] = false;
                     return newState;
@@ -173,8 +208,29 @@ export default function Game1({ token, url, selectedClass }) {
                     newState[i] = true;
                     return newState;
                 });
+                setisWrongRight((prevState) => {
+                    const newState = [...prevState];
+                    newState[i] = false;
+                    return newState;
+                });
             } else {
                 setisCorrectRight((prevState) => {
+                    const newState = [...prevState];
+                    newState[i] = false;
+                    return newState;
+                });
+                if (inputValuesRight[i] != undefined) {
+                    setisWrongRight((prevState) => {
+                        const newState = [...prevState];
+                        newState[i] = true;
+                        return newState;
+                    });
+                }
+            }
+
+            //If right input is empty set isWrong to false
+            if (inputValuesRight[i] == "") {
+                setisWrongRight((prevState) => {
                     const newState = [...prevState];
                     newState[i] = false;
                     return newState;
@@ -287,6 +343,10 @@ export default function Game1({ token, url, selectedClass }) {
                                         isCorrectLeft[index]
                                             ? "border-green-500"
                                             : ""
+                                    } ${
+                                        isWrongLeft[index]
+                                            ? "border-red-500"
+                                            : ""
                                     } w-full flex justify-center items-center text-8xl`}
                                 >
                                     <input
@@ -320,6 +380,10 @@ export default function Game1({ token, url, selectedClass }) {
                                     className={`bg-slate-200 border-4 ${
                                         isCorrectRight[index]
                                             ? "border-green-500"
+                                            : ""
+                                    } ${
+                                        isWrongRight[index]
+                                            ? "border-red-500"
                                             : ""
                                     } w-full flex justify-center items-center text-8xl`}
                                 >

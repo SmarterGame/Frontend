@@ -60,6 +60,18 @@ export default function Game({ token, url, selectedClass }) {
         false,
         false,
     ]);
+    const [isWrong, setIsWrong] = useState([
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+    ]);
 
     //Get level data
     useEffect(() => {
@@ -112,8 +124,29 @@ export default function Game({ token, url, selectedClass }) {
                     newState[i] = true;
                     return newState;
                 });
+                setIsWrong((prevState) => {
+                    const newState = [...prevState];
+                    newState[i] = false;
+                    return newState;
+                });
             } else {
                 setIsCorrect((prevState) => {
+                    const newState = [...prevState];
+                    newState[i] = false;
+                    return newState;
+                });
+                if (inputValues[i] != undefined) {
+                    setIsWrong((prevState) => {
+                        const newState = [...prevState];
+                        newState[i] = true;
+                        return newState;
+                    });
+                }
+            }
+
+            //If input is empty set isWrong to false
+            if (inputValues[i] == "") {
+                setIsWrong((prevState) => {
                     const newState = [...prevState];
                     newState[i] = false;
                     return newState;
@@ -124,7 +157,6 @@ export default function Game({ token, url, selectedClass }) {
 
     //Handle next level
     useEffect(() => {
-        console.log(isCorrect);
         if (isCorrect.every((el) => el === true)) {
             if (subLvl < 4) {
                 Swal.fire({
@@ -198,10 +230,10 @@ export default function Game({ token, url, selectedClass }) {
                         {Array.from({ length: 10 }, (_, index) => (
                             <div
                                 key={index}
-                                className={`bg-slate-200 ${
-                                    isCorrect[index]
-                                        ? "border-4 border-green-500"
-                                        : ""
+                                className={`bg-slate-200 border-4 ${
+                                    isCorrect[index] ? "border-green-500" : ""
+                                } ${
+                                    isWrong[index] ? "border-red-500" : ""
                                 } w-full flex justify-center items-center text-8xl`}
                             >
                                 <input
