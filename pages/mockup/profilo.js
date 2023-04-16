@@ -44,7 +44,7 @@ export const getServerSideProps = async ({ req, res }) => {
             url: url + "/classroom/getClassroomData/" + user.data.SelectedClass,
             headers: {
                 Authorization: token,
-            }
+            },
         });
         // console.log(classData.data);
 
@@ -63,13 +63,23 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Profilo({ token, url, boxes, classRoom }) {
+export default function Profilo({
+    token,
+    url,
+    boxes,
+    classRoom = { Ghiande: 0, Exp: 0 },
+}) {
     const numGhiande = classRoom.Ghiande;
     const exp = classRoom.Exp; //TODO: risolvere problema percentuali
 
     return (
         <>
-            <LayoutProfile token={token} url={url} boxes={boxes} classRoom={classRoom}>
+            <LayoutProfile
+                token={token}
+                url={url}
+                boxes={boxes}
+                classRoom={classRoom}
+            >
                 <div className="flex flex-col mx-auto h-[70%] w-1/2 bg-slate-200 rounded-xl shadow-2xl mt-10">
                     <div className="relative">
                         <h1 className="absolute top-8 right-32 text-3xl text-slate-700">
@@ -83,10 +93,20 @@ export default function Profilo({ token, url, boxes, classRoom }) {
                         />
                     </div>
 
-                    <div className="w-40 h-40 mx-auto bg-gray-700 rounded-full mt-10 shadow-xl"></div>
+                    <div className="w-40 h-40 mx-auto bg-gray-700 rounded-full mt-10 shadow-xl">
+                        <Image
+                            src={"https://robohash.org/" + classRoom._id}
+                            alt="Immagine profilo"
+                            width={500}
+                            height={500}
+                            className="rounded-full"
+                        />
+                    </div>
 
                     <div className="mx-auto bg-slate-400 h-4 w-[60%] mt-14 rounded-full">
-                        <div className={`bg-yellow-400 h-4 rounded-full w-[${exp}%]`}></div>
+                        <div
+                            className={`bg-yellow-400 h-4 rounded-full w-[${exp}%]`}
+                        ></div>
                     </div>
 
                     <div className="mx-auto">

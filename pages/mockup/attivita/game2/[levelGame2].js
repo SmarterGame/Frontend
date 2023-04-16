@@ -26,11 +26,22 @@ export const getServerSideProps = async ({ req, res }) => {
         });
         // console.log(user.data.SelectedClass);
 
+        //Fetch classroom data
+        const classData = await axios({
+            method: "get",
+            url: url + "/classroom/getClassroomData/" + user.data.SelectedClass,
+            headers: {
+                Authorization: "Bearer " + session.accessToken,
+            },
+        });
+        // console.log(classData.data);
+
         return {
             props: {
                 token: session.accessToken,
                 url: url,
                 selectedClass: user.data.SelectedClass,
+                classRoom: classData.data,
             },
         };
     } catch (err) {
@@ -40,7 +51,7 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Game({ token, url, selectedClass }) {
+export default function Game({ token, url, selectedClass, classRoom }) {
     const router = useRouter();
     const { levelGame2, game } = router.query; //game = quantita or ordinamenti
 
@@ -161,6 +172,7 @@ export default function Game({ token, url, selectedClass }) {
             if (subLvl < 4) {
                 Swal.fire({
                     title: "CORRETTO!",
+                    color: "#ff7100",
                     html: "Esercizio " + (subLvl + 1) + "/5 completato",
                     timer: 2000,
                     timerProgressBar: true,
@@ -175,6 +187,7 @@ export default function Game({ token, url, selectedClass }) {
             } else {
                 Swal.fire({
                     title: "COMPLIMENTI!",
+                    color: "#ff7100",
                     html: "Livello " + levelGame2 + " completato",
                     timer: 2000,
                     timerProgressBar: true,
@@ -216,7 +229,7 @@ export default function Game({ token, url, selectedClass }) {
 
     return (
         <>
-            <LayoutGames>
+            <LayoutGames classRoom={classRoom}>
                 <div className="flex flex-col justify-center h-screen max-h-[550px] mt-10 ml-4 mr-4">
                     <div class="grid grid-cols-10 justify-items-center gap-y-4 gap-x-4 h-full">
                         {lvlDataShuffled.map((item, index) => (

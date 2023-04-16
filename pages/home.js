@@ -92,13 +92,14 @@ export default function Home({ token, url, tiles, boxes }) {
             cancelButtonText: "Annulla",
         });
         if (newName) {
-            console.log(url);
+            // console.log(url);
             try {
                 const newClass = await axios({
                     method: "get",
                     url: url + "/classroom/add/" + newName,
                     headers: { Authorization: "Bearer " + token },
                 });
+                // console.log(newClass.data);
                 setClassroom_tiles([...classroom_tiles, newClass.data]);
             } catch (err) {
                 console.log(err);

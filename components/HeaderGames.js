@@ -33,8 +33,22 @@ export default function HeaderGames({
                             <h1 className="text-4xl text-slate-100 mr-4">
                                 {numGhiande}
                             </h1>
-                            <Image src={ghianda} width={60} alt="ghianda"></Image>
-                            <div className="w-20 h-20 bg-gray-700 rounded-full ml-4 mr-4"></div>
+                            <Image
+                                src={ghianda}
+                                width={60}
+                                alt="ghianda"
+                            ></Image>
+                            <div className="w-20 h-20 bg-gray-700 rounded-full ml-4 mr-4">
+                                <Image
+                                    src={
+                                        "https://robohash.org/" + classRoom._id
+                                    }
+                                    alt="Immagine profilo"
+                                    width={500}
+                                    height={500}
+                                    className="rounded-full"
+                                />
+                            </div>
                             <div className="bg-red-500 bg-opacity-50 rounded-lg transition ease-in-out hover:bg-red-600 hover:bg-opacity-50 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300">
                                 <button>
                                     <Link
