@@ -221,7 +221,7 @@ export default function Game({ token, url, selectedClass, classRoom }) {
                 },
             });
             // console.log(res);
-            router.push("/mockup/attivita");
+            router.push("/mockup/gamification");
         } catch (err) {
             console.log(err);
         }

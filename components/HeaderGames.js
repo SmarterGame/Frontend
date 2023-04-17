@@ -38,7 +38,7 @@ export default function HeaderGames({
                                 width={60}
                                 alt="ghianda"
                             ></Image>
-                            <div className="w-20 h-20 bg-gray-700 rounded-full ml-4 mr-4">
+                            <div className="w-20 h-20 border-2 border-orangeBtn rounded-full ml-4 mr-4">
                                 <Image
                                     src={
                                         "https://robohash.org/" + classRoom._id

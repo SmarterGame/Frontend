@@ -93,7 +93,7 @@ export default function Profilo({
                         />
                     </div>
 
-                    <div className="w-40 h-40 mx-auto bg-gray-700 rounded-full mt-10 shadow-xl">
+                    <div className="w-40 h-40 mx-auto border-4 border-orangeBtn rounded-full mt-10 shadow-xl">
                         <Image
                             src={"https://robohash.org/" + classRoom._id}
                             alt="Immagine profilo"

@@ -1,12 +1,57 @@
 import LayoutGames from "@/components/LayoutGames";
-import Image from "next/image";
 import Link from "next/link";
-import ghianda from "@/public/ghianda.svg";
+import { getSession } from "@auth0/nextjs-auth0";
+import axios from "axios";
 
-export default function Badge() {
+export const getServerSideProps = async ({ req, res }) => {
+    const url = process.env.BACKEND_URI;
+    try {
+        const session = await getSession(req, res);
+
+        // EXIT if the session is null (Not Logged)
+        if (session == null) {
+            console.log("Early return");
+            return { props: {} };
+        }
+
+        const user = await axios({
+            method: "get",
+            url: url + "/user/me",
+            headers: {
+                Authorization: "Bearer " + session.accessToken,
+            },
+        });
+        // console.log(user.data.SelectedClass);
+
+        //Fetch classroom data
+        const classData = await axios({
+            method: "get",
+            url: url + "/classroom/getClassroomData/" + user.data.SelectedClass,
+            headers: {
+                Authorization: "Bearer " + session.accessToken,
+            },
+        });
+        // console.log(classData.data);
+
+        return {
+            props: {
+                token: session.accessToken,
+                url: url,
+                selectedClass: user.data.SelectedClass,
+                classRoom: classData.data,
+            },
+        };
+    } catch (err) {
+        console.log(err);
+        console.log(url);
+        return { props: {} };
+    }
+};
+
+export default function Badge({ classRoom }) {
     return (
         <>
-            <LayoutGames>
+            <LayoutGames classRoom={classRoom}>
                 <div className="flex flex-col items-center h-[50%] w-full mt-28 -m-72">
                     <div className="flex flex-row items-center justify-center gap-x-10 h-[90%] px-10 bg-slate-200 rounded-xl shadow-2xl ">
                         <div className="flex justify-center items-center bg-neutral-500 hover:bg-neutral-600 h-52 w-52 rounded-full z-auto"></div>
