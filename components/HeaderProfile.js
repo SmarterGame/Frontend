@@ -1,15 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
 import Link from "next/link";
+import axios from "axios";
 
 export default function HeaderProfile({ token, url, boxes, classRoom }) {
     const [showPopUp, setShowPopUp] = useState(false);
     const [showSideBar, setShowSideBar] = useState(false);
+    const [selectedOptions, setSelectedOptions] = useState({});
 
     const className = classRoom.ClassName;
-    
+
+    useEffect(() => {
+        axios
+            .get(url + "/user/me", {
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+            })
+            .then((res) => {
+                // console.log(res.data);
+                const selectedOptions = {
+                    selectedSmarters: res.data.SelectedSmarters,
+                    selectedMode: res.data.SelectedMode,
+                };
+                setSelectedOptions(selectedOptions);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
+
     //Toggle settings popup
     function togglePopUp() {
         setShowPopUp(!showPopUp);
@@ -41,23 +63,29 @@ export default function HeaderProfile({ token, url, boxes, classRoom }) {
                     </div>
                 </div>
                 <SideBar show={showSideBar}>
-                    <button
-                        onClick={() => {
-                            setShowSideBar(!showSideBar);
-                        }}
-                        className="h-10 w-52 transition ease-in-out bg-gray-500 hover:bg-gray-600 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300"
-                    >
-                        X CHIUDI
-                    </button>
-                    <button
-                        onClick={togglePopUp}
-                        className="h-10 w-52 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300"
-                    >
-                        SELEZIONA SMARTER
-                    </button>
-                    <button className="h-10 w-52 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300">
-                        <Link href="/home">CAMBIA CLASSE</Link>
-                    </button>
+                    <div className="flex w-full py-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
+                        <button
+                            onClick={() => {
+                                setShowSideBar(!showSideBar);
+                            }}
+                            className="mx-auto text-gray-600 text-xl"
+                        >
+                            CHIUDI
+                        </button>
+                    </div>
+                    <div className="flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
+                        <button
+                            onClick={togglePopUp}
+                            className="mx-auto text-gray-600 text-xl"
+                        >
+                            SELEZIONA SMARTER
+                        </button>
+                    </div>
+                    <div className="flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
+                        <button className="mx-auto text-gray-600 text-xl">
+                            <Link href="/home">CAMBIA CLASSE</Link>
+                        </button>
+                    </div>
                 </SideBar>
                 <PopUp
                     show={showPopUp}
@@ -66,6 +94,7 @@ export default function HeaderProfile({ token, url, boxes, classRoom }) {
                     token={token}
                     url={url}
                     classId={classRoom._id}
+                    selectedOptions={selectedOptions}
                 />
                 <div
                     className={`${

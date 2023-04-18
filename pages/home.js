@@ -24,6 +24,21 @@ export const getServerSideProps = async ({ req, res }) => {
 
         // Fetch classrooms on Page Load
         const token = "Bearer " + session.accessToken;
+        const user = await axios({
+            method: "get",
+            url: url + "/user/me",
+            headers: {
+                Authorization: token,
+            },
+        });
+        // console.log(user.data.SelectedSmarters);
+        // console.log(user.data.SelectedMode);
+
+        const selectedOptions = {
+            selectedSmarters: user.data.SelectedSmarters,
+            selectedMode: user.data.SelectedMode,
+        };
+
         const tiles = await axios({
             method: "get",
             url: url + "/classroom/all",
@@ -49,6 +64,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url: url,
                 tiles: tiles.data,
                 boxes: boxes.data,
+                selectedOptions: selectedOptions,
             },
         };
     } catch (err) {
@@ -58,8 +74,7 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Home({ token, url, tiles, boxes }) {
-    console.log("url: " + url);
+export default function Home({ token, url, tiles, boxes, selectedOptions }) {
     const { user, isLoading } = useUser();
     const [classroom_tiles, setClassroom_tiles] = useState([]); //Array of TeamBox
     const [showPopUp, setShowPopUp] = useState(false);
@@ -219,29 +234,34 @@ export default function Home({ token, url, tiles, boxes }) {
             </div>
 
             <SideBar show={showSideBar}>
-                <button
-                    onClick={() => {
-                        setShowSideBar(!showSideBar);
-                    }}
-                    className="h-10 w-52 transition ease-in-out bg-gray-500 hover:bg-gray-600 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300"
-                >
-                    X Chiudi
-                </button>
-                <button
-                    onClick={addSmarter}
-                    className="h-10 w-52 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300"
-                >
-                    Aggiungi smarter
-                </button>
+                <div className="flex w-full py-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
+                    <button
+                        onClick={() => {
+                            setShowSideBar(!showSideBar);
+                        }}
+                        className="mx-auto text-gray-600 text-xl"
+                    >
+                        CHIUDI
+                    </button>
+                </div>
+                <div className="flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
+                    <button
+                        onClick={addSmarter}
+                        className="mx-auto text-gray-600 text-lg"
+                    >
+                        AGGIUNGI SMARTER
+                    </button>
+                </div>
             </SideBar>
 
             <PopUp
+                token={token}
+                url={url}
                 show={showPopUp}
                 onClose={togglePopUp}
                 classId={popupData}
                 boxes={boxes}
-                token={token}
-                url={url}
+                selectedOptions={selectedOptions}
             />
             <div
                 className={`${

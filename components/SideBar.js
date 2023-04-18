@@ -3,12 +3,22 @@ import Link from "next/link";
 export default function SiedBar({ show, children }) {
     return (
         <>
-            <div className={`${show ? 'translate-x-0' : 'translate-x-full'} transition duration-300 fixed top-0 right-0 h-full px-6 bg-gray-400 shadow-2xl`}>
-                <div className="flex flex-col gap-y-6 mt-4">
+            <div
+                className={`${
+                    show ? "translate-x-0" : "translate-x-full"
+                } transition duration-300 fixed top-0 right-0 h-full bg-gray-200 shadow-2xl`}
+            >
+                <div className="flex flex-col mt-4 px-3 gap-y-2 h-full">
+                    <div className="flex border-b-2 border-gray-300 mb-1 text-3xl">
+                        <h1 className="mx-auto text-orangeBtn mb-2">Smart Game</h1>
+                    </div>
                     {children}
-                    <button className="h-10 w-52 transition ease-in-out bg-red-500 hover:bg-red-600 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300">
-                        <Link href="/api/auth/logout">ESCI</Link>
-                    </button>
+                    <div className="border-t-2 border-gray-300 mt-1"></div>
+                    <div className="py-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md mt-auto mb-10">
+                        <button className="h-full w-full transition ease-in-out text-gray-600 text-xl">
+                            <Link href="/api/auth/logout">ESCI</Link>
+                        </button>
+                    </div>
                 </div>
             </div>
         </>

@@ -11,7 +11,13 @@ export default function PopUp({
     children,
     boxes,
     classId,
+    selectedOptions,
 }) {
+    // console.log(selectedOptions);
+    const selectedSmarters = selectedOptions.selectedSmarters;
+    console.log(selectedSmarters);
+    const selectedMode = selectedOptions.selectedMode;
+
     const router = useRouter();
 
     const popUpRef = useRef(null);
@@ -145,11 +151,17 @@ export default function PopUp({
                             >
                                 <option>Nessuno smarter selezionato</option>
                                 {boxes && boxes.length > 0 ? (
-                                    boxes.map((box) => (
-                                        <option key={box} value={box}>
-                                            {box}
-                                        </option>
-                                    ))
+                                    boxes.map((box) =>
+                                        selectedSmarters[0] === box ? (
+                                            <option selected key={box} value={box}>
+                                                {box}
+                                            </option>
+                                        ) : (
+                                            <option key={box} value={box}>
+                                                {box}
+                                            </option>
+                                        )
+                                    )
                                 ) : (
                                     <option>Non ci sono smarter</option>
                                 )}
@@ -167,9 +179,15 @@ export default function PopUp({
                                 <option>Nessuno smarter selezionato</option>
                                 {boxes && boxes.length > 0 ? (
                                     boxes.map((box) => (
-                                        <option key={box} value={box}>
-                                            {box}
-                                        </option>
+                                        selectedSmarters[1] === box ? (
+                                            <option selected key={box} value={box}>
+                                                {box}
+                                            </option>
+                                        ) : (
+                                            <option key={box} value={box}>
+                                                {box}
+                                            </option>
+                                        )
                                     ))
                                 ) : (
                                     <option>Non ci sono smarter</option>
@@ -186,8 +204,24 @@ export default function PopUp({
                                 onChange={handleChangeModalita}
                             >
                                 <option>Nessuna modalità selezionata</option>
-                                <option>Low positive interdependence</option>
-                                <option>High positive interdependence</option>
+                                {selectedMode == 1 ? (
+                                    <option selected>
+                                        Low positive interdependence
+                                    </option>
+                                ) : (
+                                    <option>
+                                        Low positive interdependence
+                                    </option>
+                                )}
+                                {selectedMode == 2 ? (
+                                    <option selected>
+                                        High positive interdependence
+                                    </option>
+                                ) : (
+                                    <option>
+                                        High positive interdependence
+                                    </option>
+                                )}
                             </select>
                         </div>
 

@@ -18,16 +18,6 @@ export const getServerSideProps = async ({ req, res }) => {
         }
         const token = "Bearer " + session.accessToken;
 
-        //Fetch boxes on Page Load
-        const boxes = await axios({
-            method: "get",
-            url: url + "/box/all",
-            headers: {
-                Authorization: token,
-            },
-        });
-        // console.log(boxes.data);
-
         //Fetch id of selected classroom
         const user = await axios({
             method: "get",
@@ -37,6 +27,16 @@ export const getServerSideProps = async ({ req, res }) => {
             },
         });
         // console.log(user.data.SelectedClass);
+
+        //Fetch boxes on Page Load
+        const boxes = await axios({
+            method: "get",
+            url: url + "/box/all",
+            headers: {
+                Authorization: token,
+            },
+        });
+        // console.log(boxes.data);
 
         //Fetch classroom data
         const classData = await axios({
