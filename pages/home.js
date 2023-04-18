@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { getSession } from "@auth0/nextjs-auth0";
-import LayoutLogin from "../components/LayoutLogin";
+import LayoutLogin from "@/components/LayoutLogin";
 import Swal from "sweetalert2";
-import TeamBox from "../components/TeamBox";
+import TeamBox from "@/components/TeamBox";
 import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
@@ -60,6 +60,9 @@ export const getServerSideProps = async ({ req, res }) => {
 
 export default function Home({ token, url, tiles, boxes }) {
     console.log("url: " + url);
+    console.log("token: " + token);
+    console.log("tiles: " + tiles);
+    console.log("boxes: " + boxes);
     const { user, isLoading } = useUser();
     const [classroom_tiles, setClassroom_tiles] = useState([]); //Array of TeamBox
     const [showPopUp, setShowPopUp] = useState(false);
