@@ -56,7 +56,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 Authorization: token,
             },
         });
-        // console.log(boxes.data);
+        console.log(boxes.data);
 
         return {
             props: {
@@ -139,6 +139,7 @@ export default function Home({ token, url, tiles, boxes, selectedOptions }) {
     async function addSmarter() {
         const { value: smarterId, dismiss } = await Swal.fire({
             title: "Inserisci id smarter",
+            text: "Id validi: 100000000000000000000000, 200000000000000000000000",
             input: "text",
             inputPlaceholder: "id smarter",
             confirmButtonColor: "#ff7100",
@@ -157,7 +158,7 @@ export default function Home({ token, url, tiles, boxes, selectedOptions }) {
                     headers: { authorization: "Bearer " + token },
                 });
 
-                console.log(result.data);
+                // console.log(result.data);
                 setTimeout(() => {
                     return -1;
                 }, 1000);
@@ -174,10 +175,12 @@ export default function Home({ token, url, tiles, boxes, selectedOptions }) {
                 } else {
                     Swal.fire({
                         title: "Successo",
-                        text: result.data.message,
+                        text: "Smarter aggiunto con successo",
                         icon: "success",
                         confirmButtonColor: "#ff7100",
                         confirmButtonText: "Ok",
+                    }).then(() => {
+                        window.location.reload();
                     });
                 }
             } else {

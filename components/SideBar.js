@@ -10,11 +10,13 @@ export default function SiedBar({ show, children }) {
             >
                 <div className="flex flex-col mt-4 px-3 gap-y-2 h-full">
                     <div className="flex border-b-2 border-gray-300 mb-1 text-3xl">
-                        <h1 className="mx-auto text-orangeBtn mb-2">Smart Game</h1>
+                        <h1 className="mx-auto text-orangeBtn mb-2">
+                            Smart Game
+                        </h1>
                     </div>
                     {children}
                     <div className="border-t-2 border-gray-300 mt-1"></div>
-                    <div className="py-2 hover:bg-red-300 hover:bg-opacity-70 rounded-md mt-auto mb-10">
+                    <div className="py-2 hover:bg-red-400 hover:bg-opacity-80 rounded-md mt-auto mb-10">
                         <button className="h-full w-full transition ease-in-out text-gray-600 text-xl">
                             <Link href="/api/auth/logout">ESCI</Link>
                         </button>
