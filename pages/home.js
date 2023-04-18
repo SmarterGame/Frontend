@@ -9,6 +9,7 @@ import axios from "axios";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
+import process from "process";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
