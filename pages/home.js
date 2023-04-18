@@ -9,7 +9,6 @@ import axios from "axios";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
-import process from "process";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -61,9 +60,6 @@ export const getServerSideProps = async ({ req, res }) => {
 
 export default function Home({ token, url, tiles, boxes }) {
     console.log("url: " + url);
-    console.log("token: " + token);
-    console.log("tiles: " + tiles);
-    console.log("boxes: " + boxes);
     const { user, isLoading } = useUser();
     const [classroom_tiles, setClassroom_tiles] = useState([]); //Array of TeamBox
     const [showPopUp, setShowPopUp] = useState(false);
