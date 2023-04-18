@@ -14,7 +14,7 @@ export default function SiedBar({ show, children }) {
                     </div>
                     {children}
                     <div className="border-t-2 border-gray-300 mt-1"></div>
-                    <div className="py-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md mt-auto mb-10">
+                    <div className="py-2 hover:bg-red-300 hover:bg-opacity-70 rounded-md mt-auto mb-10">
                         <button className="h-full w-full transition ease-in-out text-gray-600 text-xl">
                             <Link href="/api/auth/logout">ESCI</Link>
                         </button>

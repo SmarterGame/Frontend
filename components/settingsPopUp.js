@@ -15,16 +15,15 @@ export default function PopUp({
 }) {
     // console.log(selectedOptions);
     const selectedSmarters = selectedOptions.selectedSmarters;
-    console.log(selectedSmarters);
     const selectedMode = selectedOptions.selectedMode;
 
     const router = useRouter();
 
     const popUpRef = useRef(null);
 
-    const [smarter1, setSmarter1] = useState(null);
-    const [smarter2, setSmarter2] = useState(null);
-    const [modalita, setModalita] = useState(null);
+    const [smarter1, setSmarter1] = useState(selectedSmarters[0]);
+    const [smarter2, setSmarter2] = useState(selectedSmarters[1]);
+    const [modalita, setModalita] = useState(selectedMode);
 
     const [swalPopup, setSwalPopup] = useState(false);
 

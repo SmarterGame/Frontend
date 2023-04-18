@@ -1,36 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
 import Link from "next/link";
-import axios from "axios";
 
-export default function HeaderProfile({ token, url, boxes, classRoom }) {
+export default function HeaderProfile({ token, url, boxes, classRoom, selectedOptions }) {
     const [showPopUp, setShowPopUp] = useState(false);
     const [showSideBar, setShowSideBar] = useState(false);
-    const [selectedOptions, setSelectedOptions] = useState({});
 
     const className = classRoom.ClassName;
-
-    useEffect(() => {
-        axios
-            .get(url + "/user/me", {
-                headers: {
-                    Authorization: "Bearer " + token,
-                },
-            })
-            .then((res) => {
-                // console.log(res.data);
-                const selectedOptions = {
-                    selectedSmarters: res.data.SelectedSmarters,
-                    selectedMode: res.data.SelectedMode,
-                };
-                setSelectedOptions(selectedOptions);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, []);
 
     //Toggle settings popup
     function togglePopUp() {

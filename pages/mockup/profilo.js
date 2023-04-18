@@ -27,6 +27,10 @@ export const getServerSideProps = async ({ req, res }) => {
             },
         });
         // console.log(user.data.SelectedClass);
+        const selectedOptions = {
+            selectedSmarters: user.data.SelectedSmarters,
+            selectedMode: user.data.SelectedMode,
+        };
 
         //Fetch boxes on Page Load
         const boxes = await axios({
@@ -54,6 +58,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url: url,
                 boxes: boxes.data,
                 classRoom: classData.data,
+                selectedOptions: selectedOptions,
             },
         };
     } catch (err) {
@@ -68,6 +73,7 @@ export default function Profilo({
     url,
     boxes,
     classRoom = { Ghiande: 0, Exp: 0 },
+    selectedOptions,
 }) {
     const numGhiande = classRoom.Ghiande;
     const exp = classRoom.Exp; //TODO: risolvere problema percentuali
@@ -79,6 +85,7 @@ export default function Profilo({
                 url={url}
                 boxes={boxes}
                 classRoom={classRoom}
+                selectedOptions={selectedOptions}
             >
                 <div className="flex flex-col mx-auto h-[70%] w-1/2 bg-slate-200 rounded-xl shadow-2xl mt-10">
                     <div className="relative">
