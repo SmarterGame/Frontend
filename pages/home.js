@@ -77,7 +77,14 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Home({ token, url, tiles, boxes, selectedOptions, userBoxes }) {
+export default function Home({
+    token,
+    url,
+    tiles,
+    boxes,
+    selectedOptions,
+    userBoxes,
+}) {
     const { user, isLoading } = useUser();
     const [classroom_tiles, setClassroom_tiles] = useState([]); //Array of TeamBox
     const [showPopUp, setShowPopUp] = useState(false);
@@ -271,11 +278,18 @@ export default function Home({ token, url, tiles, boxes, selectedOptions, userBo
                 show={showPopUp}
                 onClose={togglePopUp}
                 classId={popupData}
-                boxes={boxes}
+                boxes={userBoxes}
                 selectedOptions={selectedOptions}
             />
 
-            <AddSmarter token={token} url={url} show={showAddSmarter} onClose={toggleAddSmarter} boxes={boxes} userBoxes={userBoxes} />
+            <AddSmarter
+                token={token}
+                url={url}
+                show={showAddSmarter}
+                onClose={toggleAddSmarter}
+                boxes={boxes}
+                userBoxes={userBoxes}
+            />
 
             <div
                 className={`${

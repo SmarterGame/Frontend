@@ -6,7 +6,9 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
     //Filtra i box che l'utente ha già
     const filteredBoxes = boxes.filter((box) => !userBoxes.includes(box));
 
-    const [isChecked, setIsChecked] = useState(Array(filteredBoxes.length).fill(false));
+    const [isChecked, setIsChecked] = useState(
+        Array(filteredBoxes.length).fill(false)
+    );
 
     const fireSwal = () => {
         Swal.fire({
@@ -19,7 +21,7 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                 window.location.reload();
             }
         });
-    }
+    };
 
     const handleConferma = async () => {
         //controlla che almeno uno sia selezionato
@@ -65,16 +67,17 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
             >
                 <section className="modal-main rounded-2xl">
                     <div className="flex flex-col items-center justify-center">
-                        <h1 className="text-grayText text-4xl mt-4 mb-10">
+                        <h1 className="text-grayText text-4xl mt-4">
                             SELEZIONA GLI SMARTER
                         </h1>
-                        <div>
-                            <label>
+                        <div className="mt-4">
+                            <label className="text-gray-700 text-xl cursor-pointer">
                                 {filteredBoxes && filteredBoxes.length > 0 ? (
                                     filteredBoxes.map((box, index) => (
                                         <div key={box}>
                                             <input
                                                 type="checkbox"
+                                                className="mr-2 mt-3 scale-150"
                                                 checked={isChecked[index]}
                                                 onChange={(event) =>
                                                     handleCheckboxChange(
@@ -83,7 +86,7 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                                                     )
                                                 }
                                             />
-                                            {box}
+                                            <span>{box}</span>
                                         </div>
                                     ))
                                 ) : (
