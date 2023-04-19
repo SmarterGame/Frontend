@@ -330,9 +330,9 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
 
     return (
         <>
-            <button onClick={gameFinished} className="bg-red-500">
+            {/* <button onClick={gameFinished} className="bg-red-500">
                 test API
-            </button>
+            </button> */}
 
             <LayoutGames title={game} liv={levelGame1} classRoom={classRoom}>
                 <div className="flex flex-row justify-center gap-x-20 w-full">
