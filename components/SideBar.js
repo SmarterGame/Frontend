@@ -6,7 +6,7 @@ export default function SiedBar({ show, children }) {
             <div
                 className={`${
                     show ? "translate-x-0" : "translate-x-full"
-                } transition duration-300 fixed top-0 right-0 h-full bg-gray-200 shadow-2xl`}
+                } transition duration-300 fixed top-0 right-0 h-full bg-gray-200 shadow-2xl z-40`}
             >
                 <div className="flex flex-col mt-4 px-3 gap-y-2 h-full">
                     <div className="flex border-b-2 border-gray-300 mb-1 text-3xl">

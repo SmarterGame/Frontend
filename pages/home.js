@@ -9,6 +9,7 @@ import axios from "axios";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
+import AddSmarter from "@/components/AddSmarter";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -75,10 +76,12 @@ export const getServerSideProps = async ({ req, res }) => {
 };
 
 export default function Home({ token, url, tiles, boxes, selectedOptions }) {
+    console.log("tiles:" + tiles);
     const { user, isLoading } = useUser();
     const [classroom_tiles, setClassroom_tiles] = useState([]); //Array of TeamBox
     const [showPopUp, setShowPopUp] = useState(false);
     const [showSideBar, setShowSideBar] = useState(false);
+    const [showAddSmarter, setShowAddSmarter] = useState(false);
     const [popupData, setPopupData] = useState(null);
 
     useEffect(() => {
@@ -91,6 +94,10 @@ export default function Home({ token, url, tiles, boxes, selectedOptions }) {
     const togglePopUp = (id) => {
         setShowPopUp(!showPopUp);
         setPopupData(id);
+    };
+
+    const toggleAddSmarter = () => {
+        setShowAddSmarter(!showAddSmarter);
     };
 
     //Add a new classroom
@@ -136,64 +143,64 @@ export default function Home({ token, url, tiles, boxes, selectedOptions }) {
     };
 
     //Add a smarter to the user
-    async function addSmarter() {
-        const { value: smarterId, dismiss } = await Swal.fire({
-            title: "Inserisci id smarter",
-            text: "Id validi: 100000000000000000000000, 200000000000000000000000",
-            input: "text",
-            inputPlaceholder: "id smarter",
-            confirmButtonColor: "#ff7100",
-            showCancelButton: true,
-            confirmButtonText: "Aggiungi",
-            cancelButtonText: "Annulla",
-        });
+    // async function addSmarterHandler() {
+    //     const { value: smarterId, dismiss } = await Swal.fire({
+    //         title: "Inserisci id smarter",
+    //         text: "Id validi: 100000000000000000000000, 200000000000000000000000",
+    //         input: "text",
+    //         inputPlaceholder: "id smarter",
+    //         confirmButtonColor: "#ff7100",
+    //         showCancelButton: true,
+    //         confirmButtonText: "Aggiungi",
+    //         cancelButtonText: "Annulla",
+    //     });
 
-        //Check if annulla is pressed
-        if (dismiss === Swal.DismissReason.confirm) {
-            //Check if the id is empty
-            if (smarterId) {
-                const result = await axios({
-                    method: "get",
-                    url: url + "/box/add/" + smarterId,
-                    headers: { authorization: "Bearer " + token },
-                });
+    //     //Check if annulla is pressed
+    //     if (dismiss === Swal.DismissReason.confirm) {
+    //         //Check if the id is empty
+    //         if (smarterId) {
+    //             const result = await axios({
+    //                 method: "get",
+    //                 url: url + "/box/add/" + smarterId,
+    //                 headers: { authorization: "Bearer " + token },
+    //             });
 
-                // console.log(result.data);
-                setTimeout(() => {
-                    return -1;
-                }, 1000);
+    //             // console.log(result.data);
+    //             setTimeout(() => {
+    //                 return -1;
+    //             }, 1000);
 
-                //Check if api returns an error
-                if (result.data.error) {
-                    Swal.fire({
-                        title: "Errore",
-                        text: result.data.message,
-                        icon: "error",
-                        confirmButtonColor: "#ff7100",
-                        confirmButtonText: "Ok",
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Successo",
-                        text: "Smarter aggiunto con successo",
-                        icon: "success",
-                        confirmButtonColor: "#ff7100",
-                        confirmButtonText: "Ok",
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                }
-            } else {
-                Swal.fire({
-                    title: "Errore",
-                    text: "Inserisci un id valido",
-                    icon: "error",
-                    confirmButtonColor: "#ff7100",
-                    confirmButtonText: "Ok",
-                });
-            }
-        }
-    }
+    //             //Check if api returns an error
+    //             if (result.data.error) {
+    //                 Swal.fire({
+    //                     title: "Errore",
+    //                     text: result.data.message,
+    //                     icon: "error",
+    //                     confirmButtonColor: "#ff7100",
+    //                     confirmButtonText: "Ok",
+    //                 });
+    //             } else {
+    //                 Swal.fire({
+    //                     title: "Successo",
+    //                     text: "Smarter aggiunto con successo",
+    //                     icon: "success",
+    //                     confirmButtonColor: "#ff7100",
+    //                     confirmButtonText: "Ok",
+    //                 }).then(() => {
+    //                     window.location.reload();
+    //                 });
+    //             }
+    //         } else {
+    //             Swal.fire({
+    //                 title: "Errore",
+    //                 text: "Inserisci un id valido",
+    //                 icon: "error",
+    //                 confirmButtonColor: "#ff7100",
+    //                 confirmButtonText: "Ok",
+    //             });
+    //         }
+    //     }
+    // }
 
     return (
         <LayoutLogin user={user} loading={isLoading}>
@@ -249,7 +256,7 @@ export default function Home({ token, url, tiles, boxes, selectedOptions }) {
                 </div>
                 <div className="flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
                     <button
-                        onClick={addSmarter}
+                        onClick={toggleAddSmarter}
                         className="mx-auto text-gray-600 text-lg"
                     >
                         AGGIUNGI SMARTER
@@ -266,6 +273,9 @@ export default function Home({ token, url, tiles, boxes, selectedOptions }) {
                 boxes={boxes}
                 selectedOptions={selectedOptions}
             />
+
+            <AddSmarter token={token} url={url} show={showAddSmarter} onClose={toggleAddSmarter} boxes={boxes} />
+
             <div
                 className={`${
                     showPopUp ? "modal display-block" : "modal display-none"
