@@ -1,22 +1,59 @@
 import { useState } from "react";
+import Swal from "sweetalert2";
+import axios from "axios";
 
-export default function Home({ token, url, show, onClose, boxes }) {
-    const [isChecked, setIsChecked] = useState(Array(boxes.length).fill(false));
+export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
+    //Filtra i box che l'utente ha già
+    const filteredBoxes = boxes.filter((box) => !userBoxes.includes(box));
 
-    const handleConferma = () => {
-        console.log(isChecked);
+    const [isChecked, setIsChecked] = useState(Array(filteredBoxes.length).fill(false));
+
+    const fireSwal = () => {
+        Swal.fire({
+            title: "Box aggiunti!",
+            text: "I box sono stati aggiunti correttamente",
+            icon: "success",
+            confirmButtonText: "Ok",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.reload();
+            }
+        });
+    }
+
+    const handleConferma = async () => {
+        //controlla che almeno uno sia selezionato
+        if (!isChecked.includes(true)) {
+            Swal.fire({
+                title: "Attenzione!",
+                text: "Devi selezionare almeno un box",
+                icon: "warning",
+                confirmButtonText: "Ok",
+            });
+        } else {
+            try {
+                let res;
+                for (let i = 0; i < filteredBoxes.length; i++) {
+                    if (isChecked[i]) {
+                        res = await axios({
+                            method: "get",
+                            url: url + "/box/add/" + filteredBoxes[i],
+                            headers: { authorization: "Bearer " + token },
+                        });
+                    }
+                }
+                // console.log(res);
+                fireSwal();
+            } catch (err) {
+                console.log(err);
+            }
+        }
     };
 
     const handleCheckboxChange = (event, index) => {
-        const newArray = [...isChecked];
-        newArray[index] = event.target.checked;
-        setIsChecked(newArray);
-        // setIsChecked((prevState) => {
-        //     const newState = [...prevState];
-        //     newState[index] = event.target.checked;
-        //     return newState;
-        // });
-        // setIsChecked(event.target.checked);
+        const newChecked = [...isChecked];
+        newChecked[index] = event.target.checked;
+        setIsChecked(newChecked);
     };
 
     return (
@@ -33,21 +70,24 @@ export default function Home({ token, url, show, onClose, boxes }) {
                         </h1>
                         <div>
                             <label>
-                                {boxes && boxes.length > 0 ? (
-                                    boxes.map((box, index) => (
+                                {filteredBoxes && filteredBoxes.length > 0 ? (
+                                    filteredBoxes.map((box, index) => (
                                         <div key={box}>
                                             <input
                                                 type="checkbox"
                                                 checked={isChecked[index]}
-                                                onChange={() =>
-                                                    handleCheckboxChange(index)
+                                                onChange={(event) =>
+                                                    handleCheckboxChange(
+                                                        event,
+                                                        index
+                                                    )
                                                 }
                                             />
                                             {box}
                                         </div>
                                     ))
                                 ) : (
-                                    <p>Non ci sono box</p>
+                                    <p>Non ci sono box da aggiungere</p>
                                 )}
                             </label>
                         </div>

@@ -34,6 +34,7 @@ export const getServerSideProps = async ({ req, res }) => {
         });
         // console.log(user.data.SelectedSmarters);
         // console.log(user.data.SelectedMode);
+        console.log(user.data.Boxes);
 
         const selectedOptions = {
             selectedSmarters: user.data.SelectedSmarters,
@@ -57,7 +58,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 Authorization: token,
             },
         });
-        console.log(boxes.data);
+        // console.log(boxes.data);
 
         return {
             props: {
@@ -66,6 +67,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 tiles: tiles.data,
                 boxes: boxes.data,
                 selectedOptions: selectedOptions,
+                userBoxes: user.data.Boxes,
             },
         };
     } catch (err) {
@@ -75,8 +77,7 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Home({ token, url, tiles, boxes, selectedOptions }) {
-    console.log("tiles:" + tiles);
+export default function Home({ token, url, tiles, boxes, selectedOptions, userBoxes }) {
     const { user, isLoading } = useUser();
     const [classroom_tiles, setClassroom_tiles] = useState([]); //Array of TeamBox
     const [showPopUp, setShowPopUp] = useState(false);
@@ -274,7 +275,7 @@ export default function Home({ token, url, tiles, boxes, selectedOptions }) {
                 selectedOptions={selectedOptions}
             />
 
-            <AddSmarter token={token} url={url} show={showAddSmarter} onClose={toggleAddSmarter} boxes={boxes} />
+            <AddSmarter token={token} url={url} show={showAddSmarter} onClose={toggleAddSmarter} boxes={boxes} userBoxes={userBoxes} />
 
             <div
                 className={`${

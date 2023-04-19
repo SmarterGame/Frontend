@@ -147,12 +147,13 @@ export default function PopUp({
                             <select
                                 className="w-96 h-12 bg-grayLight text-center"
                                 onChange={handleChangeSmarter1}
+                                defaultValue={selectedSmarters[0]}
                             >
                                 <option>Nessuno smarter selezionato</option>
                                 {boxes && boxes.length > 0 ? (
                                     boxes.map((box) =>
                                         selectedSmarters[0] === box ? (
-                                            <option selected key={box} value={box}>
+                                            <option key={box} value={box}>
                                                 {box}
                                             </option>
                                         ) : (
@@ -174,12 +175,13 @@ export default function PopUp({
                             <select
                                 className="w-96 h-12 bg-grayLight text-center"
                                 onChange={handleChangeSmarter2}
+                                defaultValue={selectedSmarters[1]}
                             >
                                 <option>Nessuno smarter selezionato</option>
                                 {boxes && boxes.length > 0 ? (
-                                    boxes.map((box) => (
+                                    boxes.map((box) =>
                                         selectedSmarters[1] === box ? (
-                                            <option selected key={box} value={box}>
+                                            <option key={box} value={box}>
                                                 {box}
                                             </option>
                                         ) : (
@@ -187,7 +189,7 @@ export default function PopUp({
                                                 {box}
                                             </option>
                                         )
-                                    ))
+                                    )
                                 ) : (
                                     <option>Non ci sono smarter</option>
                                 )}
@@ -201,26 +203,15 @@ export default function PopUp({
                             <select
                                 className="w-96 h-12 bg-grayLight text-center"
                                 onChange={handleChangeModalita}
+                                defaultValue={
+                                    selectedMode == 1
+                                        ? "Low positive interdependence"
+                                        : "High positive interdependence"
+                                }
                             >
                                 <option>Nessuna modalità selezionata</option>
-                                {selectedMode == 1 ? (
-                                    <option selected>
-                                        Low positive interdependence
-                                    </option>
-                                ) : (
-                                    <option>
-                                        Low positive interdependence
-                                    </option>
-                                )}
-                                {selectedMode == 2 ? (
-                                    <option selected>
-                                        High positive interdependence
-                                    </option>
-                                ) : (
-                                    <option>
-                                        High positive interdependence
-                                    </option>
-                                )}
+                                <option>Low positive interdependence</option>
+                                <option>High positive interdependence</option>
                             </select>
                         </div>
 
