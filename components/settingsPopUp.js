@@ -11,7 +11,7 @@ export default function PopUp({
     children,
     boxes,
     classId,
-    selectedOptions,
+    selectedOptions={selectedSmarters: ["Nessuno smarter selezionato", "Nessuno smarter selezionato"], selectedMode: "Nessuna modalità selezionata"},
 }) {
     // console.log(selectedOptions);
     const selectedSmarters = selectedOptions.selectedSmarters;

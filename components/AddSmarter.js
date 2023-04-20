@@ -4,6 +4,7 @@ import axios from "axios";
 
 export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
     //Filtra i box che l'utente ha già
+    if (boxes === undefined) boxes = []; 
     const filteredBoxes = boxes.filter((box) => !userBoxes.includes(box));
 
     const [isChecked, setIsChecked] = useState(

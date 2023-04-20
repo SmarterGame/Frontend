@@ -34,7 +34,6 @@ export const getServerSideProps = async ({ req, res }) => {
         });
         // console.log(user.data.SelectedSmarters);
         // console.log(user.data.SelectedMode);
-        console.log(user.data.Boxes);
 
         const selectedOptions = {
             selectedSmarters: user.data.SelectedSmarters,

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
-import LayoutProfile from "../../components/LayoutProfile";
-import Badge from "../../components/Badge";
+import LayoutProfile from "@/components/LayoutProfile";
+import Badge from "@/components/Badge";
 import PopUp from "@/components/settingsPopUp";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
