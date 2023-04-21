@@ -72,11 +72,11 @@ export default function AttivitaLevels({
                             onClick={() => {
                                 if (selectedMode === "1")
                                     router.push(
-                                        "./attivita/game1/3?game=quantita"
+                                        "./attivita/quantita/game1/3?game=quantita"
                                     );
                                 else
                                     router.push(
-                                        "./attivita/game2/3?game=quantita"
+                                        "./attivita/quantita/game2/3?game=quantita"
                                     );
                             }}
                         >
@@ -114,11 +114,11 @@ export default function AttivitaLevels({
                             onClick={() => {
                                 if (selectedMode === "1")
                                     router.push(
-                                        "./attivita/game1/2?game=quantita"
+                                        "./attivita/quantita/game1/2?game=quantita"
                                     );
                                 else
                                     router.push(
-                                        "./attivita/game2/2?game=quantita"
+                                        "./attivita/quantita/game2/2?game=quantita"
                                     );
                             }}
                         >
@@ -150,11 +150,11 @@ export default function AttivitaLevels({
                             onClick={() => {
                                 if (selectedMode === "1")
                                     router.push(
-                                        "./attivita/game1/1?game=quantita"
+                                        "./attivita/quantita/game1/1?game=quantita"
                                     );
                                 else
                                     router.push(
-                                        "./attivita/game2/1?game=quantita"
+                                        "./attivita/quantita/game2/1?game=quantita"
                                     );
                             }}
                         >
@@ -186,11 +186,11 @@ export default function AttivitaLevels({
                             onClick={() => {
                                 if (selectedMode === "1")
                                     router.push(
-                                        "./attivita/game1/3?game=ordinamenti"
+                                        "./attivita/ordinamenti/game1/3?game=ordinamenti"
                                     );
                                 else
                                     router.push(
-                                        "./attivita/game2/3?game=ordinamenti"
+                                        "./attivita/ordinamenti/game2/3?game=ordinamenti"
                                     );
                             }}
                         >
@@ -228,11 +228,11 @@ export default function AttivitaLevels({
                             onClick={() => {
                                 if (selectedMode === "1")
                                     router.push(
-                                        "./attivita/game1/2?game=ordinamenti"
+                                        "./attivita/ordinamenti/game1/2?game=ordinamenti"
                                     );
                                 else
                                     router.push(
-                                        "./attivita/game2/2?game=ordinamenti"
+                                        "./attivita/ordinamenti/game2/2?game=ordinamenti"
                                     );
                             }}
                         >
@@ -264,11 +264,11 @@ export default function AttivitaLevels({
                             onClick={() => {
                                 if (selectedMode === "1")
                                     router.push(
-                                        "./attivita/game1/1?game=ordinamenti"
+                                        "./attivita/ordinamenti/game1/1?game=ordinamenti"
                                     );
                                 else
                                     router.push(
-                                        "./attivita/game2/1?game=ordinamenti"
+                                        "./attivita/ordinamenti/game2/1?game=ordinamenti"
                                     );
                             }}
                         >

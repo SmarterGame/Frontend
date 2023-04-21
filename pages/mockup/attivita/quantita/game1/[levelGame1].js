@@ -60,7 +60,7 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
 
     const [subLvl, setsubLvl] = useState(0);
     const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
-    const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
+    // const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
     const [inputValuesLeft, setinputValuesLeft] = useState({});
     const [isCorrectLeft, setisCorrectLeft] = useState([
         false,
@@ -95,6 +95,7 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
 
     //Get level data
     useEffect(() => {
+        
         axios
             .get(url + "/games/" + game + "/lpi/" + levelGame1, {
                 headers: {
@@ -103,8 +104,8 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
             })
             .then((res) => {
                 setLvlData(res.data[subLvl]);
-                const data = _.shuffle(res.data[subLvl]);
-                setLvlDataShuffled(data);
+                // const data = _.shuffle(res.data[subLvl]);
+                // setLvlDataShuffled(data);
             })
             .catch((err) => {
                 console.log(err);
@@ -322,7 +323,9 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
                 },
             });
             // console.log(res);
-            router.push("/mockup/gamification/?game=" + game + "&level=" + levelGame1);
+            router.push(
+                "/mockup/gamification/?game=" + game + "&level=" + levelGame1
+            );
         } catch (err) {
             console.log(err);
         }
@@ -341,7 +344,7 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
                             Smarter 1
                         </h1>
                         <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-4 h-full">
-                            {lvlDataShuffled.map((item, index) => (
+                            {lvlData.map((item, index) => (
                                 <div
                                     key={index}
                                     className="bg-slate-200 w-full flex justify-center items-center text-8xl"
@@ -379,7 +382,7 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
                             Smarter 2
                         </h1>
                         <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-4 h-full">
-                            {lvlDataShuffled.map((item, index) => (
+                            {lvlData.map((item, index) => (
                                 <div
                                     key={index}
                                     className="bg-slate-200 border-4 w-full flex justify-center items-center text-8xl"

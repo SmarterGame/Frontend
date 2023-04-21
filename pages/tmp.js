@@ -49,9 +49,9 @@ export default function Tmp({ token, url }) {
 
     return (
         <>
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center mt-10">
                 <button className="bg-red-500" onClick={() => callAPI()}>
-                    API test
+                    change games data
                 </button>
             </div>
         </>

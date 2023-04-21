@@ -231,7 +231,7 @@ export default function Game({ token, url, selectedClass, classRoom }) {
         <>
             <LayoutGames classRoom={classRoom} title={game} liv={levelGame2}>
                 <div className="flex flex-col justify-center h-screen max-h-[550px] mt-10 ml-4 mr-4">
-                    <div class="grid grid-cols-10 justify-items-center gap-y-4 gap-x-4 h-full">
+                    <div className="grid grid-cols-10 justify-items-center gap-y-4 gap-x-4 h-full">
                         {lvlDataShuffled.map((item, index) => (
                             <div
                                 key={index}
