@@ -11,7 +11,13 @@ export default function PopUp({
     children,
     boxes,
     classId,
-    selectedOptions={selectedSmarters: ["Nessuno smarter selezionato", "Nessuno smarter selezionato"], selectedMode: "Nessuna modalità selezionata"},
+    selectedOptions = {
+        selectedSmarters: [
+            "Nessuno smarter selezionato",
+            "Nessuno smarter selezionato",
+        ],
+        selectedMode: "Nessuna modalità selezionata",
+    },
 }) {
     // console.log(selectedOptions);
     const selectedSmarters = selectedOptions.selectedSmarters;
@@ -135,7 +141,7 @@ export default function PopUp({
                 } transition-transform duration-300 ease-in-out fixed inset-0 z-50`}
             >
                 <section className="modal-main rounded-2xl" ref={popUpRef}>
-                    <div className="flex flex-col items-center">
+                    <div className="flex flex-col items-center ">
                         <h1 className="text-grayText text-4xl mt-4 mb-10">
                             SELEZIONA GLI SMARTER
                         </h1>
@@ -163,7 +169,7 @@ export default function PopUp({
                                         )
                                     )
                                 ) : (
-                                    <option>Non ci sono smarter</option>
+                                    <option>Nessuno smarter associato</option>
                                 )}
                             </select>
                         </div>
@@ -191,7 +197,7 @@ export default function PopUp({
                                         )
                                     )
                                 ) : (
-                                    <option>Non ci sono smarter</option>
+                                    <option>Nessuno smarter associato</option>
                                 )}
                             </select>
                         </div>

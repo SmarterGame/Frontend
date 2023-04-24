@@ -2,6 +2,7 @@ import LayoutGames from "@/components/LayoutGames";
 import Link from "next/link";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
+import Image from "next/image";
 
 export const getServerSideProps = async ({ req, res }) => {
     const url = process.env.BACKEND_URI;
@@ -52,9 +53,17 @@ export default function Badge({ classRoom }) {
     return (
         <>
             <LayoutGames classRoom={classRoom}>
-                <div className="flex flex-col items-center h-[50%] w-full mt-28 -m-72">
-                    <div className="flex flex-row items-center justify-center gap-x-10 h-[90%] px-10 bg-slate-200 rounded-xl shadow-2xl ">
-                        <div className="flex justify-center items-center bg-neutral-500 hover:bg-neutral-600 h-52 w-52 rounded-full z-auto"></div>
+                <div className="relative flex flex-col mx-auto items-center h-[50%] w-full mt-28 -m-72 z-10">
+                    <div className="flex flex-row items-center justify-center gap-x-10 h-[90%] min-w-[950px] px-10 bg-slate-200 rounded-xl shadow-2xl">
+                        <div className="w-52 h-52 mx-auto border-4 border-orangeBtn rounded-full mt-10 shadow-xl">
+                            <Image
+                                src={"https://robohash.org/" + classRoom._id}
+                                alt="Immagine profilo"
+                                width={500}
+                                height={500}
+                                className="rounded-full"
+                            />
+                        </div>
                         <div className="flex flex-col items-center self-center gap-y-6">
                             <h1 className="text-grayText text-2xl">
                                 CONGRATULAZIONI!

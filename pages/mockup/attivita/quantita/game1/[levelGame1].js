@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import _ from "lodash";
 
 export const getServerSideProps = async ({ req, res }) => {
+    const FEEDBACK = process.env.FEEDBACK;
     const url = process.env.BACKEND_URI;
     try {
         const session = await getSession(req, res);
@@ -44,6 +45,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url: url,
                 selectedClass: user.data.SelectedClass,
                 classRoom: classData.data,
+                FEEDBACK: FEEDBACK,
             },
         };
     } catch (err) {
@@ -54,7 +56,13 @@ export const getServerSideProps = async ({ req, res }) => {
 };
 
 //LOW POSITIVE INTERDIPENDENCE
-export default function Game1({ token, url, selectedClass, classRoom }) {
+export default function Game1({
+    token,
+    url,
+    selectedClass,
+    classRoom,
+    FEEDBACK,
+}) {
     const router = useRouter();
     const { levelGame1, game } = router.query; //game = quantita or ordinamenti
 
@@ -95,7 +103,6 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
 
     //Get level data
     useEffect(() => {
-        
         axios
             .get(url + "/games/" + game + "/lpi/" + levelGame1, {
                 headers: {
@@ -183,8 +190,13 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
                 }
             }
 
-            //If left input is empty set isWrong to false
+            //If left input is empty set isCorrect and isWrong to false
             if (inputValuesLeft[i] == "") {
+                setisCorrectLeft((prevState) => {
+                    const newState = [...prevState];
+                    newState[i] = false;
+                    return newState;
+                });
                 setisWrongLeft((prevState) => {
                     const newState = [...prevState];
                     newState[i] = false;
@@ -240,8 +252,13 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
                 }
             }
 
-            //If right input is empty set isWrong to false
+            //If left input is empty set isCorrect and isWrong to false
             if (inputValuesRight[i] == "") {
+                setisCorrectRight((prevState) => {
+                    const newState = [...prevState];
+                    newState[i] = false;
+                    return newState;
+                });
                 setisWrongRight((prevState) => {
                     const newState = [...prevState];
                     newState[i] = false;
@@ -338,7 +355,7 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
             </button> */}
 
             <LayoutGames title={game} liv={levelGame1} classRoom={classRoom}>
-                <div className="flex flex-row justify-center gap-x-20 w-full">
+                <div className="relative flex flex-row justify-center gap-x-20 w-full z-10">
                     <div className="flex flex-col justify-center h-screen max-h-[550px] w-[45%] mt-10 ml-4 mr-4">
                         <h1 className="mx-auto text-xl -mt-4 mb-4 text-grayText">
                             Smarter 1
@@ -356,13 +373,17 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
                                 <div
                                     key={index}
                                     className={`bg-slate-200 border-4 ${
-                                        isCorrectLeft[index]
-                                            ? "border-green-500"
-                                            : ""
-                                    } ${
-                                        isWrongLeft[index]
-                                            ? "border-red-500"
-                                            : ""
+                                        FEEDBACK === "true"
+                                            ? `${
+                                                  isCorrectLeft[index]
+                                                      ? "border-green-500"
+                                                      : ""
+                                              } ${
+                                                  isWrongLeft[index]
+                                                      ? "border-red-500"
+                                                      : ""
+                                              }`
+                                            : ``
                                     } w-full flex justify-center items-center text-8xl`}
                                 >
                                     <input
@@ -394,13 +415,17 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
                                 <div
                                     key={index}
                                     className={`bg-slate-200 border-4 ${
-                                        isCorrectRight[index]
-                                            ? "border-green-500"
-                                            : ""
-                                    } ${
-                                        isWrongRight[index]
-                                            ? "border-red-500"
-                                            : ""
+                                        FEEDBACK === "true"
+                                            ? `${
+                                                  isCorrectRight[index]
+                                                      ? "border-green-500"
+                                                      : ""
+                                              } ${
+                                                  isWrongRight[index]
+                                                      ? "border-red-500"
+                                                      : ""
+                                              }`
+                                            : ``
                                     } w-full flex justify-center items-center text-8xl`}
                                 >
                                     <input
@@ -413,10 +438,11 @@ export default function Game1({ token, url, selectedClass, classRoom }) {
                         </div>
                     </div>
                 </div>
-
-                <div className="absolute bottom-6 left-40">
-                    <Image src={leone} alt="leone"></Image>
-                </div>
+                <Image
+                    src={leone}
+                    alt="leone"
+                    className="fixed bottom-6 left-40"
+                ></Image>
             </LayoutGames>
         </>
     );

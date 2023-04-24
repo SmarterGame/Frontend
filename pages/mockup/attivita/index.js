@@ -1,8 +1,8 @@
 import LayoutSelezioneGiochi from "@/components/LayoutSelezioneGiochi";
 import Image from "next/image";
 import montagna from "@/public/montagnaSMARTER.png";
-import orsoFaccia from "@/public/orsoFaccia.svg";
-import procioneFaccia from "@/public/procioneFaccia.svg";
+import orsoFaccia from "@/public/orsoFaccia.png";
+import procioneFaccia from "@/public/procioneFaccia.png";
 import grass from "@/public/grass.png";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
@@ -60,7 +60,7 @@ export default function Giochi({ classRoom, selectedMode }) {
     return (
         <>
             <LayoutSelezioneGiochi classRoom={classRoom} title={"GIOCHI"} pageAttivita={true}>
-                <div className="flex flex-col items-center mx-auto h-[80%] w-[80%] bg-slate-200 rounded-xl shadow-2xl mt-6">
+                <div className="flex flex-col items-center mx-auto h-[80%] min-h-[580px] w-[80%] min-w-[1420px] bg-slate-200 rounded-xl shadow-2xl mt-6">
                     <h1 className="mt-10 text-4xl text-orangeBtn">
                         SCEGLI UN GIOCO
                     </h1>
@@ -86,7 +86,7 @@ export default function Giochi({ classRoom, selectedMode }) {
                             title={"ORDINAMENTI"}
                             left={false}
                         >
-                            <Image src={orsoFaccia} width={100} />
+                            <Image src={orsoFaccia} width={90} />
                         </Levels>
                     </div>
                 </div>

@@ -7,6 +7,7 @@ import _ from "lodash";
 import Swal from "sweetalert2";
 
 export const getServerSideProps = async ({ req, res }) => {
+    const FEEDBACK = process.env.FEEDBACK;
     const url = process.env.BACKEND_URI;
     try {
         const session = await getSession(req, res);
@@ -42,6 +43,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url: url,
                 selectedClass: user.data.SelectedClass,
                 classRoom: classData.data,
+                FEEDBACK: FEEDBACK,
             },
         };
     } catch (err) {
@@ -51,7 +53,13 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Game({ token, url, selectedClass, classRoom }) {
+export default function Game({
+    token,
+    url,
+    selectedClass,
+    classRoom,
+    FEEDBACK,
+}) {
     const router = useRouter();
     const { levelGame2, game } = router.query; //game = quantita or ordinamenti
 
@@ -156,8 +164,13 @@ export default function Game({ token, url, selectedClass, classRoom }) {
                 }
             }
 
-            //If input is empty set isWrong to false
+            //If input is empty set isCorrect and isWrong to false
             if (inputValues[i] == "") {
+                setIsCorrect((prevState) => {
+                    const newState = [...prevState];
+                    newState[i] = false;
+                    return newState;
+                });
                 setIsWrong((prevState) => {
                     const newState = [...prevState];
                     newState[i] = false;
@@ -231,7 +244,7 @@ export default function Game({ token, url, selectedClass, classRoom }) {
     return (
         <>
             <LayoutGames classRoom={classRoom} title={game} liv={levelGame2}>
-                <div className="flex flex-col justify-center h-screen max-h-[550px] mt-10 ml-4 mr-4">
+                <div className="relative flex flex-col justify-center h-screen max-h-[550px] mt-10 ml-4 mr-4 z-10">
                     <div className="grid grid-cols-10 justify-items-center gap-y-4 gap-x-4 h-full">
                         {lvlData.map((item, index) => (
                             <div
@@ -245,9 +258,17 @@ export default function Game({ token, url, selectedClass, classRoom }) {
                             <div
                                 key={index}
                                 className={`bg-slate-200 border-4 ${
-                                    isCorrect[index] ? "border-green-500" : ""
-                                } ${
-                                    isWrong[index] ? "border-red-500" : ""
+                                    FEEDBACK === "true"
+                                        ? `${
+                                              isCorrect[index]
+                                                  ? "border-green-500"
+                                                  : ""
+                                          } ${
+                                              isWrong[index]
+                                                  ? "border-red-500"
+                                                  : ""
+                                          }`
+                                        : ``
                                 } w-full flex justify-center items-center text-8xl`}
                             >
                                 <input

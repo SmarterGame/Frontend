@@ -4,7 +4,13 @@ import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
 import Link from "next/link";
 
-export default function HeaderProfile({ token, url, boxes, classRoom, selectedOptions }) {
+export default function HeaderProfile({
+    token,
+    url,
+    boxes,
+    classRoom,
+    selectedOptions,
+}) {
     const [showPopUp, setShowPopUp] = useState(false);
     const [showSideBar, setShowSideBar] = useState(false);
 

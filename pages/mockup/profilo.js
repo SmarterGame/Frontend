@@ -87,7 +87,7 @@ export default function Profilo({
                 classRoom={classRoom}
                 selectedOptions={selectedOptions}
             >
-                <div className="flex flex-col mx-auto h-[70%] w-1/2 bg-slate-200 rounded-xl shadow-2xl mt-10">
+                <div className="relative flex flex-col mx-auto h-[70%] min-h-[620px] w-1/2 min-w-[700px] bg-slate-200 rounded-xl shadow-2xl mt-10 z-10">
                     <div className="relative">
                         <h1 className="absolute top-8 right-32 text-3xl text-slate-700">
                             x {numGhiande}
@@ -117,15 +117,14 @@ export default function Profilo({
                     </div>
 
                     <div className="mx-auto">
-                        <h1 className=" text-orangeBtn text-4xl mt-14">
+                        <h1 className=" text-orangeBtn text-4xl mt-16">
                             Scoiattoli livello {exp}
                         </h1>
-                        <div className="flex flex-col h-full mt-14">
-                            <button className=" mx-auto transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-[50%] h-[25%] rounded-md duration-300">
+                        <div className="flex flex-col h-full mt-16 gap-y-6">
+                            <button className=" mx-auto transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-56 h-14 rounded-md duration-300">
                                 <Link href="./missioni">MISSIONI</Link>
                             </button>
-                            <br></br>
-                            <button className="mx-auto transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-[50%] h-[25%] rounded-md duration-300">
+                            <button className="mx-auto transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-56 h-14 rounded-md duration-300">
                                 <Link href="./attivita">GIOCHI</Link>
                             </button>
                         </div>

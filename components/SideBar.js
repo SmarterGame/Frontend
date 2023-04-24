@@ -1,6 +1,12 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function SiedBar({ show, children }) {
+    const router = useRouter();
+
+    const [showCustom, setShowCustom] = useState(false);
+
     return (
         <>
             <div
@@ -15,6 +21,34 @@ export default function SiedBar({ show, children }) {
                         </h1>
                     </div>
                     {children}
+                    <div className="hide flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
+                        <button onClick={() => {setShowCustom(!showCustom)}} className="mx-auto text-gray-600 text-lg">
+                            {/* <Link
+                                href={`/customGames?prevPath=${router.pathname}`}
+                            >
+                                PERSONALIZZA GIOCHI
+                            </Link> */}
+                            PERSONALIZZA GIOCHI
+                        </button>
+                    </div>
+                    <div className={`${showCustom ? "" : "hidden"} flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md`}>
+                        <button className="mx-auto text-gray-600 text-lg">
+                            <Link
+                                href={`/customGames?prevPath=${router.pathname}&game=quantita`}
+                            >
+                                QUANTITA
+                            </Link>
+                        </button>
+                    </div>
+                    <div className={`${showCustom ? "" : "hidden"} flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md`}>
+                        <button className="mx-auto text-gray-600 text-lg">
+                            <Link
+                                href={`/customGames?prevPath=${router.pathname}&game=ordinamenti`}
+                            >
+                                ORDINAMENTI
+                            </Link>
+                        </button>
+                    </div>
                     <div className="border-t-2 border-gray-300 mt-1"></div>
                     <div className="py-2 hover:bg-red-400 hover:bg-opacity-80 rounded-md mt-auto mb-10">
                         <button className="h-full w-full transition ease-in-out text-gray-600 text-xl">

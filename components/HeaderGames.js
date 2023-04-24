@@ -8,6 +8,7 @@ export default function HeaderGames({
     title = "",
     classRoom = { Ghiande: 0 },
     pageAttivita = false,
+    prevPath = false,
     liv,
 }) {
     const numGhiande = classRoom.Ghiande;
@@ -55,7 +56,7 @@ export default function HeaderGames({
                                         href={`${
                                             pageAttivita
                                                 ? "/mockup/profilo"
-                                                : "/mockup/attivita"
+                                                : (prevPath ? prevPath : "/mockup/attivita")
                                         }`}
                                     >
                                         <ClearIcon

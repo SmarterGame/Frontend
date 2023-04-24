@@ -12,9 +12,6 @@ export const getServerSideProps = async ({ req, res }) => {
             return { props: {} };
         }
 
-        // Fetch classrooms on Page Load
-        const token = "Bearer " + session.accessToken;
-
         return {
             props: {
                 token: session.accessToken,
@@ -29,7 +26,6 @@ export const getServerSideProps = async ({ req, res }) => {
 };
 
 export default function Tmp({ token, url }) {
-
     const callAPI = async () => {
         try {
             const response = await axios({
