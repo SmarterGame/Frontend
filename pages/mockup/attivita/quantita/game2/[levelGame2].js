@@ -269,7 +269,7 @@ export default function Game({
                                                   : ""
                                           }`
                                         : ``
-                                } w-full flex justify-center items-center text-8xl`}
+                                }  w-full flex justify-center items-center text-8xl`}
                             >
                                 <input
                                     className="text-xl w-20"
