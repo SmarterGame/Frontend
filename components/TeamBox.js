@@ -68,6 +68,47 @@ function deleteClass(deleteHandler) {
         });
 }
 
+async function renameClass(renameHandler) {
+    const { value: newName } = await Swal.fire({
+        title: "Rinoima la classe",
+        input: "text",
+        inputPlaceholder: "Nome della classe",
+        showCancelButton: true,
+        closeOnCancel: true,
+        confirmButtonColor: "#ff7100",
+        cancelButtonColor: "#575757",
+        confirmButtonText: "Conferma",
+        cancelButtonText: "Annulla",
+    });
+
+    if (!newName) {
+        Swal.fire({
+            title: "Errore",
+            text: "Il nome della classe non può essere vuoto",
+            icon: "error",
+            confirmButtonColor: "#ff7100",
+        });
+    } else {
+        try {
+            await renameHandler(newName);
+            Swal.fire({
+                title: "Rinominata!",
+                text: "La classe è stata rinominata.",
+                icon: "success",
+                confirmButtonColor: "#ff7100",
+            });
+        } catch (err) {
+            Swal.fire({
+                title: "Errore",
+                text: "Impossibile rinominare la classe",
+                icon: "error",
+                confirmButtonColor: "#ff7100",
+            });
+            console.log(err);
+        }
+    }
+}
+
 const style = {
     tableRow: { "& > *": { borderBottom: "unset" }, width: "1%" },
     classNameCell: { width: "10%" }, // imposta la larghezza della cella del nome a 40%
@@ -75,7 +116,7 @@ const style = {
 };
 
 function Row(props) {
-    const { row, deleteHandler, toggleScegliClasse } = props;
+    const { row, deleteHandler, renameHandler, toggleScegliClasse } = props;
     const [open, setOpen] = useState(false);
 
     return (
@@ -129,19 +170,17 @@ function Row(props) {
                                 justifyContent: "space-between",
                             }}
                         >
-                            {/* <Typography */}
-                            {/*     variant="h6" */}
-                            {/*     gutterBottom */}
-                            {/*     component="div" */}
-                            {/*     className="text-gray-700" */}
-                            {/* > */}
-                            {/*     Data   */}
-                            {/* </Typography> */}
                             <IconButton
                                 className="sigmar transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-sm shadow-2xl rounded-md duration-300"
                                 onClick={() => toggleScegliClasse()}
                             >
                                 Scegli classe
+                            </IconButton>
+                            <IconButton
+                                onClick={() => renameClass(renameHandler)}
+                                className="sigmar transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-sm shadow-2xl rounded-md duration-300"
+                            >
+                                Cambia nome
                             </IconButton>
                             <IconButton
                                 onClick={() => deleteClass(deleteHandler)}
@@ -173,11 +212,17 @@ function createData(className, creationDate) {
     };
 }
 
-const TeamBox = ({ classroomData, removeHandler, togglePopUp }) => {
+const TeamBox = ({
+    classroomData,
+    removeHandler,
+    renameHandler,
+    togglePopUp,
+}) => {
     const router = useRouter();
     const date = new Date(classroomData.CreationDate); //Change date format
     const row = createData(classroomData.ClassName, date.toLocaleDateString());
     const deleteHandler = () => removeHandler(classroomData._id);
+    const renameClassHandler = (newName) => renameHandler(classroomData._id, newName);
     const toggleScegliClasse = () => togglePopUp();
     return (
         <>
@@ -192,6 +237,7 @@ const TeamBox = ({ classroomData, removeHandler, togglePopUp }) => {
                                 key={row.className}
                                 row={row}
                                 deleteHandler={deleteHandler}
+                                renameHandler={renameClassHandler}
                                 toggleScegliClasse={toggleScegliClasse}
                             />
                         </TableBody>

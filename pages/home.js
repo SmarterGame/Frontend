@@ -149,65 +149,18 @@ export default function Home({
         setClassroom_tiles([...tileCopy]);
     };
 
-    //Add a smarter to the user
-    // async function addSmarterHandler() {
-    //     const { value: smarterId, dismiss } = await Swal.fire({
-    //         title: "Inserisci id smarter",
-    //         text: "Id validi: 100000000000000000000000, 200000000000000000000000",
-    //         input: "text",
-    //         inputPlaceholder: "id smarter",
-    //         confirmButtonColor: "#ff7100",
-    //         showCancelButton: true,
-    //         confirmButtonText: "Aggiungi",
-    //         cancelButtonText: "Annulla",
-    //     });
-
-    //     //Check if annulla is pressed
-    //     if (dismiss === Swal.DismissReason.confirm) {
-    //         //Check if the id is empty
-    //         if (smarterId) {
-    //             const result = await axios({
-    //                 method: "get",
-    //                 url: url + "/box/add/" + smarterId,
-    //                 headers: { authorization: "Bearer " + token },
-    //             });
-
-    //             // console.log(result.data);
-    //             setTimeout(() => {
-    //                 return -1;
-    //             }, 1000);
-
-    //             //Check if api returns an error
-    //             if (result.data.error) {
-    //                 Swal.fire({
-    //                     title: "Errore",
-    //                     text: result.data.message,
-    //                     icon: "error",
-    //                     confirmButtonColor: "#ff7100",
-    //                     confirmButtonText: "Ok",
-    //                 });
-    //             } else {
-    //                 Swal.fire({
-    //                     title: "Successo",
-    //                     text: "Smarter aggiunto con successo",
-    //                     icon: "success",
-    //                     confirmButtonColor: "#ff7100",
-    //                     confirmButtonText: "Ok",
-    //                 }).then(() => {
-    //                     window.location.reload();
-    //                 });
-    //             }
-    //         } else {
-    //             Swal.fire({
-    //                 title: "Errore",
-    //                 text: "Inserisci un id valido",
-    //                 icon: "error",
-    //                 confirmButtonColor: "#ff7100",
-    //                 confirmButtonText: "Ok",
-    //             });
-    //         }
-    //     }
-    // }
+    //Rename a classroom
+    const renameBoxHandler = async (id, newName) => {
+        await axios({
+            method: "post",
+            url: url + "/classroom/rename/" + id + "/" + newName,
+            headers: { Authorization: "Bearer " + token },
+        });
+        let tileCopy = [...classroom_tiles],
+            pos = tileCopy.findIndex((element) => element._id == id);
+        tileCopy[pos].ClassName = newName;
+        setClassroom_tiles([...tileCopy]);
+    };
 
     return (
         <LayoutLogin user={user} loading={isLoading}>
@@ -222,6 +175,7 @@ export default function Home({
                             key={element._id}
                             classroomData={element}
                             removeHandler={removeBoxHandler}
+                            renameHandler={renameBoxHandler}
                             togglePopUp={() => togglePopUp(element._id)}
                         />
                     );

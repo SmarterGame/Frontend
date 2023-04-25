@@ -21,7 +21,7 @@ export default function SiedBar({ show, children }) {
                         </h1>
                     </div>
                     {children}
-                    <div className="hide flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
+                    <div className="hidden flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
                         <button onClick={() => {setShowCustom(!showCustom)}} className="mx-auto text-gray-600 text-lg">
                             {/* <Link
                                 href={`/customGames?prevPath=${router.pathname}`}
