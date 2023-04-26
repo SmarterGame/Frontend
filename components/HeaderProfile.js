@@ -46,7 +46,7 @@ export default function HeaderProfile({
                         </div>
                     </div>
                 </div>
-                <SideBar show={showSideBar}>
+                <SideBar token={token} url={url} show={showSideBar}>
                     <div className="flex w-full py-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
                         <button
                             onClick={() => {

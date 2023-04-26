@@ -38,6 +38,8 @@ export default function SiedBar({ token, url, show, children }) {
                     text: "L'immagine è stata cambiata correttamente",
                     icon: "success",
                     confirmButtonText: "Ok",
+                }).then(() => {
+                    if (router.pathname === "/mockup/profilo") router.reload();
                 });
             } catch (err) {
                 Swal.fire({
