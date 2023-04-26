@@ -244,7 +244,7 @@ export default function Game({
     return (
         <>
             <LayoutGames classRoom={classRoom} title={game} liv={levelGame2}>
-                <div className="relative flex flex-col justify-center h-full max-h-[500px] mt-10 ml-4 mr-4 z-10 lg:max-h-[500px] md:max-h-[500px] sm:max-h-[300px]">
+                <div className="relative flex flex-col justify-center h-[60%] max-h-[500px] mt-10 ml-4 mr-4 z-10 lg:max-h-[500px] md:max-h-[500px] sm:max-h-[300px]">
                     <div className="grid grid-cols-10 justify-items-center gap-y-4 gap-x-4 h-full">
                         {lvlData.map((item, index) => (
                             <div
