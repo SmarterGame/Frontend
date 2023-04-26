@@ -52,7 +52,7 @@ const Layout = ({
                     <Image
                         src={procione1}
                         alt="procione1"
-                        width={250}
+                        width={100}
                         className="fixed bottom-6 right-10"
                     ></Image>
                 </div>
