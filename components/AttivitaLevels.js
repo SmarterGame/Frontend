@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 export default function AttivitaLevels({
     children,
-    classRoom={Levels: [0,0]},
+    classRoom = { Levels: [0, 0] },
     selectedMode,
     title,
     left,

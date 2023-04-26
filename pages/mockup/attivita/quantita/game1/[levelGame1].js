@@ -14,6 +14,8 @@ export const getServerSideProps = async ({ req, res }) => {
     try {
         const session = await getSession(req, res);
 
+        const token = "Bearer " + session.accessToken;
+
         // EXIT if the session is null (Not Logged)
         if (session == null) {
             console.log("Early return");
@@ -24,17 +26,35 @@ export const getServerSideProps = async ({ req, res }) => {
             method: "get",
             url: url + "/user/me",
             headers: {
-                Authorization: "Bearer " + session.accessToken,
+                Authorization: token,
             },
         });
         // console.log(user.data.SelectedClass);
+
+        //Fetch profile image
+        const profileImg = await axios({
+            method: "get",
+            url: url + "/user/profileImg",
+            headers: {
+                Authorization: token,
+            },
+            responseType: "arraybuffer",
+        });
+        // console.log(profileImg.data);
+        let imageUrl = null;
+        if (Object.keys(profileImg.data).length !== 0) {
+            const image = Buffer.from(profileImg.data, "binary").toString(
+                "base64"
+            );
+            imageUrl = `data:image/png;base64,${image}`;
+        }
 
         //Fetch classroom data
         const classData = await axios({
             method: "get",
             url: url + "/classroom/getClassroomData/" + user.data.SelectedClass,
             headers: {
-                Authorization: "Bearer " + session.accessToken,
+                Authorization: token,
             },
         });
         // console.log(classData.data);
@@ -46,6 +66,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 selectedClass: user.data.SelectedClass,
                 classRoom: classData.data,
                 FEEDBACK: FEEDBACK,
+                profileImg: imageUrl,
             },
         };
     } catch (err) {
@@ -62,6 +83,7 @@ export default function Game1({
     selectedClass,
     classRoom,
     FEEDBACK,
+    profileImg,
 }) {
     const router = useRouter();
     const { levelGame1, game } = router.query; //game = quantita or ordinamenti
@@ -354,9 +376,9 @@ export default function Game1({
                 test API
             </button> */}
 
-            <LayoutGames title={game} liv={levelGame1} classRoom={classRoom}>
-                <div className="relative flex flex-row justify-center gap-x-20 w-full z-10">
-                    <div className="flex flex-col justify-center h-screen max-h-[550px] w-[45%] mt-10 ml-4 mr-4">
+            <LayoutGames title={game} liv={levelGame1} classRoom={classRoom} profileImg={profileImg}>
+                <div className="relative flex flex-row justify-center gap-x-20 h-[55vh] w-full z-10">
+                    <div className="flex flex-col justify-center h-full w-[45%] mt-10 ml-4 mr-4">
                         <h1 className="mx-auto text-xl -mt-4 mb-4 text-grayText">
                             Smarter 1
                         </h1>
@@ -396,9 +418,9 @@ export default function Game1({
                         </div>
                     </div>
 
-                    <div className="self-end border-2 border-dashed border-gray-700 w-0 h-[700px] mt-6"></div>
+                    <div className="border-2 border-dashed border-gray-700 w-0 h-[60vh] mt-10"></div>
 
-                    <div className="flex flex-col justify-center h-screen max-h-[550px] w-[45%] mt-10 ml-4 mr-4">
+                    <div className="flex flex-col justify-center h-full w-[45%] mt-10 ml-4 mr-4">
                         <h1 className="mx-auto text-xl -mt-4 mb-4 text-grayText">
                             Smarter 2
                         </h1>

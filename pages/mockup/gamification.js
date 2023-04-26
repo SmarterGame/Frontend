@@ -12,6 +12,8 @@ export const getServerSideProps = async ({ req, res }) => {
     try {
         const session = await getSession(req, res);
 
+        const token = "Bearer " + session.accessToken;
+
         // EXIT if the session is null (Not Logged)
         if (session == null) {
             console.log("Early return");
@@ -22,17 +24,35 @@ export const getServerSideProps = async ({ req, res }) => {
             method: "get",
             url: url + "/user/me",
             headers: {
-                Authorization: "Bearer " + session.accessToken,
+                Authorization: token,
             },
         });
         // console.log(user.data.SelectedClass);
+
+        //Fetch profile image
+        const profileImg = await axios({
+            method: "get",
+            url: url + "/user/profileImg",
+            headers: {
+                Authorization: token,
+            },
+            responseType: "arraybuffer",
+        });
+        // console.log(profileImg.data);
+        let imageUrl = null;
+        if (Object.keys(profileImg.data).length !== 0) {
+            const image = Buffer.from(profileImg.data, "binary").toString(
+                "base64"
+            );
+            imageUrl = `data:image/png;base64,${image}`;
+        }
 
         //Fetch classroom data
         const classData = await axios({
             method: "get",
             url: url + "/classroom/getClassroomData/" + user.data.SelectedClass,
             headers: {
-                Authorization: "Bearer " + session.accessToken,
+                Authorization: token,
             },
         });
         // console.log(classData.data);
@@ -43,6 +63,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url: url,
                 selectedClass: user.data.SelectedClass,
                 classRoom: classData.data,
+                profileImg: imageUrl,
             },
         };
     } catch (err) {
@@ -52,7 +73,7 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Quantita({ token, url, classRoom }) {
+export default function Quantita({ token, url, classRoom, profileImg }) {
     const router = useRouter();
     const { game, level } = router.query; //game = quantita or ordinamenti
 
@@ -77,8 +98,8 @@ export default function Quantita({ token, url, classRoom }) {
 
     return (
         <>
-            <LayoutGames classRoom={classRoom}>
-                <div className="flex flex-col mx-auto h-[70%] w-1/2 bg-slate-200 rounded-xl shadow-2xl mt-10">
+            <LayoutGames classRoom={classRoom} profileImg={profileImg}>
+                <div className="relative flex flex-col mx-auto w-1/2 min-w-[650px] bg-slate-200 rounded-xl shadow-2xl mt-10 z-10">
                     <div className="flex flex-col items-center h-full mt-6">
                         <h1 className="text-4xl text-orangeBtn">
                             {gameType ? "LE QUANTITA'" : "GLI ORDINAMENTI"} -
@@ -107,7 +128,7 @@ export default function Quantita({ token, url, classRoom }) {
                             </Link>
                         </button>
 
-                        <div className="flex flex-row justify-center gap-x-4 w-full mt-10">
+                        <div className="flex flex-row justify-center gap-x-4 w-full mt-10 mb-6">
                             <button className="transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-[20%] py-3 rounded-md duration-300">
                                 <Link href="./attivita">GIOCHI</Link>
                             </button>

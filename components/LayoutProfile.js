@@ -18,7 +18,7 @@ const Layout = ({
         backgroundRepeat: "no-repeat",
         backgroundSize: "contain",
         backgroundPosition: "bottom",
-        backgroundAttachment: "fixed",
+        // backgroundAttachment: "fixed",
     };
 
     return (
@@ -28,7 +28,7 @@ const Layout = ({
             </Head>
 
             <main style={styles}>
-                <div className="h-screen">
+                <div className="h-[100vh]">
                     <HeaderProfile
                         loading={loading}
                         boxes={boxes}

@@ -84,7 +84,7 @@ export default function Giochi({ classRoom, selectedMode, profileImg }) {
                 pageAttivita={true}
                 profileImg={profileImg}
             >
-                <div className="flex flex-col items-center mx-auto h-[80%] min-h-[580px] w-[80%] min-w-[1420px] bg-slate-200 rounded-xl shadow-2xl mt-6">
+                <div className="flex flex-col items-center mx-auto h-[80vh] w-[80%] min-w-[1420px] bg-slate-200 rounded-xl shadow-2xl mt-6">
                     <h1 className="mt-10 text-4xl text-orangeBtn">
                         SCEGLI UN GIOCO
                     </h1>
@@ -115,7 +115,10 @@ export default function Giochi({ classRoom, selectedMode, profileImg }) {
                     </div>
                 </div>
 
-                <Image src={grass} className="w-full object-fill -mt-[43px]" />
+                <Image
+                    src={grass}
+                    className="absolute bottom-0 w-full"
+                />
             </LayoutSelezioneGiochi>
         </>
     );

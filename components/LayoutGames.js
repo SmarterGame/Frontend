@@ -27,7 +27,7 @@ const Layout = ({
             </Head>
 
             <main style={styles}>
-                <div className="h-screen">
+                <div className="h-[100vh]">
                     <HeaderGames
                         user={user}
                         loading={loading}
@@ -52,7 +52,6 @@ const Layout = ({
                     <Image
                         src={procione1}
                         alt="procione1"
-                        width={100}
                         className="fixed bottom-6 right-10"
                     ></Image>
                 </div>

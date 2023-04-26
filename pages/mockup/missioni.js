@@ -82,7 +82,7 @@ export default function BadgePage({ token, url, boxes, classRoom }) {
                 boxes={boxes}
                 classRoom={classRoom}
             >
-                <div className="flex flex-col mx-auto h-[70%] min-h-[500px] w-1/2 min-w-[600px] bg-slate-200 rounded-xl shadow-2xl mt-10">
+                <div className="relative flex flex-col mx-auto h-[70vh] min-h-[500px] w-1/2 min-w-[600px] bg-slate-200 rounded-xl shadow-2xl mt-10 z-10">
                     <h1 className="mx-auto text-4xl text-orangeBtn mt-6">
                         BADGE
                     </h1>

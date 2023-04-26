@@ -20,7 +20,7 @@ const Layout = ({ user, loading = false, children }) => {
             {/* <Header user={user} loading={loading} /> */}
 
             <main style={styles}>
-                <div className="h-screen">{children}</div>
+                <div className="h-[100vh]">{children}</div>
             </main>
         </>
     );
