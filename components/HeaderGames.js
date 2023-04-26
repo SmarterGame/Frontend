@@ -2,6 +2,7 @@ import Image from "next/image";
 import ghianda from "@/public/ghianda.png";
 import Link from "next/link";
 import ClearIcon from "@mui/icons-material/Clear";
+import ProfileImg from "@/components/ProfileImg";
 
 export default function HeaderGames({
     loading,
@@ -10,6 +11,7 @@ export default function HeaderGames({
     pageAttivita = false,
     prevPath = false,
     liv,
+    profileImg,
 }) {
     const numGhiande = classRoom.Ghiande;
 
@@ -40,14 +42,9 @@ export default function HeaderGames({
                                 alt="ghianda"
                             ></Image>
                             <div className="w-20 h-20 border-2 border-orangeBtn rounded-full ml-4 mr-4">
-                                <Image
-                                    src={
-                                        "https://robohash.org/" + classRoom._id
-                                    }
-                                    alt="Immagine profilo"
-                                    width={500}
-                                    height={500}
-                                    className="rounded-full"
+                                <ProfileImg
+                                    profileImg={profileImg}
+                                    classRoomId={classRoom._id}
                                 />
                             </div>
                             <div className="bg-red-500 bg-opacity-50 rounded-lg transition ease-in-out hover:bg-red-600 hover:bg-opacity-50 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300">
@@ -56,7 +53,9 @@ export default function HeaderGames({
                                         href={`${
                                             pageAttivita
                                                 ? "/mockup/profilo"
-                                                : (prevPath ? prevPath : "/mockup/attivita")
+                                                : prevPath
+                                                ? prevPath
+                                                : "/mockup/attivita"
                                         }`}
                                     >
                                         <ClearIcon

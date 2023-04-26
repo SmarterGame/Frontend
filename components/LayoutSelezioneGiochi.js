@@ -1,7 +1,15 @@
 import Head from "next/head";
 import HeaderGames from "@/components/HeaderGames";
 
-const Layout = ({ loading = false, children, title, classRoom, pageAttivita, prevPath }) => {
+const Layout = ({
+    loading = false,
+    children,
+    title,
+    classRoom,
+    pageAttivita,
+    prevPath,
+    profileImg,
+}) => {
     const styles = {
         backgroundColor: "#c4e5ff",
         // backgroundImage: "url(/grass.png)",
@@ -24,6 +32,7 @@ const Layout = ({ loading = false, children, title, classRoom, pageAttivita, pre
                         classRoom={classRoom}
                         pageAttivita={pageAttivita}
                         prevPath={prevPath}
+                        profileImg={profileImg}
                     />
                     {children}
 

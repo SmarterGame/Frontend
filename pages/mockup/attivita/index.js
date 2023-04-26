@@ -31,6 +31,24 @@ export const getServerSideProps = async ({ req, res }) => {
         });
         //console.log(user.data);
 
+        //Fetch profile image
+        const profileImg = await axios({
+            method: "get",
+            url: url + "/user/profileImg",
+            headers: {
+                Authorization: token,
+            },
+            responseType: "arraybuffer",
+        });
+        // console.log(profileImg.data);
+        let imageUrl = null;
+        if (Object.keys(profileImg.data).length !== 0) {
+            const image = Buffer.from(profileImg.data, "binary").toString(
+                "base64"
+            );
+            imageUrl = `data:image/png;base64,${image}`;
+        }
+
         //Fetch classroom data
         const classData = await axios({
             method: "get",
@@ -47,6 +65,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url: url,
                 classRoom: classData.data,
                 selectedMode: user.data.SelectedMode,
+                profileImg: imageUrl,
             },
         };
     } catch (err) {
@@ -56,10 +75,15 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Giochi({ classRoom, selectedMode }) {
+export default function Giochi({ classRoom, selectedMode, profileImg }) {
     return (
         <>
-            <LayoutSelezioneGiochi classRoom={classRoom} title={"GIOCHI"} pageAttivita={true}>
+            <LayoutSelezioneGiochi
+                classRoom={classRoom}
+                title={"GIOCHI"}
+                pageAttivita={true}
+                profileImg={profileImg}
+            >
                 <div className="flex flex-col items-center mx-auto h-[80%] min-h-[580px] w-[80%] min-w-[1420px] bg-slate-200 rounded-xl shadow-2xl mt-6">
                     <h1 className="mt-10 text-4xl text-orangeBtn">
                         SCEGLI UN GIOCO

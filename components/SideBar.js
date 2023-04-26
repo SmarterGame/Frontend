@@ -1,11 +1,55 @@
+import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
-export default function SiedBar({ show, children }) {
+export default function SiedBar({ token, url, show, children }) {
     const router = useRouter();
 
     const [showCustom, setShowCustom] = useState(false);
+
+    const changeImageHandler = async () => {
+        const { value: file } = await Swal.fire({
+            title: "Seleziona immagine",
+            input: "file",
+            confirmButtonColor: "#ff7100",
+            inputAttributes: {
+                accept: "image/*",
+                "aria-label": "Upload your profile picture",
+            },
+        });
+
+        if (file) {
+            try {
+                const formData = new FormData();
+                formData.append("file", file);
+                await axios({
+                    method: "post",
+                    url: url + "/user/changeProfileImg",
+                    data: formData,
+                    headers: {
+                        Authorization: "Bearer " + token,
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+                Swal.fire({
+                    title: "Immagine cambiata!",
+                    text: "L'immagine è stata cambiata correttamente",
+                    icon: "success",
+                    confirmButtonText: "Ok",
+                });
+            } catch (err) {
+                Swal.fire({
+                    title: "Errore",
+                    text: "Si è verificato un errore nel cambiare l'immagine",
+                    icon: "error",
+                    confirmButtonText: "Ok",
+                });
+                console.log(err);
+            }
+        }
+    };
 
     return (
         <>
@@ -21,17 +65,29 @@ export default function SiedBar({ show, children }) {
                         </h1>
                     </div>
                     {children}
+                    <div className="flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
+                        <button
+                            onClick={changeImageHandler}
+                            className="mx-auto text-gray-600 text-lg"
+                        >
+                            CAMBIA IMMAGINE
+                        </button>
+                    </div>
                     <div className="hidden flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
-                        <button onClick={() => {setShowCustom(!showCustom)}} className="mx-auto text-gray-600 text-lg">
-                            {/* <Link
-                                href={`/customGames?prevPath=${router.pathname}`}
-                            >
-                                PERSONALIZZA GIOCHI
-                            </Link> */}
+                        <button
+                            onClick={() => {
+                                setShowCustom(!showCustom);
+                            }}
+                            className="mx-auto text-gray-600 text-lg"
+                        >
                             PERSONALIZZA GIOCHI
                         </button>
                     </div>
-                    <div className={`${showCustom ? "" : "hidden"} flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md`}>
+                    <div
+                        className={`${
+                            showCustom ? "" : "hidden"
+                        } flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md`}
+                    >
                         <button className="mx-auto text-gray-600 text-lg">
                             <Link
                                 href={`/customGames?prevPath=${router.pathname}&game=quantita`}
@@ -40,7 +96,11 @@ export default function SiedBar({ show, children }) {
                             </Link>
                         </button>
                     </div>
-                    <div className={`${showCustom ? "" : "hidden"} flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md`}>
+                    <div
+                        className={`${
+                            showCustom ? "" : "hidden"
+                        } flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md`}
+                    >
                         <button className="mx-auto text-gray-600 text-lg">
                             <Link
                                 href={`/customGames?prevPath=${router.pathname}&game=ordinamenti`}

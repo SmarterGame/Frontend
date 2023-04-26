@@ -4,6 +4,7 @@ import Link from "next/link";
 import ghianda from "@/public/ghianda.svg";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
+import ProfileImg from "@/components/ProfileImg";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -32,6 +33,24 @@ export const getServerSideProps = async ({ req, res }) => {
             selectedMode: user.data.SelectedMode,
         };
 
+        //Fetch profile image
+        const profileImg = await axios({
+            method: "get",
+            url: url + "/user/profileImg",
+            headers: {
+                Authorization: token,
+            },
+            responseType: "arraybuffer",
+        });
+        // console.log(profileImg.data);
+        let imageUrl = null;
+        if (Object.keys(profileImg.data).length !== 0) {
+            const image = Buffer.from(profileImg.data, "binary").toString(
+                "base64"
+            );
+            imageUrl = `data:image/png;base64,${image}`;
+        }
+
         //Fetch boxes on Page Load
         const boxes = await axios({
             method: "get",
@@ -59,6 +78,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 boxes: boxes.data,
                 classRoom: classData.data,
                 selectedOptions: selectedOptions,
+                profileImg: imageUrl,
             },
         };
     } catch (err) {
@@ -74,6 +94,7 @@ export default function Profilo({
     boxes,
     classRoom = { Ghiande: 0, Exp: 0 },
     selectedOptions,
+    profileImg,
 }) {
     const numGhiande = classRoom.Ghiande;
     const exp = classRoom.Exp; //TODO: risolvere problema percentuali
@@ -101,12 +122,9 @@ export default function Profilo({
                     </div>
 
                     <div className="w-40 h-40 mx-auto border-4 border-orangeBtn rounded-full mt-10 shadow-xl">
-                        <Image
-                            src={"https://robohash.org/" + classRoom._id}
-                            alt="Immagine profilo"
-                            width={500}
-                            height={500}
-                            className="rounded-full"
+                        <ProfileImg
+                            profileImg={profileImg}
+                            classRoomId={classRoom._id}
                         />
                     </div>
 

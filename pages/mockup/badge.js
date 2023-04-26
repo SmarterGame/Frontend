@@ -2,7 +2,7 @@ import LayoutGames from "@/components/LayoutGames";
 import Link from "next/link";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
-import Image from "next/image";
+import ProfileImg from "@/components/ProfileImg";
 
 export const getServerSideProps = async ({ req, res }) => {
     const url = process.env.BACKEND_URI;
@@ -15,21 +15,41 @@ export const getServerSideProps = async ({ req, res }) => {
             return { props: {} };
         }
 
+        const token = "Bearer " + session.accessToken;
+
         const user = await axios({
             method: "get",
             url: url + "/user/me",
             headers: {
-                Authorization: "Bearer " + session.accessToken,
+                Authorization: token,
             },
         });
         // console.log(user.data.SelectedClass);
+
+        //Fetch profile image
+        const profileImg = await axios({
+            method: "get",
+            url: url + "/user/profileImg",
+            headers: {
+                Authorization: token,
+            },
+            responseType: "arraybuffer",
+        });
+        // console.log(profileImg.data);
+        let imageUrl = null;
+        if (Object.keys(profileImg.data).length !== 0) {
+            const image = Buffer.from(profileImg.data, "binary").toString(
+                "base64"
+            );
+            imageUrl = `data:image/png;base64,${image}`;
+        }
 
         //Fetch classroom data
         const classData = await axios({
             method: "get",
             url: url + "/classroom/getClassroomData/" + user.data.SelectedClass,
             headers: {
-                Authorization: "Bearer " + session.accessToken,
+                Authorization: token,
             },
         });
         // console.log(classData.data);
@@ -40,6 +60,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url: url,
                 selectedClass: user.data.SelectedClass,
                 classRoom: classData.data,
+                profileImg: imageUrl,
             },
         };
     } catch (err) {
@@ -49,19 +70,20 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Badge({ classRoom }) {
+export default function Badge({ classRoom, profileImg }) {
     return (
         <>
-            <LayoutGames classRoom={classRoom}>
+            <LayoutGames
+                classRoom={classRoom}
+                title={"TMP"}
+                profileImg={profileImg}
+            >
                 <div className="relative flex flex-col mx-auto items-center h-[50%] w-full mt-28 -m-72 z-10">
                     <div className="flex flex-row items-center justify-center gap-x-10 h-[90%] min-w-[950px] px-10 bg-slate-200 rounded-xl shadow-2xl">
                         <div className="w-52 h-52 mx-auto border-4 border-orangeBtn rounded-full mt-10 shadow-xl">
-                            <Image
-                                src={"https://robohash.org/" + classRoom._id}
-                                alt="Immagine profilo"
-                                width={500}
-                                height={500}
-                                className="rounded-full"
+                            <ProfileImg
+                                profileImg={profileImg}
+                                classRoomId={classRoom._id}
                             />
                         </div>
                         <div className="flex flex-col items-center self-center gap-y-6">

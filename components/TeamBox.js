@@ -30,7 +30,6 @@ function deleteClass(deleteHandler) {
     swalWithBootstrapButtons
         .fire({
             title: "Desideri eliminare la classe?",
-            //text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Conferma",
@@ -69,7 +68,7 @@ function deleteClass(deleteHandler) {
 }
 
 async function renameClass(renameHandler) {
-    const { value: newName } = await Swal.fire({
+    await Swal.fire({
         title: "Rinoima la classe",
         input: "text",
         inputPlaceholder: "Nome della classe",
@@ -79,34 +78,37 @@ async function renameClass(renameHandler) {
         cancelButtonColor: "#575757",
         confirmButtonText: "Conferma",
         cancelButtonText: "Annulla",
-    });
-
-    if (!newName) {
-        Swal.fire({
-            title: "Errore",
-            text: "Il nome della classe non può essere vuoto",
-            icon: "error",
-            confirmButtonColor: "#ff7100",
-        });
-    } else {
-        try {
-            await renameHandler(newName);
-            Swal.fire({
-                title: "Rinominata!",
-                text: "La classe è stata rinominata.",
-                icon: "success",
-                confirmButtonColor: "#ff7100",
-            });
-        } catch (err) {
-            Swal.fire({
-                title: "Errore",
-                text: "Impossibile rinominare la classe",
-                icon: "error",
-                confirmButtonColor: "#ff7100",
-            });
-            console.log(err);
+    }).then((result) => {
+        console.log(result.value);
+        if (result.isConfirmed) {
+            if (result.value === "") {
+                Swal.fire({
+                    title: "Errore",
+                    text: "Il nome della classe non può essere vuoto",
+                    icon: "error",
+                    confirmButtonColor: "#ff7100",
+                });
+            } else {
+                try {
+                    renameHandler(result.value);
+                    Swal.fire({
+                        title: "Rinominata!",
+                        text: "La classe è stata rinominata.",
+                        icon: "success",
+                        confirmButtonColor: "#ff7100",
+                    });
+                } catch (err) {
+                    Swal.fire({
+                        title: "Errore",
+                        text: "Impossibile rinominare la classe",
+                        icon: "error",
+                        confirmButtonColor: "#ff7100",
+                    });
+                    console.log(err);
+                }
+            }
         }
-    }
+    });
 }
 
 const style = {
@@ -222,7 +224,8 @@ const TeamBox = ({
     const date = new Date(classroomData.CreationDate); //Change date format
     const row = createData(classroomData.ClassName, date.toLocaleDateString());
     const deleteHandler = () => removeHandler(classroomData._id);
-    const renameClassHandler = (newName) => renameHandler(classroomData._id, newName);
+    const renameClassHandler = (newName) =>
+        renameHandler(classroomData._id, newName);
     const toggleScegliClasse = () => togglePopUp();
     return (
         <>

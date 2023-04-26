@@ -204,7 +204,7 @@ export default function Home({
                 </button>
             </div>
 
-            <SideBar show={showSideBar}>
+            <SideBar show={showSideBar} token={token} url={url}>
                 <div className="flex w-full py-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
                     <button
                         onClick={() => {
