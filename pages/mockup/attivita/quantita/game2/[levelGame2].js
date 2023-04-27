@@ -265,13 +265,18 @@ export default function Game({
 
     return (
         <>
-            <LayoutGames classRoom={classRoom} title={game} liv={levelGame2} profileImg={profileImg}>
+            <LayoutGames
+                classRoom={classRoom}
+                title={game}
+                liv={levelGame2}
+                profileImg={profileImg}
+            >
                 <div className="relative flex flex-col justify-center h-[55vh] mt-10 ml-4 mr-4 z-10">
                     <div className="grid grid-cols-10 justify-items-center gap-y-4 gap-x-4 h-full">
                         {lvlData.map((item, index) => (
                             <div
                                 key={index}
-                                className="bg-slate-200 w-full flex justify-center items-center text-8xl"
+                                className="bg-slate-200 w-full flex justify-center items-center text-4xl"
                             >
                                 {item}
                             </div>

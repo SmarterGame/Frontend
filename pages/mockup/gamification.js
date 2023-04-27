@@ -98,26 +98,26 @@ export default function Quantita({ token, url, classRoom, profileImg }) {
 
     return (
         <>
-            <LayoutGames classRoom={classRoom} profileImg={profileImg}>
-                <div className="relative flex flex-col mx-auto w-1/2 min-w-[650px] bg-slate-200 rounded-xl shadow-2xl mt-10 z-10">
+            <LayoutGames classRoom={classRoom} profileImg={profileImg} title={game} liv={level}>
+                <div className="relative flex flex-col mx-auto w-1/2 min-w-[700px] bg-slate-200 rounded-xl shadow-2xl mt-4 z-10">
                     <div className="flex flex-col items-center h-full mt-6">
                         <h1 className="text-4xl text-orangeBtn">
                             {gameType ? "LE QUANTITA'" : "GLI ORDINAMENTI"} -
                             LIVELLO {level}
                         </h1>
-                        <h2 className="text-2xl text-slate-700 mt-12">
+                        <h2 className="text-2xl text-slate-700 mt-6">
                             GHIANDE
                         </h2>
 
-                        <div className="flex flex-row items-center gap-x-2 mt-6">
+                        <div className="flex flex-row items-center gap-x-2 mt-4">
                             <p className="text-xl text-slate-700 mt-6">X</p>
                             <h1 className=" text-6xl text-slate-700 ml-1">2</h1>
-                            <Image src={ghianda} width={100} />
+                            <Image src={ghianda} width={80} />
                         </div>
 
-                        <div className="mx-auto bg-slate-300 h-1 w-[60%] mt-10 rounded-full"></div>
+                        <div className="mx-auto bg-slate-300 h-1 w-[60%] mt-6 rounded-full"></div>
 
-                        <h1 className="text-2xl text-slate-700 mt-8">BADGE</h1>
+                        <h1 className="text-2xl text-slate-700 mt-6">BADGE</h1>
                         <button>
                             <Link href="/mockup/badge">
                                 <div className="flex justify-center items-center w-24 h-24 bg-yellow-300 rounded-full mt-5">
@@ -128,7 +128,7 @@ export default function Quantita({ token, url, classRoom, profileImg }) {
                             </Link>
                         </button>
 
-                        <div className="flex flex-row justify-center gap-x-4 w-full mt-10 mb-6">
+                        <div className="flex flex-row justify-center gap-x-4 w-full mt-4 mb-6">
                             <button className="transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-[20%] py-3 rounded-md duration-300">
                                 <Link href="./attivita">GIOCHI</Link>
                             </button>

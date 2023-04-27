@@ -84,24 +84,24 @@ export default function Giochi({ classRoom, selectedMode, profileImg }) {
                 pageAttivita={true}
                 profileImg={profileImg}
             >
-                <div className="flex flex-col items-center mx-auto h-[80vh] w-[80%] min-w-[1420px] bg-slate-200 rounded-xl shadow-2xl mt-6">
+                <div className="flex flex-col items-center mx-auto h-[80vh] max-w-[95%] bg-slate-200 rounded-xl shadow-2xl mt-6">
                     <h1 className="mt-10 text-4xl text-orangeBtn">
                         SCEGLI UN GIOCO
                     </h1>
-                    <div className="flex flex-row justify-center items-center h-full">
+                    <div className="flex flex-row items-center h-full">
                         <Levels
                             classRoom={classRoom}
                             selectedMode={selectedMode}
                             title={"LE QUANTITA'"}
                             left={true}
                         >
-                            <Image src={procioneFaccia} width={100} />
+                            <Image src={procioneFaccia} width={90} />
                         </Levels>
 
                         <Image
                             src={montagna}
-                            width={800}
-                            className="self-end"
+                            width={900}
+                            className="translate-y-12"
                         />
 
                         <Levels
@@ -110,15 +110,12 @@ export default function Giochi({ classRoom, selectedMode, profileImg }) {
                             title={"ORDINAMENTI"}
                             left={false}
                         >
-                            <Image src={orsoFaccia} width={90} />
+                            <Image src={orsoFaccia} width={80} />
                         </Levels>
                     </div>
                 </div>
 
-                <Image
-                    src={grass}
-                    className="absolute bottom-0 w-full"
-                />
+                <Image src={grass} className="absolute bottom-0 w-full" />
             </LayoutSelezioneGiochi>
         </>
     );

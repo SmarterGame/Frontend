@@ -56,7 +56,7 @@ export default function AttivitaLevels({
             <>
                 <div className="flex flex-row items-center">
                     <div
-                        className={`flex flex-col ${offsetProcione} mt-7 gap-y-9`}
+                        className={`flex flex-col ${offsetProcione} mt-7 -mr-10`}
                     >
                         {children}
                     </div>
@@ -277,7 +277,7 @@ export default function AttivitaLevels({
                             </div>
                         </button>
                     </div>
-                    <div className={`flex flex-col ${offsetOrso} mt-7 gap-y-9`}>
+                    <div className={`flex flex-col ${offsetOrso} mt-7 -ml-10`}>
                         {children}
                     </div>
                 </div>

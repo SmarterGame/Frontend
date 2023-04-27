@@ -164,7 +164,7 @@ export default function Home({
 
     return (
         <LayoutLogin user={user} loading={isLoading}>
-            <div className="flex flex-col items-center w-full py-10">
+            <div className="flex flex-col items-center h-full w-full py-10">
                 <h1 className="text-7xl text-gray-100 text-stroke-orange mb-14 transition ease-in-out hover:-translatey-1 hover:scale-110 duration-300">
                     SMART GAME
                 </h1>
@@ -181,7 +181,7 @@ export default function Home({
                     );
                 })}
 
-                <div className="flex justify-center items-center mt-6">
+                <div className="flex justify-center items-center">
                     <button
                         className="transition ease-in-out rounded-full w-14 h-14 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300"
                         onClick={() => addBoxHandler(url)}

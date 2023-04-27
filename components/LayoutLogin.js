@@ -8,7 +8,6 @@ const Layout = ({ user, loading = false, children }) => {
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         backgroundPosition: "center 150px",
-        backgroundSize: "cover",
     };
 
     return (
@@ -20,7 +19,7 @@ const Layout = ({ user, loading = false, children }) => {
             {/* <Header user={user} loading={loading} /> */}
 
             <main style={styles}>
-                <div className="h-[100vh]">{children}</div>
+                <div className="min-h-[100vh]">{children}</div>
             </main>
         </>
     );

@@ -78,9 +78,9 @@ export default function Badge({ classRoom, profileImg }) {
                 title={"TMP"}
                 profileImg={profileImg}
             >
-                <div className="relative flex flex-col mx-auto items-center h-[50%] w-full mt-28 -m-72 z-10">
-                    <div className="flex flex-row items-center justify-center gap-x-10 h-[90%] min-w-[950px] px-10 bg-slate-200 rounded-xl shadow-2xl">
-                        <div className="w-52 h-52 mx-auto border-4 border-orangeBtn rounded-full mt-10 shadow-xl">
+                <div className="relative flex flex-col mx-auto items-center  w-full mt-28 -m-72 z-10">
+                    <div className="flex flex-row items-center justify-center gap-x-10 min-w-[950px] px-10 bg-slate-200 rounded-xl shadow-2xl">
+                        <div className="w-52 h-52 mx-auto border-4 border-orangeBtn rounded-full mt-10 mb-10 shadow-xl">
                             <ProfileImg
                                 profileImg={profileImg}
                                 classRoomId={classRoom._id}

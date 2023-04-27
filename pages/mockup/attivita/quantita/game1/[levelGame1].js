@@ -377,16 +377,16 @@ export default function Game1({
             </button> */}
 
             <LayoutGames title={game} liv={levelGame1} classRoom={classRoom} profileImg={profileImg}>
-                <div className="relative flex flex-row justify-center gap-x-20 h-[55vh] w-full z-10">
-                    <div className="flex flex-col justify-center h-full w-[45%] mt-10 ml-4 mr-4">
-                        <h1 className="mx-auto text-xl -mt-4 mb-4 text-grayText">
+                <div className="relative flex flex-row justify-center gap-x-20 h-[58vh] w-full z-10">
+                    <div className="flex flex-col justify-center h-full w-[45%] mt-4 ml-4 mr-4">
+                        <h1 className="mx-auto text-xl  mb-4 text-grayText">
                             Smarter 1
                         </h1>
                         <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-4 h-full">
                             {lvlData.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="bg-slate-200 w-full flex justify-center items-center text-8xl"
+                                    className="bg-slate-200 w-full flex justify-center items-center text-4xl"
                                 >
                                     {item}
                                 </div>
@@ -420,15 +420,15 @@ export default function Game1({
 
                     <div className="border-2 border-dashed border-gray-700 w-0 h-[60vh] mt-10"></div>
 
-                    <div className="flex flex-col justify-center h-full w-[45%] mt-10 ml-4 mr-4">
-                        <h1 className="mx-auto text-xl -mt-4 mb-4 text-grayText">
+                    <div className="flex flex-col justify-center h-full w-[45%] mt-4 ml-4 mr-4">
+                        <h1 className="mx-auto text-xl mb-4 text-grayText">
                             Smarter 2
                         </h1>
                         <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-4 h-full">
                             {lvlData.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="bg-slate-200 border-4 w-full flex justify-center items-center text-8xl"
+                                    className="bg-slate-200 border-4 w-full flex justify-center items-center text-4xl"
                                 >
                                     {item}
                                 </div>
@@ -463,6 +463,7 @@ export default function Game1({
                 <Image
                     src={leone}
                     alt="leone"
+                    width={120}
                     className="fixed bottom-6 left-40"
                 ></Image>
             </LayoutGames>

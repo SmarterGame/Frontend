@@ -2,6 +2,7 @@ import Head from "next/head";
 import HeaderProfile from "@/components/HeaderProfile";
 import Image from "next/image";
 import procione1 from "@/public/procione1.png";
+import grass from "@/public/grass.png";
 
 const Layout = ({
     token,
@@ -14,10 +15,10 @@ const Layout = ({
 }) => {
     const styles = {
         backgroundColor: "#c4e5ff",
-        backgroundImage: "url(/grass.png)",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "contain",
-        backgroundPosition: "bottom",
+        // backgroundImage: "url(/grass.png)",
+        // backgroundRepeat: "no-repeat",
+        // backgroundSize: "contain",
+        // backgroundPosition: "bottom",
         // backgroundAttachment: "fixed",
     };
 
@@ -28,7 +29,7 @@ const Layout = ({
             </Head>
 
             <main style={styles}>
-                <div className="h-[100vh]">
+                <div className="min-h-[100vh]">
                     <HeaderProfile
                         loading={loading}
                         boxes={boxes}
@@ -39,7 +40,7 @@ const Layout = ({
                     />
                     {children}
 
-                    <div className="fixed bottom-4 left-10">
+                    <div className="fixed bottom-4 left-10 z-10">
                         <div className="flex flex-row transition ease-in-out hover:-translatey-1 hover:scale-110 duration-300 items-end">
                             <h1 className="text-4xl text-gray-100 text-stroke-orange">
                                 SMART
@@ -52,7 +53,12 @@ const Layout = ({
                     <Image
                         src={procione1}
                         alt="procione"
-                        className="fixed bottom-6 right-10 z-0"
+                        className="fixed bottom-6 right-10 z-10"
+                    />
+                    <Image
+                        src={grass}
+                        alt="grass"
+                        className="fixed bottom-0 w-screen z-0"
                     />
                 </div>
             </main>

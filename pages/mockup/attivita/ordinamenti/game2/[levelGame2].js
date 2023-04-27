@@ -270,7 +270,7 @@ export default function Game({
                         {lvlDataShuffled.map((item, index) => (
                             <div
                                 key={index}
-                                className="bg-slate-200 w-full flex justify-center items-center text-8xl"
+                                className="bg-slate-200 w-full flex justify-center items-center text-4xl"
                             >
                                 {item}
                             </div>

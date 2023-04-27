@@ -24,7 +24,7 @@ export default function HeaderProfile({
     return (
         <>
             <header>
-                <div className="flex flex-row justify-between bg-blue-600 shadow-2xl h-auto py-2">
+                <div className="flex flex-row justify-between bg-blue-600 shadow-2xl py-2">
                     <h1 className="pl-4 transition ease-in-out text-4xl text-gray-100 text-stroke-orange mt-4 mb-4 ml-6 hover:-translatey-1 hover:scale-110 duration-300">
                         PROFILO
                     </h1>

@@ -108,7 +108,7 @@ export default function Profilo({
                 classRoom={classRoom}
                 selectedOptions={selectedOptions}
             >
-                <div className="relative flex flex-col mx-auto min-h-[68vh] w-1/2 min-w-[700px] bg-slate-200 rounded-xl shadow-2xl mt-10 z-10">
+                <div className="relative flex flex-col mx-auto w-1/2 min-w-[700px] bg-slate-200 rounded-xl shadow-2xl mt-8 z-20">
                     <div className="relative">
                         <h1 className="absolute top-8 right-32 text-3xl text-slate-700">
                             x {numGhiande}
@@ -121,24 +121,24 @@ export default function Profilo({
                         />
                     </div>
 
-                    <div className="w-40 h-40 mx-auto border-4 border-orangeBtn rounded-full mt-10 shadow-xl">
+                    <div className="w-40 h-40 mx-auto border-4 border-orangeBtn rounded-full mt-6 shadow-xl">
                         <ProfileImg
                             profileImg={profileImg}
                             classRoomId={classRoom._id}
                         />
                     </div>
 
-                    <div className="mx-auto bg-slate-400 h-4 w-[60%] mt-14 rounded-full">
+                    <div className="mx-auto bg-slate-400 h-4 w-[60%] mt-10 rounded-full">
                         <div
                             className={`bg-yellow-400 h-4 rounded-full w-[${exp}%]`}
                         ></div>
                     </div>
 
                     <div className="mx-auto">
-                        <h1 className=" text-orangeBtn text-4xl mt-16">
+                        <h1 className=" text-orangeBtn text-4xl mt-8">
                             Scoiattoli livello {exp}
                         </h1>
-                        <div className="flex flex-col h-full mt-16 mb-10 gap-y-6">
+                        <div className="flex flex-col h-full mt-8 mb-10 gap-y-6">
                             <button className=" mx-auto transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-56 h-14 rounded-md duration-300">
                                 <Link href="./missioni">MISSIONI</Link>
                             </button>

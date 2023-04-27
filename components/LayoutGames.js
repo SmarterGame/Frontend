@@ -1,7 +1,7 @@
 import Head from "next/head";
 import HeaderGames from "./HeaderGames";
 import Image from "next/image";
-import procione1 from "@/public/procione1.png";
+import procione1 from "@/public/procione1.svg";
 
 const Layout = ({
     user,
@@ -52,6 +52,7 @@ const Layout = ({
                     <Image
                         src={procione1}
                         alt="procione1"
+                        width={160}
                         className="fixed bottom-6 right-10"
                     ></Image>
                 </div>
