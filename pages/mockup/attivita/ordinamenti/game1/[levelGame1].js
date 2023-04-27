@@ -376,8 +376,13 @@ export default function Game1({
                 test API
             </button> */}
 
-            <LayoutGames title={game} liv={levelGame1} classRoom={classRoom} profileImg={profileImg}>
-                <div className="relative flex flex-row justify-center gap-x-20 w-full z-10 h-[58vh]">
+            <LayoutGames
+                title={game}
+                liv={levelGame1}
+                classRoom={classRoom}
+                profileImg={profileImg}
+            >
+                <div className="relative flex flex-row justify-center gap-x-20 w-full z-10 md:h-[55vh] lg:h-[65vh]">
                     <div className="flex flex-col justify-center h-full w-[45%] mt-4 ml-4 mr-4">
                         <h1 className="mx-auto text-xl mb-4 text-grayText">
                             Smarter 1

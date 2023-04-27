@@ -271,7 +271,7 @@ export default function Game({
                 liv={levelGame2}
                 profileImg={profileImg}
             >
-                <div className="relative flex flex-col justify-center h-[55vh] mt-10 ml-4 mr-4 z-10">
+                <div className="relative flex flex-col justify-center md:h-[55vh] lg:h-[65vh] mt-10 ml-4 mr-4 z-10">
                     <div className="grid grid-cols-10 justify-items-center gap-y-4 gap-x-4 h-full">
                         {lvlData.map((item, index) => (
                             <div
