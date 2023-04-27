@@ -80,21 +80,21 @@ export default function Quantita({ token, url, classRoom, profileImg }) {
     let gameType = 0;
     if (game == "quantita") gameType = 1;
 
-    useEffect(() => {
-        //TODO api per visualizzare ghiande guadagnate
-        axios
-            .get(url + "/classroom/", {
-                headers: {
-                    Authorization: "Bearer " + token,
-                },
-            })
-            .then((res) => {
-                console.log(res.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, []);
+    // useEffect(() => {
+    //     //TODO api per visualizzare ghiande guadagnate
+    //     axios
+    //         .get(url + "/classroom/", {
+    //             headers: {
+    //                 Authorization: "Bearer " + token,
+    //             },
+    //         })
+    //         .then((res) => {
+    //             console.log(res.data);
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // }, []);
 
     return (
         <>
@@ -111,7 +111,7 @@ export default function Quantita({ token, url, classRoom, profileImg }) {
 
                         <div className="flex flex-row items-center gap-x-2 mt-4">
                             <p className="text-xl text-slate-700 mt-6">X</p>
-                            <h1 className=" text-6xl text-slate-700 ml-1">2</h1>
+                            <h1 className=" text-6xl text-slate-700 ml-1">{level}</h1>
                             <Image src={ghianda} width={80} />
                         </div>
 

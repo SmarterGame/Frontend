@@ -28,7 +28,7 @@ export default function HeaderGames({
         <>
             <header>
                 <nav>
-                    <div className="flex flex-row justify-between bg-blue-600 shadow-2xl py-1">
+                    <div className="flex flex-row justify-between bg-blue-600 shadow-2xl py-2">
                         <h1 className="pl-4 transition ease-in-out text-4xl text-gray-100 text-stroke-orange mt-4 mb-4 ml-6 hover:-translatey-1 hover:scale-110 duration-300">
                             {tmp ? title + " - LIVELLO " + liv : title}
                         </h1>
@@ -41,7 +41,7 @@ export default function HeaderGames({
                                 width={60}
                                 alt="ghianda"
                             ></Image>
-                            <div className="w-20 h-20 border-2 border-orangeBtn rounded-full ml-4 mr-4">
+                            <div className="w-20 h-20 border-2 border-orangeBtn rounded-full ml-4 mr-4 hover:scale-110 transition">
                                 <Link href="/mockup/profilo">
                                     <ProfileImg
                                         profileImg={profileImg}

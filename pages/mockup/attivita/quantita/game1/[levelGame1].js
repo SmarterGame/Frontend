@@ -391,7 +391,7 @@ export default function Game1({
                             {lvlData.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="bg-slate-200 w-full flex justify-center items-center text-4xl"
+                                    className="bg-slate-200 w-full flex justify-center items-center text-8xl"
                                 >
                                     {item}
                                 </div>
@@ -414,7 +414,7 @@ export default function Game1({
                                     } w-full flex justify-center items-center text-8xl`}
                                 >
                                     <input
-                                        className="text-xl w-20"
+                                        className="text-6xl text-center w-20"
                                         name={index}
                                         onChange={handleInputChangeLeft}
                                     ></input>
@@ -433,7 +433,7 @@ export default function Game1({
                             {lvlData.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="bg-slate-200 border-4 w-full flex justify-center items-center text-4xl"
+                                    className="bg-slate-200 border-4 w-full flex justify-center items-center text-8xl"
                                 >
                                     {item}
                                 </div>
@@ -456,7 +456,7 @@ export default function Game1({
                                     } w-full flex justify-center items-center text-8xl`}
                                 >
                                     <input
-                                        className="text-xl w-20"
+                                        className="text-6xl text-center w-20"
                                         name={index}
                                         onChange={handleInputChangeRight}
                                     ></input>

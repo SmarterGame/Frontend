@@ -257,7 +257,9 @@ export default function Game({
                 },
             });
             // console.log(res);
-            router.push("/mockup/gamification");
+            router.push(
+                "/mockup/gamification/?game=" + game + "&level=" + levelGame2
+            );
         } catch (err) {
             console.log(err);
         }
@@ -265,6 +267,10 @@ export default function Game({
 
     return (
         <>
+            {/* <button onClick={gameFinished} className="bg-red-500">
+                test API
+            </button> */}
+
             <LayoutGames
                 classRoom={classRoom}
                 title={game}
@@ -276,7 +282,7 @@ export default function Game({
                         {lvlData.map((item, index) => (
                             <div
                                 key={index}
-                                className="bg-slate-200 w-full flex justify-center items-center text-4xl"
+                                className="bg-slate-200 w-full flex justify-center items-center text-8xl"
                             >
                                 {item}
                             </div>
@@ -299,7 +305,7 @@ export default function Game({
                                 } w-full flex justify-center items-center text-8xl`}
                             >
                                 <input
-                                    className="text-xl w-20"
+                                    className="text-6xl text-center w-20"
                                     name={index}
                                     onChange={handleInputChange}
                                 ></input>
