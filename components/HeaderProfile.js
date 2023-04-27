@@ -21,6 +21,10 @@ export default function HeaderProfile({
         setShowPopUp(!showPopUp);
     }
 
+    const toggleSideBar = () => {
+        setShowSideBar(!showSideBar);
+    };
+
     return (
         <>
             <header>
@@ -46,8 +50,13 @@ export default function HeaderProfile({
                         </div>
                     </div>
                 </div>
-                <SideBar token={token} url={url} show={showSideBar}>
-                    <div className="flex w-full py-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
+                <SideBar
+                    token={token}
+                    url={url}
+                    show={showSideBar}
+                    onClose={toggleSideBar}
+                >
+                    {/* <div className="flex w-full py-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
                         <button
                             onClick={() => {
                                 setShowSideBar(!showSideBar);
@@ -56,7 +65,7 @@ export default function HeaderProfile({
                         >
                             CHIUDI
                         </button>
-                    </div>
+                    </div> */}
                     <div className="flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
                         <button
                             onClick={togglePopUp}

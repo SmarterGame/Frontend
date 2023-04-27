@@ -103,6 +103,10 @@ export default function Home({
         setPopupData(id);
     };
 
+    const toggleSideBar = () => {
+        setShowSideBar(!showSideBar);
+    };
+
     const toggleAddSmarter = () => {
         setShowAddSmarter(!showAddSmarter);
     };
@@ -204,8 +208,13 @@ export default function Home({
                 </button>
             </div>
 
-            <SideBar show={showSideBar} token={token} url={url}>
-                <div className="flex w-full py-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
+            <SideBar
+                show={showSideBar}
+                onClose={toggleSideBar}
+                token={token}
+                url={url}
+            >
+                {/* <div className="flex w-full py-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
                     <button
                         onClick={() => {
                             setShowSideBar(!showSideBar);
@@ -214,7 +223,7 @@ export default function Home({
                     >
                         CHIUDI
                     </button>
-                </div>
+                </div> */}
                 <div className="flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
                     <button
                         onClick={toggleAddSmarter}

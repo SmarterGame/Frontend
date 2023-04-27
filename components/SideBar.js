@@ -1,13 +1,37 @@
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 
-export default function SiedBar({ token, url, show, children }) {
+export default function SiedBar({ token, url, show, onClose, children }) {
     const router = useRouter();
 
+    const sideBarRef = useRef(null);
     const [showCustom, setShowCustom] = useState(false);
+
+    //Check if the click was outside of the modal
+    useEffect(() => {
+        function handleClickOutside(event) {
+            //If the click was outside of the modal, close it
+            if (
+                sideBarRef.current &&
+                !sideBarRef.current.contains(event.target)
+            ) {
+                onClose();
+            }
+        }
+
+        if (show) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [show]);
 
     const changeImageHandler = async () => {
         const { value: file } = await Swal.fire({
@@ -60,7 +84,10 @@ export default function SiedBar({ token, url, show, children }) {
                     show ? "translate-x-0" : "translate-x-full"
                 } transition duration-300 fixed top-0 right-0 h-full bg-gray-200 shadow-2xl z-40`}
             >
-                <div className="flex flex-col mt-4 px-3 gap-y-2 h-full">
+                <div
+                    className="flex flex-col mt-4 px-3 gap-y-2 h-full"
+                    ref={sideBarRef}
+                >
                     <div className="flex border-b-2 border-gray-300 mb-1 text-3xl">
                         <h1 className="mx-auto text-orangeBtn mb-2">
                             Smart Game

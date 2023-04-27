@@ -42,10 +42,12 @@ export default function HeaderGames({
                                 alt="ghianda"
                             ></Image>
                             <div className="w-20 h-20 border-2 border-orangeBtn rounded-full ml-4 mr-4">
-                                <ProfileImg
-                                    profileImg={profileImg}
-                                    classRoomId={classRoom._id}
-                                />
+                                <Link href="/mockup/profilo">
+                                    <ProfileImg
+                                        profileImg={profileImg}
+                                        classRoomId={classRoom._id}
+                                    />
+                                </Link>
                             </div>
                             <div className="bg-red-500 bg-opacity-50 rounded-lg transition ease-in-out hover:bg-red-600 hover:bg-opacity-50 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300">
                                 <button>
