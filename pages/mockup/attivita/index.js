@@ -84,11 +84,11 @@ export default function Giochi({ classRoom, selectedMode, profileImg }) {
                 pageAttivita={true}
                 profileImg={profileImg}
             >
-                <div className="flex flex-col items-center mx-auto h-[80vh] max-w-[95%] bg-slate-200 rounded-xl shadow-2xl mt-6">
-                    <h1 className="mt-10 text-4xl text-orangeBtn">
+                <div className="flex flex-col items-center mx-auto h-[82vh] max-w-[95%] bg-slate-200 rounded-xl shadow-2xl mt-4">
+                    <h1 className="mt-6 text-4xl text-orangeBtn">
                         SCEGLI UN GIOCO
                     </h1>
-                    <div className="flex flex-row items-center h-full">
+                    <div className="flex flex-row items-center justify-center h-full">
                         <Levels
                             classRoom={classRoom}
                             selectedMode={selectedMode}
@@ -101,7 +101,7 @@ export default function Giochi({ classRoom, selectedMode, profileImg }) {
                         <Image
                             src={montagna}
                             width={900}
-                            className="translate-y-12"
+                            className="translate-y-12 lg:w-[65%] md:w-[50%]"
                         />
 
                         <Levels

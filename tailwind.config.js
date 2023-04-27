@@ -19,6 +19,12 @@ module.exports = {
         'blueBackGround': '#466ED7',
         'yellowLevel': '#FFA755',
       },
+      screens: {
+        'sm': { 'raw': '(min-height: 300px)'},
+        'md': { 'raw': '(min-height: 600px)'},
+        'lg': { 'raw': '(min-height: 830px)'},
+        'xl': { 'raw': '(min-height: 1200px)'},
+      },
     },
   },
   plugins: [],
