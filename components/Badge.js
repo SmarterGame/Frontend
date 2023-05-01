@@ -1,7 +1,6 @@
 import axios from "axios";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import Skeleton from "react-loading-skeleton";
 import ContentLoader from "react-content-loader";
 
 export default function Badge({ token, url, badge }) {
