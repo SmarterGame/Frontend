@@ -361,10 +361,15 @@ export default function Game1({
                     Authorization: "Bearer " + token,
                 },
             });
-            // console.log(res);
-            router.push(
-                "/mockup/gamification/?game=" + game + "&level=" + levelGame1
-            );
+            // console.log(res.data);
+            router.push({
+                pathname: "/mockup/gamification",
+                query: {
+                    game: game,
+                    level: levelGame1,
+                    badgeData: JSON.stringify(res.data.badgeEarned),
+                },
+            });
         } catch (err) {
             console.log(err);
         }

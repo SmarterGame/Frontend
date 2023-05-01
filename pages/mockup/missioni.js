@@ -82,14 +82,14 @@ export default function BadgePage({ token, url, boxes, classRoom }) {
                 boxes={boxes}
                 classRoom={classRoom}
             >
-                <div className="relative flex flex-col mx-auto h-[70vh] min-h-[500px] w-1/2 min-w-[600px] bg-slate-200 rounded-xl shadow-2xl mt-10 z-20">
+                <div className="relative flex flex-col mx-auto h-[70vh] min-h-[500px] lg:w-[50%] md:w-[60%] bg-slate-200 rounded-xl shadow-2xl mt-10 z-20">
                     <h1 className="mx-auto text-4xl text-orangeBtn mt-6">
                         BADGE
                     </h1>
 
                     <div className="overflow-auto h-full">
                         {classRoom.Badges.map((badge) => (
-                            <Badge key={badge._id} badge={badge} />
+                            <Badge token={token} url={url} badge={badge} />
                         ))}
                     </div>
 

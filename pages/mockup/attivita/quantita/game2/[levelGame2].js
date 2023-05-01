@@ -256,10 +256,14 @@ export default function Game({
                     Authorization: "Bearer " + token,
                 },
             });
-            // console.log(res);
-            router.push(
-                "/mockup/gamification/?game=" + game + "&level=" + levelGame2
-            );
+            router.push({
+                pathname: "/mockup/gamification",
+                query: {
+                    game: game,
+                    level: levelGame2,
+                    badgeData: JSON.stringify(res.data.badgeEarned),
+                },
+            });
         } catch (err) {
             console.log(err);
         }

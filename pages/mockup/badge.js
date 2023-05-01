@@ -3,8 +3,15 @@ import Link from "next/link";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import ProfileImg from "@/components/ProfileImg";
+import { useRouter } from "next/router";
+import url2 from "url";
+import Image from "next/image";
 
 export const getServerSideProps = async ({ req, res }) => {
+    //Get badge id from url
+    const { query } = url2.parse(req.url, true);
+    const idBadgeEarned = query.id ?? null;
+
     const url = process.env.BACKEND_URI;
     try {
         const session = await getSession(req, res);
@@ -54,6 +61,28 @@ export const getServerSideProps = async ({ req, res }) => {
         });
         // console.log(classData.data);
 
+        //Fetch badge data
+        const badgeData = await axios({
+            method: "get",
+            url: url + "/badge/getBadge/" + idBadgeEarned,
+            headers: {
+                Authorization: token,
+            },
+        });
+        console.log(badgeData.data);
+
+        //Fetch badge image
+        const badgeImg = await axios({
+            method: "get",
+            url: url + "/badge/getImg/" + idBadgeEarned,
+            headers: {
+                Authorization: token,
+            },
+            responseType: "arraybuffer",
+        });
+        const image = Buffer.from(badgeImg.data, "binary").toString("base64");
+        const badgeImageUrl = `data:image/jpeg;base64,${image}`;
+
         return {
             props: {
                 token: session.accessToken,
@@ -61,6 +90,11 @@ export const getServerSideProps = async ({ req, res }) => {
                 selectedClass: user.data.SelectedClass,
                 classRoom: classData.data,
                 profileImg: imageUrl,
+                badgeData: {
+                    name: badgeData.data.BadgeName,
+                    description: badgeData.data.BadgeDescription,
+                },
+                badgeImg: badgeImageUrl,
             },
         };
     } catch (err) {
@@ -70,20 +104,25 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Badge({ classRoom, profileImg }) {
+export default function Badge({ classRoom, profileImg, badgeData, badgeImg }) {
+    const router = useRouter();
+    const { title, id } = router.query;
+
     return (
         <>
             <LayoutGames
                 classRoom={classRoom}
-                title={"TMP"}
+                title={title}
                 profileImg={profileImg}
             >
-                <div className="relative flex flex-col mx-auto items-center  w-full mt-28 -m-72 z-10">
+                <div className="relative flex flex-col mx-auto items-center w-full mt-28 -m-72 z-10">
                     <div className="flex flex-row items-center justify-center gap-x-10 min-w-[950px] px-10 bg-slate-200 rounded-xl shadow-2xl">
-                        <div className="w-52 h-52 mx-auto border-4 border-orangeBtn rounded-full mt-10 mb-10 shadow-xl">
-                            <ProfileImg
-                                profileImg={profileImg}
-                                classRoomId={classRoom._id}
+                        <div className="w-52 h-52 mx-auto bg-slate-200 mt-10 mb-10">
+                            <Image
+                                src={badgeImg}
+                                alt="badge image"
+                                width={200}
+                                height={200}
                             />
                         </div>
                         <div className="flex flex-col items-center self-center gap-y-6">
@@ -94,7 +133,7 @@ export default function Badge({ classRoom, profileImg }) {
                                 AVETE VINTO UN NUOVO BADGE:
                             </h1>
                             <h1 className="text-orangeBtn text-3xl">
-                                COLLEZIONISTI DI GHIANDE LVL 3
+                                {badgeData.name}
                             </h1>
                         </div>
                     </div>

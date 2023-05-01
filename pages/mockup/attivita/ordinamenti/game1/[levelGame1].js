@@ -362,9 +362,14 @@ export default function Game1({
                 },
             });
             // console.log(res);
-            router.push(
-                "/mockup/gamification/?game=" + game + "&level=" + levelGame1
-            );
+            router.push({
+                pathname: "/mockup/gamification",
+                query: {
+                    game: game,
+                    level: levelGame1,
+                    badgeData: JSON.stringify(res.data.badgeEarned),
+                },
+            });
         } catch (err) {
             console.log(err);
         }
