@@ -95,11 +95,16 @@ export default function Giochi({ classRoom, selectedMode, profileImg }) {
                             title={"LE QUANTITA'"}
                             left={true}
                         >
-                            <Image src={procioneFaccia} width={90} />
+                            <Image
+                                src={procioneFaccia}
+                                alt="procione faccia"
+                                width={90}
+                            />
                         </Levels>
 
                         <Image
                             src={montagna}
+                            alt="montagna"
                             width={900}
                             className="translate-y-12 lg:w-[65%] md:w-[50%]"
                         />
@@ -110,12 +115,20 @@ export default function Giochi({ classRoom, selectedMode, profileImg }) {
                             title={"ORDINAMENTI"}
                             left={false}
                         >
-                            <Image src={orsoFaccia} width={80} />
+                            <Image
+                                src={orsoFaccia}
+                                alt="orso faccia"
+                                width={80}
+                            />
                         </Levels>
                     </div>
                 </div>
 
-                <Image src={grass} className="absolute bottom-0 w-full" />
+                <Image
+                    src={grass}
+                    alt="erba"
+                    className="absolute bottom-0 w-full"
+                />
             </LayoutSelezioneGiochi>
         </>
     );

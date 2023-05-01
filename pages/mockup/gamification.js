@@ -5,7 +5,6 @@ import ghianda from "@/public/ghianda.svg";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import url2 from "url";
 
 export const getServerSideProps = async ({ req, res }) => {
@@ -111,25 +110,6 @@ export default function Quantita({
 
     let gameType = 0;
     if (game == "quantita") gameType = 1;
-
-    useEffect(() => {
-        //Get badge data from id
-        const getBadge = async () => {
-            try {
-                const badge = await axios({
-                    method: "get",
-                    url: url + "/badge/" + idBadgeEarned,
-                    headers: {
-                        Authorization: "Bearer " + token,
-                    },
-                });
-                // console.log(badge.data);
-            } catch (err) {
-                console.log(err);
-            }
-        };
-        getBadge();
-    }, []);
 
     return (
         <>

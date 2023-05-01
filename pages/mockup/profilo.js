@@ -97,7 +97,7 @@ export default function Profilo({
     profileImg,
 }) {
     const numGhiande = classRoom.Ghiande;
-    const exp = classRoom.Exp; //TODO: risolvere problema percentuali
+    const classLvl = classRoom.ClassLvl; //TODO: risolvere problema percentuali
 
     return (
         <>
@@ -130,13 +130,13 @@ export default function Profilo({
 
                     <div className="mx-auto bg-slate-400 h-4 w-[60%] mt-10 rounded-full">
                         <div
-                            className={`bg-yellow-400 h-4 rounded-full w-[${exp}%]`}
+                            className={`bg-yellow-400 h-4 rounded-full w-[${classLvl}%]`}
                         ></div>
                     </div>
 
                     <div className="mx-auto">
                         <h1 className=" text-orangeBtn text-4xl mt-8">
-                            Scoiattoli livello {exp}
+                            Scoiattoli livello {classLvl}
                         </h1>
                         <div className="flex flex-col h-full mt-8 mb-10 gap-y-6">
                             <button className=" mx-auto transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-56 h-14 rounded-md duration-300">
