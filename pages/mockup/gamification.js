@@ -67,7 +67,7 @@ export const getServerSideProps = async ({ req, res }) => {
         for (const badgeId of badgeEarned) {
             const badgeImg = await axios({
                 method: "get",
-                url: url + "/badge/getImg/" + badgeId,
+                url: url + "/badge/getImg/" + badgeId + "?blocked=false",
                 headers: {
                     Authorization: token,
                 },

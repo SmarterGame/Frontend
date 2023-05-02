@@ -54,7 +54,7 @@ export default function AttivitaLevels({
     if (left)
         return (
             <>
-                <div className="flex flex-row items-center">
+                <div className="flex flex-row items-center sm:-mt-20">
                     <div
                         className={`flex flex-col ${offsetProcione} mt-7 -mr-10`}
                     >
@@ -170,7 +170,7 @@ export default function AttivitaLevels({
     else
         return (
             <>
-                <div className="flex flex-row items-center">
+                <div className="flex flex-row items-center sm:-mt-20">
                     <div
                         className={`flex flex-col ${offsetProcione} mt-7 gap-y-9`}
                     ></div>

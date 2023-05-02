@@ -106,7 +106,7 @@ export default function Giochi({ classRoom, selectedMode, profileImg }) {
                             src={montagna}
                             alt="montagna"
                             width={900}
-                            className="translate-y-12 lg:w-[65%] md:w-[50%]"
+                            className="translate-y-12 sm:w-[40%] md:w-[50%] lg:w-[65%]"
                         />
 
                         <Levels
@@ -127,7 +127,7 @@ export default function Giochi({ classRoom, selectedMode, profileImg }) {
                 <Image
                     src={grass}
                     alt="erba"
-                    className="absolute bottom-0 w-full"
+                    className="absolute sm:-bottom-10 md:bottom-0 lg:bottom-0 w-full"
                 />
             </LayoutSelezioneGiochi>
         </>

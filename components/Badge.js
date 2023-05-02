@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import ContentLoader from "react-content-loader";
 
-export default function Badge({ token, url, badge }) {
+export default function Badge({ token, url, badge, blocked }) {
     const [badgeData, setBadgeData] = useState({});
     const [badgeImg, setBadgeImg] = useState("");
     const [imageLoaded, setImageLoaded] = useState(false);
@@ -23,7 +23,7 @@ export default function Badge({ token, url, badge }) {
         const getBadgeImg = async () => {
             const badgeImg = await axios({
                 method: "get",
-                url: url + "/badge/getImg/" + badge,
+                url: url + "/badge/getImg/" + badge + "?blocked=" + blocked,
                 headers: {
                     Authorization: "Bearer " + token,
                 },

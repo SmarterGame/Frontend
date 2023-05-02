@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import LayoutProfile from "@/components/LayoutProfile";
 import Badge from "@/components/Badge";
@@ -66,8 +66,35 @@ export const getServerSideProps = async ({ req, res }) => {
 
 export default function BadgePage({ token, url, boxes, classRoom }) {
     const [showPopUp, setShowPopUp] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [badgeList, setBadgeList] = useState([
+        "644e68e5a7739832235569e8",
+        "644e6944d21ec4a78bd417ea",
+        "644e6963c3bdccd2e1b7df76",
+        "644e698752640d86fa9da5be",
+        "644e69a00ed8a6e7c4e4b07b",
+        "644e69c3a0269b4b94a4f0b9",
+        "644e69ea44aa8453d1edc377",
+        "644e69f2dc0afb58fbf07f5f",
+    ]);
+    const [badgeListFiltered, setBadgeListFiltered] = useState([]);
 
-    // console.log(classRoom.Badges);
+    //Filter badges
+    useEffect(() => {
+        setBadgeListFiltered(badgeList);
+        //Filter non obtained badges
+        const filteredList1 = badgeList.filter(
+            (badge) => !classRoom.Badges.includes(badge)
+        );
+        setBadgeListFiltered(filteredList1);
+
+        //Filter obtained badges
+        const filteredList2 = badgeList.filter((badge) =>
+            classRoom.Badges.includes(badge)
+        );
+        setBadgeList(filteredList2);
+        setLoading(false);
+    }, []);
 
     //Toggle settings popup
     function togglePopUp() {
@@ -82,18 +109,35 @@ export default function BadgePage({ token, url, boxes, classRoom }) {
                 boxes={boxes}
                 classRoom={classRoom}
             >
-                <div className="relative flex flex-col mx-auto h-[70vh] min-h-[500px] lg:w-[50%] md:w-[60%] bg-slate-200 rounded-xl shadow-2xl mt-10 z-20">
+                <div className="relative flex flex-col mx-auto h-[70vh] w-[60%] bg-slate-200 rounded-xl shadow-2xl mt-10 z-20">
                     <h1 className="mx-auto text-4xl text-orangeBtn mt-6">
                         BADGE
                     </h1>
 
                     <div className="overflow-auto h-full">
-                        {classRoom.Badges.map((badge) => (
-                            <Badge token={token} url={url} badge={badge} />
-                        ))}
+                        {loading
+                            ? ""
+                            : badgeList.map((badge) => (
+                                  <Badge
+                                      token={token}
+                                      url={url}
+                                      badge={badge}
+                                      blocked={false}
+                                  />
+                              ))}
+                        {loading
+                            ? ""
+                            : badgeListFiltered.map((badge) => (
+                                  <Badge
+                                      token={token}
+                                      url={url}
+                                      badge={badge}
+                                      blocked={true}
+                                  />
+                              ))}
                     </div>
 
-                    <div className="flex justify-center gap-x-4 mb-4 h-[20%] w-full">
+                    <div className="flex justify-center gap-x-4 mb-4 mt-4 h-[20%] w-full">
                         <button className="self-end h-12 w-40 transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl rounded-md duration-300">
                             <Link href="./attivita">GIOCHI</Link>
                         </button>

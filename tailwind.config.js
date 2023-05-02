@@ -21,7 +21,7 @@ module.exports = {
       },
       screens: {
         'sm': { 'raw': '(min-height: 300px)'},
-        'md': { 'raw': '(min-height: 600px)'},
+        'md': { 'raw': '(min-height: 660px)'},
         'lg': { 'raw': '(min-height: 830px)'},
         'xl': { 'raw': '(min-height: 1200px)'},
       },

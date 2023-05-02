@@ -109,7 +109,7 @@ export default function Profilo({
                 classRoom={classRoom}
                 selectedOptions={selectedOptions}
             >
-                <div className="relative flex flex-col mx-auto w-1/2 min-w-[700px] bg-slate-200 rounded-xl shadow-2xl mt-8 z-20">
+                <div className="relative flex flex-col mx-auto w-1/2 min-w-[700px] bg-slate-200 rounded-xl shadow-2xl mt-8 mb-4 z-20">
                     <div className="relative">
                         <h1 className="absolute top-8 right-32 text-3xl text-slate-700">
                             x {numGhiande}

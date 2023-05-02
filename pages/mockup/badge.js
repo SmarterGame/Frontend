@@ -74,7 +74,7 @@ export const getServerSideProps = async ({ req, res }) => {
         //Fetch badge image
         const badgeImg = await axios({
             method: "get",
-            url: url + "/badge/getImg/" + idBadgeEarned,
+            url: url + "/badge/getImg/" + idBadgeEarned + "blocked=false",
             headers: {
                 Authorization: token,
             },
@@ -115,8 +115,8 @@ export default function Badge({ classRoom, profileImg, badgeData, badgeImg }) {
                 title={title}
                 profileImg={profileImg}
             >
-                <div className="relative flex flex-col mx-auto items-center w-full mt-28 -m-72 z-10">
-                    <div className="flex flex-row items-center justify-center gap-x-10 min-w-[950px] px-10 bg-slate-200 rounded-xl shadow-2xl">
+                <div className="relative flex flex-col mx-auto items-center h-[70vh] w-full sm:mt-10 md:mt-28 lg:mt-28 z-10">
+                    <div className="flex flex-row items-center justify-center gap-x-10 px-32 bg-slate-200 rounded-xl shadow-2xl">
                         <div className="w-52 h-52 mx-auto bg-slate-200 mt-10 mb-10">
                             <Image
                                 src={badgeImg}
@@ -138,7 +138,7 @@ export default function Badge({ classRoom, profileImg, badgeData, badgeImg }) {
                         </div>
                     </div>
 
-                    <div className="flex mt-10 gap-x-6">
+                    <div className="flex mt-10 sm:mt-6 gap-x-6">
                         <button className="py-3 w-52 transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl rounded-md duration-300">
                             <Link href="./attivita">GIOCHI</Link>
                         </button>

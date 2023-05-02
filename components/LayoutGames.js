@@ -27,7 +27,7 @@ const Layout = ({
             </Head>
 
             <main style={styles}>
-                <div className="h-[100vh]">
+                <div className="min-h-[100vh]">
                     <HeaderGames
                         user={user}
                         loading={loading}
