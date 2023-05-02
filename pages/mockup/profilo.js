@@ -5,6 +5,7 @@ import ghianda from "@/public/ghianda.svg";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import ProfileImg from "@/components/ProfileImg";
+import ProgressBar from "@/components/ProgressBar";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -128,11 +129,7 @@ export default function Profilo({
                         />
                     </div>
 
-                    <div className="mx-auto bg-slate-400 h-4 w-[60%] mt-10 rounded-full">
-                        <div
-                            className={`bg-yellow-400 h-4 rounded-full w-[${classLvl}%]`}
-                        ></div>
-                    </div>
+                    <ProgressBar classRoom={classRoom} />
 
                     <div className="mx-auto">
                         <h1 className=" text-orangeBtn text-4xl mt-8">
