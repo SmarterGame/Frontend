@@ -85,6 +85,7 @@ export default function Game({
     const router = useRouter();
     const { levelGame2, game } = router.query; //game = quantita or ordinamenti
 
+    const [error, setError] = useState(false);
     const [subLvl, setsubLvl] = useState(0);
     const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
     const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
@@ -201,6 +202,11 @@ export default function Game({
         }
     }, [inputValues]);
 
+    //Check if there is an error in the input
+    useEffect(() => {
+        if (isWrong.includes(true)) setError(true);
+    }, [isWrong]);
+
     //Handle next level
     useEffect(() => {
         if (isCorrect.every((el) => el === true)) {
@@ -250,7 +256,9 @@ export default function Game({
                     "?game=" +
                     game +
                     "&level=" +
-                    levelGame2,
+                    levelGame2 +
+                    "&error=" +
+                    error,
                 headers: {
                     Authorization: "Bearer " + token,
                 },
@@ -271,9 +279,9 @@ export default function Game({
 
     return (
         <>
-            {/* <button onClick={gameFinished} className="bg-red-500">
+            <button onClick={gameFinished} className="bg-red-500">
                 test API
-            </button> */}
+            </button>
 
             <LayoutGames
                 classRoom={classRoom}

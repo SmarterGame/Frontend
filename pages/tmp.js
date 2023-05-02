@@ -138,7 +138,12 @@ export default function Tmp({ token, url, badgeImg }) {
                 <button className="bg-blue-500" onClick={() => addBadgeImg()}>
                     add Badge img
                 </button>
-                <Image src={badgeImg} alt="Badge image" width={100} height={100} />
+                <Image
+                    src={badgeImg}
+                    alt="Badge image"
+                    width={100}
+                    height={100}
+                />
             </div>
         </>
     );

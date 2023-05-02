@@ -98,7 +98,7 @@ export default function Profilo({
     profileImg,
 }) {
     const numGhiande = classRoom.Ghiande;
-    const classLvl = classRoom.ClassLvl; //TODO: risolvere problema percentuali
+    const classLvl = classRoom.ClassLvl;
 
     return (
         <>

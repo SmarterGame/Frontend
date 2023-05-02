@@ -88,6 +88,7 @@ export default function Game1({
     const router = useRouter();
     const { levelGame1, game } = router.query; //game = quantita or ordinamenti
 
+    const [error, setError] = useState(false);
     const [subLvl, setsubLvl] = useState(0);
     const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
     const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
@@ -228,6 +229,11 @@ export default function Game1({
         }
     }, [inputValuesLeft]);
 
+    //Check if there is an error in the left input
+    useEffect(() => {
+        if (isWrongLeft.includes(true)) setError(true);
+    }, [isWrongLeft]);
+
     //Check if all left smarter is correct
     useEffect(() => {
         if (isCorrectLeft.every((el) => el === true)) {
@@ -289,6 +295,11 @@ export default function Game1({
             }
         }
     }, [inputValuesRight]);
+
+    //Check if there is an error in the right input
+    useEffect(() => {
+        if (isWrongRight.includes(true)) setError(true);
+    }, [isWrongRight]);
 
     //Check if all right smarter is correct
     useEffect(() => {
@@ -356,7 +367,9 @@ export default function Game1({
                     "?game=" +
                     game +
                     "&level=" +
-                    levelGame1,
+                    levelGame1 +
+                    "&error=" +
+                    error,
                 headers: {
                     Authorization: "Bearer " + token,
                 },
@@ -377,9 +390,9 @@ export default function Game1({
 
     return (
         <>
-            {/* <button onClick={gameFinished} className="bg-red-500">
+            <button onClick={gameFinished} className="bg-red-500">
                 test API
-            </button> */}
+            </button>
 
             <LayoutGames
                 title={game}

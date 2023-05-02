@@ -7,7 +7,9 @@ const levels = [
     { level: 4, ghiande: 15 },
 ];
 
-export default function ProgressBar({ classRoom }) {
+export default function ProgressBar({
+    classRoom = { ClassLvl: 1, Ghiande: 0 },
+}) {
     const [progress, setProgress] = useState(0);
     const [nextLevel, setNextLevel] = useState(levels[0]);
 
