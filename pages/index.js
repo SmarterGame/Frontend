@@ -35,7 +35,7 @@ export default function Home({ token, url }) {
                         </h1>
                     </div>
 
-                    <div className="flex flex-col bg-lightGrayBadge max-w-6xl rounded-xl mt-6 shadow-2xl">
+                    <div className="flex flex-col bg-lightGrayBadge max-w-6xl rounded-xl mt-6 mx-4 shadow-2xl">
                         <div className="flex mx-auto text-justify">
                             <p className="text-lg ml-4 mr-4 mt-2">
                                 Sed ut perspiciatis unde omnis iste natus error

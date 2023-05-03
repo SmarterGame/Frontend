@@ -134,7 +134,17 @@ export default function Home({
                 });
                 // console.log(newClass.data);
                 setClassroom_tiles([...classroom_tiles, newClass.data]);
+                Swal.fire({
+                    title: "Classe creata!",
+                    icon: "success",
+                    confirmButtonColor: "#ff7100",
+                });
             } catch (err) {
+                Swal.fire({
+                    title: "Errore creazione classe",
+                    icon: "error",
+                    confirmButtonColor: "#ff7100",
+                });
                 console.log(err);
             }
         }
