@@ -1,4 +1,3 @@
-import { useState, useEffect, useRef } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { getSession } from "@auth0/nextjs-auth0";
 import LayoutLogin from "../components/LayoutLogin";
@@ -22,8 +21,8 @@ export default function Home({ token, url }) {
     return (
         <>
             <LayoutLogin user={user} loading={isLoading}>
-                <div className="flex flex-col items-center py-10">
-                    <h2 className="text-slate-100 text-xl mb-2">
+                <div className="flex flex-col items-center">
+                    <h2 className="text-slate-100 text-xl mb-2 mt-10">
                         BENVENUTO SU
                     </h2>
                     <div className="flex flex-row transition ease-in-out hover:-translatey-1 hover:scale-110 duration-300">
@@ -35,7 +34,7 @@ export default function Home({ token, url }) {
                         </h1>
                     </div>
 
-                    <div className="flex flex-col bg-lightGrayBadge max-w-6xl rounded-xl mt-6 mx-4 shadow-2xl">
+                    <div className="flex flex-col bg-lightGrayBadge max-w-6xl rounded-xl mt-6 mb-4 mx-4 shadow-2xl">
                         <div className="flex mx-auto text-justify">
                             <p className="text-lg ml-4 mr-4 mt-2">
                                 Sed ut perspiciatis unde omnis iste natus error
@@ -84,19 +83,3 @@ export default function Home({ token, url }) {
         </>
     );
 }
-
-// useEffect(()=>{
-//   if (user){
-//     axios({
-//       method: "get",
-//       url: url + "/user/saveProfile"  ,
-//       headers: { Authorization: "Bearer " + token }
-//     }).then((classes)=>{
-//       setClassroom_tiles([...classes])
-//     }).catch((err)=>{
-//       console.log("Errore in richiesta classi")
-//       console.log(err)
-//     })
-//
-//   }
-// },[user])
