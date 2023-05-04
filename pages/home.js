@@ -10,6 +10,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
 import AddSmarter from "@/components/AddSmarter";
+import Link from "next/link";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -175,6 +176,20 @@ export default function Home({
         tileCopy[pos].ClassName = newName;
         setClassroom_tiles([...tileCopy]);
     };
+
+    if (!user)
+        return (
+            <>
+                <LayoutLogin user={user} loading={isLoading}>
+                    <div className="flex flex-col">
+                        <h1 className="text-3xl">Effettua il login</h1>
+                        <button className="transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
+                            <Link href="/api/auth/login">Accedi</Link>
+                        </button>
+                    </div>
+                </LayoutLogin>
+            </>
+        );
 
     return (
         <LayoutLogin user={user} loading={isLoading}>

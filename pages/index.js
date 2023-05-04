@@ -21,8 +21,8 @@ export default function Home({ token, url }) {
     return (
         <>
             <LayoutLogin user={user} loading={isLoading}>
-                <div className="flex flex-col items-center">
-                    <h2 className="text-slate-100 text-xl mb-2 mt-10">
+                <div className="flex flex-col items-center self-start mt-10">
+                    <h2 className="text-slate-100 text-xl mb-2">
                         BENVENUTO SU
                     </h2>
                     <div className="flex flex-row transition ease-in-out hover:-translatey-1 hover:scale-110 duration-300">

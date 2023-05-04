@@ -19,7 +19,7 @@ const Layout = ({ user, loading = false, children }) => {
             {/* <Header user={user} loading={loading} /> */}
 
             <main style={styles}>
-                <div className="min-h-[100vh]">{children}</div>
+                <div className="flex items-center justify-center min-h-[100vh]">{children}</div>
             </main>
         </>
     );
