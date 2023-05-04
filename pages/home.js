@@ -193,7 +193,7 @@ export default function Home({
 
     return (
         <LayoutLogin user={user} loading={isLoading}>
-            <div className="flex flex-col items-center h-full w-full py-10">
+            <div className="flex flex-col items-center self-start h-full w-full py-10">
                 <h1 className="text-7xl text-gray-100 text-stroke-orange mb-14 transition ease-in-out hover:-translatey-1 hover:scale-110 duration-300">
                     SMART GAME
                 </h1>
