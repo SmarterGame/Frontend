@@ -3,6 +3,7 @@ import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
 import Link from "next/link";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 export default function HeaderProfile({
     token,
@@ -13,6 +14,8 @@ export default function HeaderProfile({
 }) {
     const [showPopUp, setShowPopUp] = useState(false);
     const [showSideBar, setShowSideBar] = useState(false);
+
+    const selectedLanguage = getSelectedLanguage();
 
     const className = classRoom.ClassName;
 
@@ -30,11 +33,12 @@ export default function HeaderProfile({
             <header>
                 <div className="flex flex-row justify-between bg-blue-600 shadow-2xl py-2">
                     <h1 className="pl-4 transition ease-in-out text-4xl text-gray-100 text-stroke-orange mt-4 mb-4 ml-6 hover:-translatey-1 hover:scale-110 duration-300">
-                        PROFILO
+                        {selectedLanguage === "eng" ? " PROFILE" : "PROFILO"}
                     </h1>
                     <div className="flex flex-row items-center">
                         <h1 className="text-4xl text-slate-100 mr-4">
-                            CLASSE {className}
+                            {selectedLanguage === "eng" ? "CLASS" : "CLASSE"}{" "}
+                            {className}
                         </h1>
                         <div className="mr-6 bg-slate-400 bg-opacity-50 rounded-lg transition ease-in-out hover:bg-slate-500 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300">
                             <button
@@ -71,12 +75,18 @@ export default function HeaderProfile({
                             onClick={togglePopUp}
                             className="mx-auto text-gray-600 text-xl"
                         >
-                            SELEZIONA SMARTER
+                            {selectedLanguage === "eng"
+                                ? "SELECT SMARTERs"
+                                : "SELEZIONA SMARTER"}
                         </button>
                     </div>
                     <div className="flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
                         <button className="mx-auto text-gray-600 text-xl">
-                            <Link href="/home">CAMBIA CLASSE</Link>
+                            <Link href="/home">
+                                {selectedLanguage === "eng"
+                                    ? "CHANGE CLASS"
+                                    : "CAMBIA CLASSE"}
+                            </Link>
                         </button>
                     </div>
                 </SideBar>

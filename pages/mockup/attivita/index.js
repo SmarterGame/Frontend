@@ -7,6 +7,7 @@ import grass from "@/public/grass.png";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import Levels from "@/components/AttivitaLevels";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -76,23 +77,31 @@ export const getServerSideProps = async ({ req, res }) => {
 };
 
 export default function Giochi({ classRoom, selectedMode, profileImg }) {
+    const selectedLanguage = getSelectedLanguage();
+    const titleLeft = selectedLanguage === "eng" ? "QUANTITIES" : "QUANTITA'";
+    const titleRight =
+        selectedLanguage === "eng" ? "ARRANGE THE NUMBERS" : "ORDINAMENTI";
+    const title = selectedLanguage === "eng" ? "GAMES" : "GIOCHI";
+
     return (
         <>
             <LayoutSelezioneGiochi
                 classRoom={classRoom}
-                title={"GIOCHI"}
+                title={title}
                 pageAttivita={true}
                 profileImg={profileImg}
             >
                 <div className="flex flex-col items-center mx-auto h-[82vh] max-w-[95%] bg-slate-200 rounded-xl shadow-2xl mt-4">
                     <h1 className="mt-6 text-4xl text-orangeBtn">
-                        SCEGLI UN GIOCO
+                        {selectedLanguage === "eng"
+                            ? "CHOOSE A GAME"
+                            : "SCEGLI UN GIOCO"}
                     </h1>
                     <div className="flex flex-row items-center justify-center h-full">
                         <Levels
                             classRoom={classRoom}
                             selectedMode={selectedMode}
-                            title={"LE QUANTITA'"}
+                            title={titleLeft}
                             left={true}
                         >
                             <Image
@@ -112,7 +121,7 @@ export default function Giochi({ classRoom, selectedMode, profileImg }) {
                         <Levels
                             classRoom={classRoom}
                             selectedMode={selectedMode}
-                            title={"ORDINAMENTI"}
+                            title={titleRight}
                             left={false}
                         >
                             <Image

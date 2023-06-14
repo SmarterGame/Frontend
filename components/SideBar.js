@@ -3,12 +3,18 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
+import {
+    getSelectedLanguage,
+    setSelectedLanguage,
+} from "@/components/lib/language";
 
 export default function SiedBar({ token, url, show, onClose, children }) {
     const router = useRouter();
 
     const sideBarRef = useRef(null);
-    const [showCustom, setShowCustom] = useState(false);
+    // const [showCustom, setShowCustom] = useState(false);
+
+    const selectedLanguage = getSelectedLanguage();
 
     //Check if the click was outside of the modal
     useEffect(() => {
@@ -77,6 +83,17 @@ export default function SiedBar({ token, url, show, onClose, children }) {
         }
     };
 
+    //Switch the language
+    const changeLanguageHandler = () => {
+        if (getSelectedLanguage() === "eng") {
+            setSelectedLanguage("ita");
+        } else {
+            setSelectedLanguage("eng");
+        }
+
+        router.replace(router.asPath);
+    };
+
     return (
         <>
             <div
@@ -99,10 +116,22 @@ export default function SiedBar({ token, url, show, onClose, children }) {
                             onClick={changeImageHandler}
                             className="mx-auto text-gray-600 text-lg"
                         >
-                            CAMBIA IMMAGINE
+                            {selectedLanguage === "eng"
+                                ? "CHANGE IMAGE"
+                                : "CAMBIA IMMAGINE"}
                         </button>
                     </div>
-                    <div className="hidden flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
+                    <div className="flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
+                        <button
+                            onClick={changeLanguageHandler}
+                            className="mx-auto text-gray-600 text-lg"
+                        >
+                            {selectedLanguage === "eng"
+                                ? "ENGLISH"
+                                : "ITALIANO"}
+                        </button>
+                    </div>
+                    {/* <div className="hidden flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">
                         <button
                             onClick={() => {
                                 setShowCustom(!showCustom);
@@ -137,11 +166,13 @@ export default function SiedBar({ token, url, show, onClose, children }) {
                                 ORDINAMENTI
                             </Link>
                         </button>
-                    </div>
+                    </div> */}
                     <div className="border-t-2 border-gray-300 mt-1"></div>
                     <div className="py-2 hover:bg-red-400 hover:bg-opacity-80 rounded-md mt-auto mb-10">
                         <button className="h-full w-full transition ease-in-out text-gray-600 text-xl">
-                            <Link href="/api/auth/logout">ESCI</Link>
+                            <Link href="/api/auth/logout">
+                                {selectedLanguage === "eng" ? "LOGOUT" : "ESCI"}
+                            </Link>
                         </button>
                     </div>
                 </div>

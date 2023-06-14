@@ -6,6 +6,7 @@ import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import ProfileImg from "@/components/ProfileImg";
 import ProgressBar from "@/components/ProgressBar";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -97,6 +98,11 @@ export default function Profilo({
     selectedOptions,
     profileImg,
 }) {
+    const selectedLanguage = getSelectedLanguage();
+
+    const lvlNamesIta = ["Boyscout", "Avventuriero", "Esperto", "Ranger"];
+    const lvlNamesEng = ["Boyscout", "Adventurer", "Esperto", "Ranger"];
+
     const numGhiande = classRoom.Ghiande;
     const classLvl = classRoom.ClassLvl;
 
@@ -131,16 +137,28 @@ export default function Profilo({
 
                     <ProgressBar classRoom={classRoom} />
 
-                    <div className="mx-auto">
+                    <div className="flex flex-col items-center">
                         <h1 className=" text-orangeBtn text-4xl mt-8">
-                            Scoiattoli livello {classLvl}
+                            {selectedLanguage === "eng" ? "Level" : "Livello"}{" "}
+                            {classLvl}{" "}
+                            {selectedLanguage === "eng"
+                                ? lvlNamesEng[classLvl - 1]
+                                : lvlNamesIta[classLvl - 1]}
                         </h1>
                         <div className="flex flex-col h-full mt-8 mb-10 gap-y-6">
                             <button className=" mx-auto transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-56 h-14 rounded-md duration-300">
-                                <Link href="./missioni">MISSIONI</Link>
+                                <Link href="./missioni">
+                                    {selectedLanguage === "eng"
+                                        ? "BADGES"
+                                        : "BADGE"}
+                                </Link>
                             </button>
                             <button className="mx-auto transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-56 h-14 rounded-md duration-300">
-                                <Link href="./attivita">GIOCHI</Link>
+                                <Link href="./attivita">
+                                    {selectedLanguage === "eng"
+                                        ? "GAMES"
+                                        : "GIOCHI"}
+                                </Link>
                             </button>
                         </div>
                     </div>

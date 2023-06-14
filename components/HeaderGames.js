@@ -3,6 +3,7 @@ import ghianda from "@/public/ghianda.png";
 import Link from "next/link";
 import ClearIcon from "@mui/icons-material/Clear";
 import ProfileImg from "@/components/ProfileImg";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 export default function HeaderGames({
     loading,
@@ -15,12 +16,16 @@ export default function HeaderGames({
 }) {
     const numGhiande = classRoom.Ghiande;
 
+    const selectedLanguage = getSelectedLanguage();
+
     let tmp = false;
     if (title === "quantita") {
-        title = "LE QUANTITA'";
+        if (selectedLanguage === "eng") title = "QUANTITIES";
+        else title = "LE QUANTITA'";
         tmp = true;
     } else if (title === "ordinamenti") {
-        title = "GLI ORDINAMENTI";
+        if (selectedLanguage === "eng") title = "ARRANGE THE NUMBERS";
+        else title = "GLI ORDINAMENTI";
         tmp = true;
     }
 
@@ -30,7 +35,14 @@ export default function HeaderGames({
                 <nav>
                     <div className="flex flex-row justify-between bg-blue-600 shadow-2xl py-2">
                         <h1 className="pl-4 transition ease-in-out text-4xl text-gray-100 text-stroke-orange mt-4 mb-4 ml-6 hover:-translatey-1 hover:scale-110 duration-300">
-                            {tmp ? title + " - LIVELLO " + liv : title}
+                            {tmp
+                                ? title +
+                                  " - " +
+                                  (selectedLanguage === "eng"
+                                      ? "LEVEL "
+                                      : "LIVELLO ") +
+                                  liv
+                                : title}
                         </h1>
                         <div className="flex flex-row items-center mr-4">
                             <h1 className="text-4xl text-slate-100 mr-4">

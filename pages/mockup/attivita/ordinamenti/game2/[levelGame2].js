@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import _ from "lodash";
 import Swal from "sweetalert2";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 export const getServerSideProps = async ({ req, res }) => {
     const FEEDBACK = process.env.FEEDBACK;
@@ -115,6 +116,8 @@ export default function Game({
         false,
     ]);
 
+    const selectedLanguage = getSelectedLanguage();
+
     //Get level data
     useEffect(() => {
         axios
@@ -211,10 +214,17 @@ export default function Game({
     useEffect(() => {
         if (isCorrect.every((el) => el === true)) {
             if (subLvl < 4) {
+                const title =
+                    selectedLanguage === "eng" ? "CORRECT!" : "CORRETTO!";
+                const html =
+                    selectedLanguage === "eng"
+                        ? "Exercise " + (subLvl + 1) + "/5 completed"
+                        : "Esercizio " + (subLvl + 1) + "/5 completato";
+
                 Swal.fire({
-                    title: "CORRETTO!",
+                    title: title,
                     color: "#ff7100",
-                    html: "Esercizio " + (subLvl + 1) + "/5 completato",
+                    html: html,
                     timer: 2000,
                     timerProgressBar: true,
                     didOpen: () => {
@@ -226,10 +236,19 @@ export default function Game({
                     }
                 });
             } else {
+                const title =
+                    selectedLanguage === "eng"
+                        ? "CONGRATULATIONS!"
+                        : "COMPLIMENTI!";
+                const html =
+                    selectedLanguage === "eng"
+                        ? "Level " + levelGame2 + " completed"
+                        : "Livello " + levelGame2 + " completato";
+
                 Swal.fire({
-                    title: "COMPLIMENTI!",
+                    title: title,
                     color: "#ff7100",
-                    html: "Livello " + levelGame2 + " completato",
+                    html: html,
                     timer: 2000,
                     timerProgressBar: true,
                     didOpen: () => {
@@ -289,7 +308,14 @@ export default function Game({
                 liv={levelGame2}
                 profileImg={profileImg}
             >
-                <div className="relative flex flex-col justify-center md:h-[55vh] lg:h-[65vh] mt-10 ml-4 mr-4 z-10">
+                <div className="flex mt-6">
+                    <h1 className="mx-auto text-2xl">
+                        {selectedLanguage === "eng"
+                            ? "Arrange the numbers in increasing orders using the tiles “apples”"
+                            : "Ordina i numeri	 in ordine crescente, usando le tessere “mela”"}
+                    </h1>
+                </div>
+                <div className="relative flex flex-col justify-center md:h-[55vh] lg:h-[60vh] mt-10 ml-4 mr-4 z-10">
                     <div className="grid grid-cols-10 justify-items-center gap-y-4 gap-x-4 h-full">
                         {lvlDataShuffled.map((item, index) => (
                             <div

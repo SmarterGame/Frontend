@@ -2,11 +2,14 @@ import axios from "axios";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import ContentLoader from "react-content-loader";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 export default function Badge({ token, url, badge, blocked }) {
     const [badgeData, setBadgeData] = useState({});
     const [badgeImg, setBadgeImg] = useState("");
     const [imageLoaded, setImageLoaded] = useState(false);
+
+    const selectedLanguage = getSelectedLanguage();
 
     useEffect(() => {
         const getBadge = async () => {
@@ -18,12 +21,20 @@ export default function Badge({ token, url, badge, blocked }) {
                 },
             });
             // console.log(badgeData.data);
+            // checkLanguage(badgeData.data);
             setBadgeData(badgeData.data);
         };
         const getBadgeImg = async () => {
             const badgeImg = await axios({
                 method: "get",
-                url: url + "/badge/getImg/" + badge + "?blocked=" + blocked,
+                url:
+                    url +
+                    "/badge/getImg/" +
+                    badge +
+                    "?blocked=" +
+                    blocked +
+                    "&eng=" +
+                    (selectedLanguage === "eng"),
                 headers: {
                     Authorization: "Bearer " + token,
                 },
@@ -39,12 +50,18 @@ export default function Badge({ token, url, badge, blocked }) {
         getBadgeImg();
     }, []);
 
-    // useEffect(() => {
-    //     const timer = setTimeout(() => {
-    //         setImageLoaded(true);
-    //     }, 1000); // imposta un ritardo di 1 secondo
-    //     return () => clearTimeout(timer);
-    // }, []);
+    const checkLanguage = (badgeData) => {
+        const language = getSelectedLanguage();
+        if (language === "ita") {
+            setBadgeData(badgeData);
+        } else {
+            const badgeDataTranslated = {
+                BadgeName: badgeData.BadgeName_en,
+                BadgeDescription: badgeData.BadgeDescription_en,
+            };
+            setBadgeData(badgeDataTranslated);
+        }
+    };
 
     const handleImageLoaded = () => {
         const timer = setTimeout(() => {
@@ -87,10 +104,14 @@ export default function Badge({ token, url, badge, blocked }) {
                 />
                 <div className="flex flex-col bg-slate-100 w-[65%] h-[60%] rounded-xl">
                     <h1 className="mx-auto text-lg text-orangeBtn mt-2">
-                        {badgeData.BadgeName}
+                        {selectedLanguage === "eng"
+                            ? badgeData.BadgeName_en
+                            : badgeData.BadgeName}
                     </h1>
                     <h2 className="mx-auto text-md text-slate-500 mt-4 mb-4">
-                        {badgeData.BadgeDescription}
+                        {selectedLanguage === "eng"
+                            ? badgeData.BadgeDescription_en
+                            : badgeData.BadgeDescription}
                     </h2>
                 </div>
             </div>

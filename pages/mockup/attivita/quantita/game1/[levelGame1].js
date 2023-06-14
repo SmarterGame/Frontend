@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import _ from "lodash";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 export const getServerSideProps = async ({ req, res }) => {
     const FEEDBACK = process.env.FEEDBACK;
@@ -123,6 +124,8 @@ export default function Game1({
         false,
     ]);
     const [isAllCorrect, setisAllCorrect] = useState([false, false]);
+
+    const selectedLanguage = getSelectedLanguage();
 
     //Get level data
     useEffect(() => {
@@ -322,10 +325,17 @@ export default function Game1({
     useEffect(() => {
         if (isAllCorrect.every((el) => el === true)) {
             if (subLvl < 4) {
+                const title =
+                    selectedLanguage === "eng" ? "CORRECT!" : "CORRETTO!";
+                const html =
+                    selectedLanguage === "eng"
+                        ? "Exercise " + (subLvl + 1) + "/5 completed"
+                        : "Esercizio " + (subLvl + 1) + "/5 completato";
+
                 Swal.fire({
-                    title: "CORRETTO!",
+                    title: title,
                     color: "#ff7100",
-                    html: "Esercizio " + (subLvl + 1) + "/5 completato",
+                    html: html,
                     timer: 2000,
                     timerProgressBar: true,
                     didOpen: () => {
@@ -337,10 +347,19 @@ export default function Game1({
                     }
                 });
             } else {
+                const title =
+                    selectedLanguage === "eng"
+                        ? "CONGRATULATIONS!"
+                        : "COMPLIMENTI!";
+                const html =
+                    selectedLanguage === "eng"
+                        ? "Level " + levelGame2 + " completed"
+                        : "Livello " + levelGame2 + " completato";
+
                 Swal.fire({
-                    title: "COMPLIMENTI!",
+                    title: title,
                     color: "#ff7100",
-                    html: "Livello " + levelGame1 + " completato",
+                    html: html,
                     timer: 2000,
                     timerProgressBar: true,
                     didOpen: () => {
@@ -400,7 +419,14 @@ export default function Game1({
                 classRoom={classRoom}
                 profileImg={profileImg}
             >
-                <div className="relative flex flex-row justify-center gap-x-20 md:h-[55vh] lg:h-[65vh] w-full z-10">
+                <div className="flex mt-6">
+                    <h1 className="mx-auto text-2xl">
+                        {selectedLanguage === "eng"
+                            ? "place the tiles “apples” corresponding to the numbers"
+                            : "Inserisci le tessere “mela” che corrispondono ai numeri"}
+                    </h1>
+                </div>
+                <div className="relative flex flex-row justify-center gap-x-20 md:h-[55vh] lg:h-[60vh] w-full z-10">
                     <div className="flex flex-col justify-center h-full w-[45%] mt-4 ml-4 mr-4">
                         <h1 className="mx-auto text-xl  mb-4 text-grayText">
                             Smarter 1

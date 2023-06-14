@@ -6,8 +6,10 @@ import ProfileImg from "@/components/ProfileImg";
 import { useRouter } from "next/router";
 import url2 from "url";
 import Image from "next/image";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 export const getServerSideProps = async ({ req, res }) => {
+    const selectedLanguage = getSelectedLanguage();
     //Get badge id from url
     const { query } = url2.parse(req.url, true);
     const idBadgeEarned = query.id ?? null;
@@ -69,12 +71,17 @@ export const getServerSideProps = async ({ req, res }) => {
                 Authorization: token,
             },
         });
-        console.log(badgeData.data);
+        // console.log(badgeData.data);
 
         //Fetch badge image
         const badgeImg = await axios({
             method: "get",
-            url: url + "/badge/getImg/" + idBadgeEarned + "blocked=false",
+            url:
+                url +
+                "/badge/getImg/" +
+                idBadgeEarned +
+                "?blocked=false&eng=" +
+                (selectedLanguage === "eng"),
             headers: {
                 Authorization: token,
             },
@@ -90,10 +97,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 selectedClass: user.data.SelectedClass,
                 classRoom: classData.data,
                 profileImg: imageUrl,
-                badgeData: {
-                    name: badgeData.data.BadgeName,
-                    description: badgeData.data.BadgeDescription,
-                },
+                badgeData: badgeData.data,
                 badgeImg: badgeImageUrl,
             },
         };
@@ -106,13 +110,16 @@ export const getServerSideProps = async ({ req, res }) => {
 
 export default function Badge({ classRoom, profileImg, badgeData, badgeImg }) {
     const router = useRouter();
-    const { title, id } = router.query;
+    const { title, liv, id } = router.query;
+
+    const selectedLanguage = getSelectedLanguage();
 
     return (
         <>
             <LayoutGames
                 classRoom={classRoom}
                 title={title}
+                liv={liv}
                 profileImg={profileImg}
             >
                 <div className="relative flex flex-col mx-auto items-center h-[70vh] w-full sm:mt-10 md:mt-28 lg:mt-28 z-10">
@@ -127,23 +134,37 @@ export default function Badge({ classRoom, profileImg, badgeData, badgeImg }) {
                         </div>
                         <div className="flex flex-col items-center self-center gap-y-6">
                             <h1 className="text-grayText text-2xl">
-                                CONGRATULAZIONI!
+                                {selectedLanguage === "eng"
+                                    ? "CONGRATULATIONS!"
+                                    : "CONGRATULAZIONI!"}
                             </h1>
                             <h1 className="text-grayText text-2xl">
-                                AVETE VINTO UN NUOVO BADGE:
+                                {selectedLanguage === "eng"
+                                    ? "YOU HAVE EARNED A NEW BADGE:"
+                                    : "AVETE VINTO UN NUOVO BADGE:"}
                             </h1>
                             <h1 className="text-orangeBtn text-3xl">
-                                {badgeData.name}
+                                {selectedLanguage === "eng"
+                                    ? badgeData.BadgeName_en
+                                    : badgeData.BadgeName}
                             </h1>
                         </div>
                     </div>
 
                     <div className="flex mt-10 sm:mt-6 gap-x-6">
                         <button className="py-3 w-52 transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl rounded-md duration-300">
-                            <Link href="./attivita">GIOCHI</Link>
+                            <Link href="./attivita">
+                                {selectedLanguage === "eng"
+                                    ? "GAMES"
+                                    : "GIOCHI"}
+                            </Link>
                         </button>
                         <button className="py-3 w-52 transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl rounded-md duration-300">
-                            <Link href="./profilo">PROFILO</Link>
+                            <Link href="./profilo">
+                                {selectedLanguage === "eng"
+                                    ? "PROFILE"
+                                    : "PROFILO"}
+                            </Link>
                         </button>
                     </div>
                 </div>

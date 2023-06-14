@@ -1,8 +1,11 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
+    const selectedLanguage = getSelectedLanguage();
+
     //Filtra i box che l'utente ha già
     if (boxes === undefined) boxes = [];
     const filteredBoxes = boxes.filter((box) => !userBoxes.includes(box));
@@ -12,9 +15,16 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
     );
 
     const fireSwal = () => {
+        const title =
+            selectedLanguage === "eng" ? "Box added!" : "Box aggiunti!";
+        const text =
+            selectedLanguage === "eng"
+                ? "The SMARTERs have been added correctly"
+                : "Gli SMARTER sono stati aggiunti correttamente";
+
         Swal.fire({
-            title: "Box aggiunti!",
-            text: "I box sono stati aggiunti correttamente",
+            title: title,
+            text: text,
             icon: "success",
             confirmButtonText: "Ok",
         }).then((result) => {
@@ -27,9 +37,15 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
     const handleConferma = async () => {
         //controlla che almeno uno sia selezionato
         if (!isChecked.includes(true)) {
+            const title =
+                selectedLanguage === "eng" ? "Warning!" : "Attenzione!";
+            const text =
+                selectedLanguage === "eng"
+                    ? "You must select at least one box"
+                    : "Devi selezionare almeno un box";
             Swal.fire({
-                title: "Attenzione!",
-                text: "Devi selezionare almeno un box",
+                title: title,
+                text: text,
                 icon: "warning",
                 confirmButtonText: "Ok",
             });
@@ -45,7 +61,6 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                         });
                     }
                 }
-                // console.log(res);
                 fireSwal();
             } catch (err) {
                 console.log(err);
@@ -69,7 +84,9 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                 <section className="modal-main rounded-2xl">
                     <div className="flex flex-col items-center justify-center">
                         <h1 className="text-grayText text-4xl mt-4">
-                            SELEZIONA GLI SMARTER
+                            {selectedLanguage === "eng"
+                                ? "SELECT SMARTERS"
+                                : "SELEZIONA GLI SMARTER"}
                         </h1>
                         <div className="mt-4">
                             <label className="text-gray-700 text-xl cursor-pointer">
@@ -91,7 +108,11 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                                         </div>
                                     ))
                                 ) : (
-                                    <p>Non ci sono box da aggiungere</p>
+                                    <p>
+                                        {selectedLanguage === "eng"
+                                            ? "There are no boxes to add"
+                                            : "Non ci sono box da aggiungere"}
+                                    </p>
                                 )}
                             </label>
                         </div>
@@ -101,13 +122,17 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                                     onClick={handleConferma}
                                     className="h-12 w-56 mt-6 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-3xl shadow-2xl rounded-md duration-300"
                                 >
-                                    Conferma
+                                    {selectedLanguage === "eng"
+                                        ? "CONFIRM"
+                                        : "CONFERMA"}
                                 </button>
                                 <button
                                     onClick={onClose}
                                     className="h-12 w-56 mt-6 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-3xl shadow-2xl rounded-md duration-300"
                                 >
-                                    Annulla
+                                    {selectedLanguage === "eng"
+                                        ? "CANCEL"
+                                        : "ANNULLA"}
                                 </button>
                             </div>
                         </div>

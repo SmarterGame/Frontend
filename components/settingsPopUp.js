@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 export default function PopUp({
     token,
@@ -19,6 +20,8 @@ export default function PopUp({
         selectedMode: "Nessuna modalità selezionata",
     },
 }) {
+    const selectedLanguage = getSelectedLanguage();
+
     // console.log(selectedOptions);
     const selectedSmarters = selectedOptions.selectedSmarters;
     const selectedMode = selectedOptions.selectedMode;
@@ -143,7 +146,9 @@ export default function PopUp({
                 <section className="modal-main rounded-2xl" ref={popUpRef}>
                     <div className="flex flex-col items-center ">
                         <h1 className="text-grayText text-4xl mt-4 mb-10">
-                            SELEZIONA GLI SMARTER
+                            {selectedLanguage === "eng"
+                                ? "SELECT SMARTERs"
+                                : "SELEZIONA GLI SMARTER"}
                         </h1>
 
                         <div className="flex flex-row items-center gap-x-10 mb-4">
@@ -155,7 +160,11 @@ export default function PopUp({
                                 onChange={handleChangeSmarter1}
                                 defaultValue={selectedSmarters[0]}
                             >
-                                <option>Nessuno smarter selezionato</option>
+                                <option>
+                                    {selectedLanguage === "eng"
+                                        ? "No smarter selected"
+                                        : "Nessuno smarter selezionato"}
+                                </option>
                                 {boxes && boxes.length > 0 ? (
                                     boxes.map((box) =>
                                         selectedSmarters[0] === box ? (
@@ -169,7 +178,11 @@ export default function PopUp({
                                         )
                                     )
                                 ) : (
-                                    <option>Nessuno smarter associato</option>
+                                    <option>
+                                        {selectedLanguage === "eng"
+                                            ? "No associated SMARTER"
+                                            : "Nessuno SMARTER associato"}
+                                    </option>
                                 )}
                             </select>
                         </div>
@@ -183,7 +196,11 @@ export default function PopUp({
                                 onChange={handleChangeSmarter2}
                                 defaultValue={selectedSmarters[1]}
                             >
-                                <option>Nessuno smarter selezionato</option>
+                                <option>
+                                    {selectedLanguage === "eng"
+                                        ? "No smarter selected"
+                                        : "Nessuno smarter selezionato"}
+                                </option>
                                 {boxes && boxes.length > 0 ? (
                                     boxes.map((box) =>
                                         selectedSmarters[1] === box ? (
@@ -197,14 +214,20 @@ export default function PopUp({
                                         )
                                     )
                                 ) : (
-                                    <option>Nessuno smarter associato</option>
+                                    <option>
+                                        {selectedLanguage === "eng"
+                                            ? "No associated SMARTER"
+                                            : "Nessuno SMARTER associato"}
+                                    </option>
                                 )}
                             </select>
                         </div>
 
                         <div className="flex flex-row items-center gap-x-10 mb-4">
                             <h1 className="text-3xl text-grayText">
-                                MODALITA'
+                                {selectedLanguage === "eng"
+                                    ? "MODALITY"
+                                    : "MODALITA'"}
                             </h1>
                             <select
                                 className="w-96 h-12 bg-grayLight text-center"
@@ -215,7 +238,11 @@ export default function PopUp({
                                         : "High positive interdependence"
                                 }
                             >
-                                <option>Nessuna modalità selezionata</option>
+                                <option>
+                                    {selectedLanguage === "eng"
+                                        ? "No mode selected"
+                                        : "Nessuna modalità selezionata"}
+                                </option>
                                 <option>Low positive interdependence</option>
                                 <option>High positive interdependence</option>
                             </select>
@@ -227,13 +254,17 @@ export default function PopUp({
                                     onClick={handleConferma}
                                     className="h-12 w-56 mt-6 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-3xl shadow-2xl rounded-md duration-300"
                                 >
-                                    Conferma
+                                    {selectedLanguage === "eng"
+                                        ? "Confirm"
+                                        : "Conferma"}
                                 </button>
                                 <button
                                     onClick={onClose}
                                     className="h-12 w-56 mt-6 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-3xl shadow-2xl rounded-md duration-300"
                                 >
-                                    Annulla
+                                    {selectedLanguage === "eng"
+                                        ? "Cancel"
+                                        : "Annulla"}
                                 </button>
                             </div>
                         </div>

@@ -6,8 +6,10 @@ import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import { useRouter } from "next/router";
 import url2 from "url";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 export const getServerSideProps = async ({ req, res }) => {
+    const selectedLanguage = getSelectedLanguage();
     //Get badge id from url
     const { query } = url2.parse(req.url, true);
     const badgeEarned = JSON.parse(query.badgeData ?? "[]");
@@ -67,7 +69,12 @@ export const getServerSideProps = async ({ req, res }) => {
         for (const badgeId of badgeEarned) {
             const badgeImg = await axios({
                 method: "get",
-                url: url + "/badge/getImg/" + badgeId + "?blocked=false",
+                url:
+                    url +
+                    "/badge/getImg/" +
+                    badgeId +
+                    "?blocked=false&eng=" +
+                    (selectedLanguage === "eng"),
                 headers: {
                     Authorization: token,
                 },
@@ -108,8 +115,19 @@ export default function Quantita({
     const { game, level, badgeData } = router.query; //game = quantita or ordinamenti
     const idBadgeEarned = JSON.parse(badgeData ?? "[]");
 
+    const selectedLanguage = getSelectedLanguage();
+
     let gameType = 0;
     if (game == "quantita") gameType = 1;
+
+    let title;
+    if (game == "ordinamenti") {
+        if (selectedLanguage === "eng") title = "arrange the numbers";
+        else title = "gli ordinamenti";
+    } else {
+        if (selectedLanguage === "eng") title = "quantities";
+        else title = "le quantità";
+    }
 
     return (
         <>
@@ -122,11 +140,18 @@ export default function Quantita({
                 <div className="relative flex flex-col mx-auto w-1/2 min-w-[700px] bg-slate-200 rounded-xl shadow-2xl mt-4 z-10">
                     <div className="flex flex-col items-center h-full mt-6">
                         <h1 className="text-4xl text-orangeBtn">
-                            {gameType ? "LE QUANTITA'" : "GLI ORDINAMENTI"} -
-                            LIVELLO {level}
+                            {selectedLanguage === "eng"
+                                ? gameType
+                                    ? "QUANTITIES"
+                                    : "ARRANGE THE NUMBERS"
+                                : gameType
+                                ? "LE QUANTITA'"
+                                : "GLI ORDINAMENTI"}
+                            -{selectedLanguage === "eng" ? "LEVEL" : "LIVELLO"}{" "}
+                            {level}
                         </h1>
                         <h2 className="text-2xl text-slate-700 mt-6">
-                            GHIANDE
+                            {selectedLanguage === "eng" ? "ACORNS" : "GHIANDE"}
                         </h2>
 
                         <div className="flex flex-row items-center gap-x-2 mt-4">
@@ -144,7 +169,7 @@ export default function Quantita({
                             {idBadgeEarned.map((badge, index) => (
                                 <button key={badge}>
                                     <Link
-                                        href={`/mockup/badge?title=${game}&id=${badge}`}
+                                        href={`/mockup/badge?title=${game}&liv=${level}&id=${badge}`}
                                     >
                                         {badgesImg.length > 0 ? (
                                             <Image
@@ -163,11 +188,19 @@ export default function Quantita({
 
                         <div className="flex flex-row justify-center gap-x-4 w-full mt-6 mb-6">
                             <button className="transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-[20%] py-3 rounded-md duration-300">
-                                <Link href="./attivita">GIOCHI</Link>
+                                <Link href="./attivita">
+                                    {selectedLanguage === "eng"
+                                        ? "GAMES"
+                                        : "GIOCHI"}
+                                </Link>
                             </button>
 
                             <button className="transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-[20%] py-3 rounded-md duration-300">
-                                <Link href="./profilo">PROFILO</Link>
+                                <Link href="./profilo">
+                                    {selectedLanguage === "eng"
+                                        ? "PROFILE"
+                                        : "PROFILO"}
+                                </Link>
                             </button>
                         </div>
                     </div>

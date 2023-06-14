@@ -1,6 +1,8 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import React from "react";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 export default function AttivitaLevels({
     children,
@@ -10,6 +12,8 @@ export default function AttivitaLevels({
     left,
 }) {
     const router = useRouter();
+
+    const selectedLanguage = getSelectedLanguage();
 
     const livQuantita = classRoom.Levels[0];
     const livOrdinamenti = classRoom.Levels[1];
@@ -170,10 +174,12 @@ export default function AttivitaLevels({
     else
         return (
             <>
-                <div className="flex flex-row items-center sm:-mt-20">
-                    <div
-                        className={`flex flex-col ${offsetProcione} mt-7 gap-y-9`}
-                    ></div>
+                <div
+                    className={`flex flex-row items-center sm:-mt-20 ${
+                        selectedLanguage === "eng" ? "-ml-10" : ""
+                    }`}
+                >
+                    <div className={`flex flex-col ${offsetOrso} mt-7`}></div>
                     <div className="flex flex-col items-center">
                         <h1 className="text-grayText text-2xl">{title}</h1>
                         <button
@@ -277,7 +283,11 @@ export default function AttivitaLevels({
                             </div>
                         </button>
                     </div>
-                    <div className={`flex flex-col ${offsetOrso} mt-7 -ml-10`}>
+                    <div
+                        className={`flex flex-col ${offsetOrso} mt-7 ${
+                            selectedLanguage === "eng" ? "-ml-32" : "-ml-10"
+                        }`}
+                    >
                         {children}
                     </div>
                 </div>

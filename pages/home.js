@@ -11,6 +11,7 @@ import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
 import AddSmarter from "@/components/AddSmarter";
 import Link from "next/link";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -92,6 +93,8 @@ export default function Home({
     const [showAddSmarter, setShowAddSmarter] = useState(false);
     const [popupData, setPopupData] = useState(null);
 
+    const selectedLanguage = getSelectedLanguage();
+
     useEffect(() => {
         if (tiles) {
             setClassroom_tiles([...tiles]);
@@ -114,19 +117,28 @@ export default function Home({
 
     //Add a new classroom
     const addBoxHandler = async (url) => {
+        const title =
+            selectedLanguage == "eng"
+                ? "Create a new classroom"
+                : "Crea una nuova classe";
+        const inputPlaceholder =
+            selectedLanguage == "eng" ? "Classroom name" : "Nome della classe";
+        const confirmButtonText = selectedLanguage == "eng" ? "Create" : "Crea";
+        const cancelButtonText =
+            selectedLanguage == "eng" ? "Cancel" : "Annulla";
+
         const { value: newName } = await Swal.fire({
-            title: "Crea una nuova classe",
+            title: title,
             input: "text",
-            inputPlaceholder: "Nome della classe",
+            inputPlaceholder: inputPlaceholder,
             showCancelButton: true,
             closeOnCancel: true,
             confirmButtonColor: "#ff7100",
             cancelButtonColor: "#575757",
-            confirmButtonText: "Crea",
-            cancelButtonText: "Annulla",
+            confirmButtonText: confirmButtonText,
+            cancelButtonText: cancelButtonText,
         });
         if (newName) {
-            // console.log(url);
             try {
                 const newClass = await axios({
                     method: "get",
@@ -135,14 +147,22 @@ export default function Home({
                 });
                 // console.log(newClass.data);
                 setClassroom_tiles([...classroom_tiles, newClass.data]);
+                const title =
+                    selectedLanguage == "eng"
+                        ? "Class created!"
+                        : "Classe creata!";
                 Swal.fire({
-                    title: "Classe creata!",
+                    title: title,
                     icon: "success",
                     confirmButtonColor: "#ff7100",
                 });
             } catch (err) {
+                const title =
+                    selectedLanguage == "eng"
+                        ? "Error creating class"
+                        : "Errore creazione classe";
                 Swal.fire({
-                    title: "Errore creazione classe",
+                    title: title,
                     icon: "error",
                     confirmButtonColor: "#ff7100",
                 });
@@ -182,9 +202,17 @@ export default function Home({
             <>
                 <LayoutLogin user={user} loading={isLoading}>
                     <div className="flex flex-col">
-                        <h1 className="text-3xl">Effettua il login</h1>
+                        <h1 className="text-3xl">
+                            {selectedLanguage === "eng"
+                                ? "Login to continue"
+                                : "Effettua il login"}
+                        </h1>
                         <button className="transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
-                            <Link href="/api/auth/login">Accedi</Link>
+                            <Link href="/api/auth/login">
+                                {selectedLanguage === "eng"
+                                    ? "Login"
+                                    : "Accedi"}
+                            </Link>
                         </button>
                     </div>
                 </LayoutLogin>
@@ -254,7 +282,9 @@ export default function Home({
                         onClick={toggleAddSmarter}
                         className="mx-auto text-gray-600 text-lg"
                     >
-                        AGGIUNGI SMARTER
+                        {selectedLanguage === "eng"
+                            ? "ADD SMARTER"
+                            : "AGGIUNGI SMARTER"}
                     </button>
                 </div>
             </SideBar>

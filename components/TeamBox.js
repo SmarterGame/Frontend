@@ -15,6 +15,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import * as React from "react";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { getSelectedLanguage } from "@/components/lib/language";
 
 function deleteClass(deleteHandler) {
     const swalWithBootstrapButtons = Swal.mixin({
@@ -27,13 +28,21 @@ function deleteClass(deleteHandler) {
         buttonsStyling: false,
     });
 
+    const title =
+        getSelectedLanguage() === "eng"
+            ? "Would you like to delete the class?"
+            : "Desideri eliminare la classe?";
+    const confirmButton =
+        getSelectedLanguage() === "eng" ? "Confirm" : "Conferma";
+    const cancelButton = getSelectedLanguage() === "eng" ? "Cancel" : "Annulla";
+
     swalWithBootstrapButtons
         .fire({
-            title: "Desideri eliminare la classe?",
+            title: title,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Conferma",
-            cancelButtonText: "Annulla",
+            confirmButtonText: confirmButton,
+            cancelButtonText: cancelButton,
             reverseButtons: true,
             focusCancel: true,
         })
@@ -41,11 +50,19 @@ function deleteClass(deleteHandler) {
             if (result.isConfirmed) {
                 try {
                     await deleteHandler();
-                    swalWithBootstrapButtons.fire(
-                        "Eliminata!",
-                        "La classe è stata cancellata.",
-                        "success"
-                    );
+                    if (getSelectedLanguage() === "eng") {
+                        swalWithBootstrapButtons.fire(
+                            "Deleted!",
+                            "The class has been deleted.",
+                            "success"
+                        );
+                    } else {
+                        swalWithBootstrapButtons.fire(
+                            "Eliminata!",
+                            "La classe è stata cancellata.",
+                            "success"
+                        );
+                    }
                 } catch (err) {
                     swalWithBootstrapButtons.fire(
                         "Cancelled",
@@ -54,32 +71,46 @@ function deleteClass(deleteHandler) {
                     );
                     console.log(err);
                 }
-            } else if (
-                /* Read more about handling dismissals below */
-                result.dismiss === Swal.DismissReason.cancel
-            ) {
-                swalWithBootstrapButtons.fire(
-                    "Annullato",
-                    "La classe non è stata cancellata.",
-                    "error"
-                );
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                if (getSelectedLanguage() === "eng") {
+                    swalWithBootstrapButtons.fire(
+                        "Cancelled",
+                        "The class has not been deleted",
+                        "error"
+                    );
+                } else {
+                    swalWithBootstrapButtons.fire(
+                        "Annullato",
+                        "La classe non è stata cancellata",
+                        "error"
+                    );
+                }
             }
         });
 }
 
 async function renameClass(renameHandler) {
+    const title =
+        getSelectedLanguage() === "eng"
+            ? "Rename the class"
+            : "Rinomina la classe";
+    const inputPlaceholder =
+        getSelectedLanguage() === "eng" ? "Class name" : "Nome della classe";
+    const confirmButton =
+        getSelectedLanguage() === "eng" ? "Confirm" : "Conferma";
+    const cancelButton = getSelectedLanguage() === "eng" ? "Cancel" : "Annulla";
+
     await Swal.fire({
-        title: "Rinoima la classe",
+        title: title,
         input: "text",
-        inputPlaceholder: "Nome della classe",
+        inputPlaceholder: inputPlaceholder,
         showCancelButton: true,
         closeOnCancel: true,
         confirmButtonColor: "#ff7100",
         cancelButtonColor: "#575757",
-        confirmButtonText: "Conferma",
-        cancelButtonText: "Annulla",
+        confirmButtonText: confirmButton,
+        cancelButtonText: cancelButton,
     }).then((result) => {
-        console.log(result.value);
         if (result.isConfirmed) {
             if (result.value === "") {
                 Swal.fire({
@@ -120,6 +151,8 @@ const style = {
 function Row(props) {
     const { row, deleteHandler, renameHandler, toggleScegliClasse } = props;
     const [open, setOpen] = useState(false);
+
+    const selectedLanguage = getSelectedLanguage();
 
     return (
         <React.Fragment>
@@ -172,18 +205,22 @@ function Row(props) {
                                 justifyContent: "space-between",
                             }}
                         >
-                            <IconButton
-                                className="sigmar transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-sm shadow-2xl rounded-md duration-300"
+                            <button
+                                className="sigmar w-44 text-xl transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300"
                                 onClick={() => toggleScegliClasse()}
                             >
-                                Scegli classe
-                            </IconButton>
-                            <IconButton
+                                {selectedLanguage === "eng"
+                                    ? "Choose class"
+                                    : "Scegli classe"}
+                            </button>
+                            <button
                                 onClick={() => renameClass(renameHandler)}
-                                className="sigmar transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-sm shadow-2xl rounded-md duration-300"
+                                className="sigmar w-44 text-xl transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white shadow-2xl rounded-md duration-300"
                             >
-                                Cambia nome
-                            </IconButton>
+                                {selectedLanguage === "eng"
+                                    ? "Rename class"
+                                    : "Rinonomina classe"}
+                            </button>
                             <IconButton
                                 onClick={() => deleteClass(deleteHandler)}
                                 // className="text-red-600"

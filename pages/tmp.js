@@ -27,7 +27,11 @@ export const getServerSideProps = async ({ req, res }) => {
 
         const badgeImg = await axios({
             method: "get",
-            url: url + "/badge/getImg/" + idPerfezionisti + "?blocked=true",
+            url:
+                url +
+                "/badge/getImg/" +
+                idPerfezionisti3 +
+                "?blocked=false&eng=true",
             headers: {
                 Authorization: token,
             },
@@ -84,7 +88,62 @@ export default function Tmp({ token, url, badgeImg }) {
         }
     };
 
-    const addBadgeImg = async () => {
+    // const addBadgeImg = async () => {
+    //     const { value: file } = await Swal.fire({
+    //         title: "Seleziona immagine",
+    //         input: "file",
+    //         confirmButtonColor: "#ff7100",
+    //         inputAttributes: {
+    //             accept: "image/*",
+    //             "aria-label": "Upload your profile picture",
+    //         },
+    //     });
+
+    //     // const idPrimoLivello = "644e68e5a7739832235569e8";
+    //     // const idOrdinamenti = "644e6944d21ec4a78bd417ea";
+    //     // const idQuantita = "644e6963c3bdccd2e1b7df76";
+    //     // const idScoiattoliPrudenti = "644e698752640d86fa9da5be";
+    //     // const idRanger = "644e69a00ed8a6e7c4e4b07b";
+    //     // const idPerfezionisti = "644e69c3a0269b4b94a4f0b9";
+    //     // const idPerfezionisti2 = "644e69ea44aa8453d1edc377";
+    //     // const idPerfezionisti3 = "644e69f2dc0afb58fbf07f5f";
+
+    //     if (file) {
+    //         try {
+    //             const formData = new FormData();
+    //             formData.append("file", file);
+    //             await axios({
+    //                 method: "post",
+    //                 url:
+    //                     url +
+    //                     "/badge/modifyImg/" +
+    //                     idPerfezionisti +
+    //                     "?blocked=true",
+    //                 data: formData,
+    //                 headers: {
+    //                     Authorization: "Bearer " + token,
+    //                     "Content-Type": "multipart/form-data",
+    //                 },
+    //             });
+    //             Swal.fire({
+    //                 title: "Immagine caricata!",
+    //                 text: "L'immagine è stata caricata correttamente",
+    //                 icon: "success",
+    //                 confirmButtonText: "Ok",
+    //             });
+    //         } catch (err) {
+    //             Swal.fire({
+    //                 title: "Errore",
+    //                 text: "Si è verificato un errore nel caricare l'immagine",
+    //                 icon: "error",
+    //                 confirmButtonText: "Ok",
+    //             });
+    //             console.log(err);
+    //         }
+    //     }
+    // };
+
+    const addBadgeImgEng = async () => {
         const { value: file } = await Swal.fire({
             title: "Seleziona immagine",
             input: "file",
@@ -110,7 +169,11 @@ export default function Tmp({ token, url, badgeImg }) {
                 formData.append("file", file);
                 await axios({
                     method: "post",
-                    url: url + "/badge/modifyImg/" + idPerfezionisti + "?blocked=true",
+                    url:
+                        url +
+                        "/badge/modifyImg/" +
+                        idPerfezionisti3 +
+                        "?blocked=false&eng=true",
                     data: formData,
                     headers: {
                         Authorization: "Bearer " + token,
@@ -146,6 +209,12 @@ export default function Tmp({ token, url, badgeImg }) {
                 </button>
                 <button className="bg-blue-500" onClick={() => addBadgeImg()}>
                     add Badge img
+                </button>
+                <button
+                    className="bg-blue-500"
+                    onClick={() => addBadgeImgEng()}
+                >
+                    add eng Badge img
                 </button>
                 <Image
                     src={badgeImg}
