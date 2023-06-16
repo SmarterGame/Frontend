@@ -6,10 +6,9 @@ import { useEffect, useState } from "react";
 import _ from "lodash";
 import Swal from "sweetalert2";
 import { getSelectedLanguage } from "@/components/lib/language";
+import { useHasHydrated } from "@/utils/hooks";
 import { convertTagToSymbol } from "@/utils/smarter";
-import { useSmarter, LED_GREEN_ACTION, LED_RED_ACTION, LED_BLUE_ACTION, LED_WHITE_ACTION } from "@/data/mqtt/hooks";
-import { SMARTER_ID_1, SMARTER_ID_2 } from "@/data/mqtt/connector";
-
+import { initMqtt } from "@/data/mqtt/connector";
 
 export const getServerSideProps = async ({ req, res }) => {
     const FEEDBACK = process.env.FEEDBACK;
@@ -88,14 +87,14 @@ export default function Game({
     profileImg,
 }) {
     const router = useRouter();
+    const hydrated = useHasHydrated();
     const { levelGame2, game } = router.query; //game = quantita or ordinamenti
-    const {events: eventsLeft, info: infoLeft, sendAction: sendActionLeft} = useSmarter({smarterId: SMARTER_ID_1});
-    const {events: eventsRight,info: infoRight, sendAction: sendActionRight} = useSmarter({smarterId: SMARTER_ID_2});
+
     const [error, setError] = useState(false);
     const [subLvl, setsubLvl] = useState(0);
     const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
     //const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
-    const [inputValues, setInputValues] = useState(['','','','','','','','','','']); //Used to store the input values
+    const [inputValues, setInputValues] = useState({}); //Used to store the input values
     const [isCorrect, setIsCorrect] = useState([
         false,
         false,
@@ -147,56 +146,69 @@ export default function Game({
             })
             .then((res) => {
                 // console.log(res.data);
-                sendActionLeft(LED_WHITE_ACTION)
-                sendActionRight(LED_WHITE_ACTION)
                 setLvlData(res.data[subLvl]);
-                const inputs = document.querySelectorAll("input[name]");
-                inputs.forEach((input) => {
-                    input.value = "";
-                });
-                setIsCorrect([
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                ]);
-                setInputValues(['','','','','','','','','','']);
+                // const data = _.shuffle(res.data[subLvl]);
+                // setLvlDataShuffled(data);
             })
             .catch((err) => {
                 console.log(err);
             });
+
+        const inputs = document.querySelectorAll("input[name]");
+        inputs.forEach((input) => {
+            input.value = "";
+        });
+        setIsCorrect([
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+        ]);
+        setInputValues({});
     }, [subLvl]);
 
-    // useEffect(() => {
-    //     // update states left smarter
-    //     eventsLeft.map((event) => {
-    //         const convValue = convertTagToSymbol(event?.value);
-        
-    //         setInputValues((prev) => {
-    //             const newArr = [...prev];
-    //             newArr[event.reader] = event.event === "card_placed" ? convValue : "";
-    //             return newArr;
-    //         })
-    //     });
+    // setup connection mqtt
+    useEffect(() => {
+        // prevent to open an extraconnection during server rendering
+        if (!hydrated) return;
 
-    //     // update states right smarter
-    //     eventsRight.map((event) => {
-    //         const convValue = convertTagToSymbol(event?.value);
-        
-    //         setInputValues((prev) => {
-    //             const newArr = [...prev];
-    //             newArr[event.reader + 5] = event.event === "card_placed" ? convValue : "";
-    //             return newArr;
-    //         })
-    //     });
-    // }, [eventsLeft, eventsRight])
+        const topic = 'smarter/letturaRFID';
 
+        const client = initMqtt(topic);
+
+        client.on('connect', () => {
+            console.log('Connected')
+        })
+
+        client.on('message', (topic, payload) => {
+            console.log(payload.toString());
+            const json = JSON.parse(payload.toString());
+
+            const values = Object.keys(json).map((index) => convertTagToSymbol(json[index]?.tag));
+
+            setInputValues(values);
+            console.log(values);
+        })
+
+        return () => {
+            if (client) {
+                client.unsubscribe(topic);
+                client.end(client);
+            }
+        };
+    },[hydrated]);
+
+    //Handle input change
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setInputValues({ ...inputValues, [name]: value });
+    };
 
     //Check if the solution is correct
     useEffect(() => {
@@ -243,24 +255,6 @@ export default function Game({
         }
     }, [inputValues]);
 
-    useEffect(() => {
-        const event = eventsLeft[0];
-        if (event?.event === "card_placed") {
-            const value = convertTagToSymbol(event?.value);
-            sendActionLeft(value == lvlData[event.reader] ? LED_GREEN_ACTION : LED_RED_ACTION);
-            setTimeout(() => sendActionLeft(LED_WHITE_ACTION), 750);
-        }
-    }, [eventsLeft]);
-
-    useEffect(() => {
-        const event = eventsRight[0];
-        if (event?.event === "card_placed") {
-            const value = convertTagToSymbol(event?.value);
-            sendActionRight(value == lvlData[event.reader + 5] ? LED_GREEN_ACTION : LED_RED_ACTION);
-            setTimeout(() => sendActionRight(LED_WHITE_ACTION), 750);
-        }
-    }, [eventsRight]);
-
     //Check if there is an error in the input
     useEffect(() => {
         if (isWrong.includes(true)) setError(true);
@@ -277,14 +271,11 @@ export default function Game({
                         ? "Exercise " + (subLvl + 1) + "/5 completed"
                         : "Esercizio " + (subLvl + 1) + "/5 completato";
 
-                sendActionLeft(LED_GREEN_ACTION);
-                sendActionRight(LED_GREEN_ACTION);
-
                 Swal.fire({
                     title: title,
                     color: "#ff7100",
                     html: html,
-                    timer: 4000,
+                    timer: 2000,
                     timerProgressBar: true,
                     didOpen: () => {
                         Swal.showLoading();
@@ -292,8 +283,6 @@ export default function Game({
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
                         setsubLvl((prevState) => prevState + 1);
-                        sendActionLeft(LED_BLUE_ACTION);
-                        sendActionRight(LED_BLUE_ACTION);
                     }
                 });
             } else {
@@ -310,38 +299,19 @@ export default function Game({
                     title: title,
                     color: "#ff7100",
                     html: html,
-                    timer: 4000,
+                    timer: 2000,
                     timerProgressBar: true,
                     didOpen: () => {
                         Swal.showLoading();
                     },
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
-                        // TODO: maybe need to send a special action to smarte
-                        sendActionLeft(LED_BLUE_ACTION);
-                        sendActionRight(LED_BLUE_ACTION);
                         gameFinished();
                     }
                 });
             }
         }
     }, [isCorrect]);
-
-    useEffect(() => {
-        if (!isCorrect.every(Boolean)) {
-            console.log("Enter")
-            console.log(isCorrect);
-            setInputValues(prev => [...infoLeft, ...prev.filter((_,id) => id >= 5)]);
-        }
-    }, [infoLeft])
-
-    useEffect(() => {
-        if (!isCorrect.every(Boolean)) {
-            console.log("Enter")
-            console.log(isCorrect);
-            setInputValues(prev => [...prev.filter((_,id) => id < 5),...infoRight]);
-        }
-    }, [infoRight])
 
     //API call to set game as finished
     const gameFinished = async () => {
@@ -431,6 +401,7 @@ export default function Game({
                                 <div
                                     className="text-6xl text-center w-20"
                                     name={index}
+                                    onChange={handleInputChange}
                                 >{inputValues?.[index]}</div>
                             </div>
                         ))}
