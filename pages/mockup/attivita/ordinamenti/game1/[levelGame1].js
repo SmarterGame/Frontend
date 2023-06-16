@@ -8,6 +8,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import _ from "lodash";
 import { getSelectedLanguage } from "@/components/lib/language";
+import { useHasHydrated } from "@/utils/hooks";
+import { convertTagToSymbol } from "@/utils/smarter";
+import { initMqtt } from "@/data/mqtt/connector";
 
 export const getServerSideProps = async ({ req, res }) => {
     const FEEDBACK = process.env.FEEDBACK;
@@ -87,6 +90,7 @@ export default function Game1({
     profileImg,
 }) {
     const router = useRouter();
+    const hydrated = useHasHydrated();
     const { levelGame1, game } = router.query; //game = quantita or ordinamenti
 
     const [error, setError] = useState(false);
@@ -374,6 +378,37 @@ export default function Game1({
         }
     }, [isAllCorrect]);
 
+    // setup connection mqtt
+    useEffect(() => {
+        // prevent to open an extraconnection during server rendering
+        if (!hydrated) return;
+
+        const topic = 'smarter/letturaRFID';
+
+        const client = initMqtt(topic);
+
+        client.on('connect', () => {
+            console.log('Connected')
+        })
+
+        client.on('message', (topic, payload) => {
+            console.log(payload.toString());
+            const json = JSON.parse(payload.toString());
+
+            const values = Object.keys(json).map((index) => convertTagToSymbol(json[index]?.tag));
+
+            setInputValues(values);
+            console.log(values);
+        })
+
+        return () => {
+            if (client) {
+                client.unsubscribe(topic);
+                client.end(client);
+            }
+        };
+    },[hydrated]);
+
     //API call to set game as finished
     const gameFinished = async () => {
         try {
@@ -501,11 +536,16 @@ export default function Game1({
                                             : `` //If feedback is false
                                     }  w-full flex justify-center items-center text-8xl`}
                                 >
-                                    <input
+                                    {/* <input
                                         className="text-6xl text-center w-20"
                                         name={index}
-                                        onChange={handleInputChangeRight}
-                                    ></input>
+                                        onChange={handleInputChange}
+                                    ></input> */}
+                                    <div
+                                        className="text-6xl text-center w-20"
+                                        name={index}
+                                        onChange={handleInputChange}
+                                    >{inputValues?.[index]}</div>
                                 </div>
                             ))}
                         </div>
