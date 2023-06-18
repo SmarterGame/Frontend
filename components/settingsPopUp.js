@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import axios from "axios";
+import IndividualModePopUP from "./IndividualModePopUp";
 import { getSelectedLanguage } from "@/components/lib/language";
 
 export default function PopUp({
@@ -33,6 +34,7 @@ export default function PopUp({
     const [smarter1, setSmarter1] = useState(selectedSmarters[0]);
     const [smarter2, setSmarter2] = useState(selectedSmarters[1]);
     const [modalita, setModalita] = useState(selectedMode);
+    const [individualMode, setIndividualMode] = useState(false);
 
     const [swalPopup, setSwalPopup] = useState(false);
 
@@ -62,52 +64,93 @@ export default function PopUp({
 
     function handleChangeSmarter1(event) {
         const selectedOption = event.target.value;
-        if (selectedOption === "Nessuno smarter selezionato") setSmarter1(null);
+        if (
+            selectedOption === "Nessuno smarter selezionato" ||
+            selectedOption === "No smarter selected"
+        )
+            setSmarter1(null);
         else setSmarter1(selectedOption);
     }
 
     function handleChangeSmarter2(event) {
         const selectedOption = event.target.value;
-        if (selectedOption === "Nessuno smarter selezionato") setSmarter2(null);
+        if (
+            selectedOption === "Nessuno smarter selezionato" ||
+            selectedOption === "No smarter selected"
+        )
+            setSmarter2(null);
         else setSmarter2(selectedOption);
     }
 
     function handleChangeModalita(event) {
         const selectedOption = event.target.value;
-        if (selectedOption === "Nessuna modalità selezionata") {
+        if (
+            selectedOption === "Nessuna modalità selezionata" ||
+            selectedOption === "No mode selected"
+        ) {
             setModalita(null);
         } else {
             if (selectedOption === "Low positive interdependence")
                 setModalita(1);
             else if (selectedOption === "High positive interdependence")
                 setModalita(2);
+            else if (selectedOption === "Individual") setModalita(3);
         }
     }
 
+    const toggleIndividualMode = async () => {
+        setIndividualMode(!individualMode);
+    };
+
     async function handleConferma() {
         setSwalPopup(true);
-        if (smarter1 === null || smarter2 === null) {
+        if ((smarter1 === null || smarter2 === null) && modalita !== 3) {
+            const title =
+                selectedLanguage === "eng"
+                    ? "Select both smarters"
+                    : "Selezionare entrambi gli smarter";
             Swal.fire({
                 icon: "error",
-                title: "Selezionare entrambi gli smarter",
+                title: title,
             }).then(() => {
                 setSwalPopup(false);
             });
             return;
         }
         if (modalita === null) {
+            const title =
+                selectedLanguage === "eng"
+                    ? "Select a mode"
+                    : "Selezionare una modalità";
             Swal.fire({
                 icon: "error",
-                title: "Selezionare una modalità",
+                title: title,
             }).then(() => {
                 setSwalPopup(false);
             });
             return;
         }
         if (smarter1 === smarter2) {
+            const title =
+                selectedLanguage === "eng"
+                    ? "Select two different smarters"
+                    : "Selezionare due smarter diversi";
             Swal.fire({
                 icon: "error",
                 title: "Selezionare due smarter diversi",
+            }).then(() => {
+                setSwalPopup(false);
+            });
+            return;
+        }
+        if (modalita === 3 && smarter2 !== null) {
+            const title =
+                selectedLanguage === "eng"
+                    ? "Select only smarter 1"
+                    : "Selezionare solo smarter 1";
+            Swal.fire({
+                icon: "error",
+                title: "Selezionare solo smarter 1",
             }).then(() => {
                 setSwalPopup(false);
             });
@@ -119,20 +162,26 @@ export default function PopUp({
             mode: modalita,
             classId: classId,
         };
-        try {
-            const result = await axios({
-                method: "post",
-                url: url + "/user/saveSmarterModeClass",
-                data: data,
-                headers: { Authorization: "Bearer " + token },
-            });
-            // console.log(result.data);
 
-            if (router.asPath === "/home") router.push("/mockup/profilo");
-            //Close the popup
-            onClose();
-        } catch (err) {
-            console.log(err);
+        //Individual mode
+        if (modalita === 3) {
+            toggleIndividualMode();
+        } else {
+            try {
+                const result = await axios({
+                    method: "post",
+                    url: url + "/user/saveSmarterModeClass",
+                    data: data,
+                    headers: { Authorization: "Bearer " + token },
+                });
+                // console.log(result.data);
+
+                if (router.asPath === "/home") router.push("/mockup/profilo");
+                //Close the popup
+                onClose();
+            } catch (err) {
+                console.log(err);
+            }
         }
     }
 
@@ -144,7 +193,7 @@ export default function PopUp({
                 } transition-transform duration-300 ease-in-out fixed inset-0 z-50`}
             >
                 <section className="modal-main rounded-2xl" ref={popUpRef}>
-                    <div className="flex flex-col items-center ">
+                    <div className="flex flex-col items-center">
                         <h1 className="text-grayText text-4xl mt-4 mb-10">
                             {selectedLanguage === "eng"
                                 ? "SELECT SMARTERs"
@@ -245,6 +294,7 @@ export default function PopUp({
                                 </option>
                                 <option>Low positive interdependence</option>
                                 <option>High positive interdependence</option>
+                                <option>Individual</option>
                             </select>
                         </div>
 
@@ -272,6 +322,14 @@ export default function PopUp({
                     </div>
                 </section>
             </div>
+
+            <IndividualModePopUP
+                token={token}
+                url={url}
+                classId={classId}
+                show={individualMode}
+                onClose={toggleIndividualMode}
+            />
         </>
     );
 }
