@@ -99,8 +99,9 @@ export default function IndividualModePopUP({
                     url: url + "/user/setIndividual",
                     data: data,
                     headers: { Authorization: "Bearer " + token },
+                }).then((res) => {
+                    router.push("/mockup/profilo");
                 });
-                router.push("/mockup/profilo");
                 onClose();
             } catch (err) {
                 console.log(err);

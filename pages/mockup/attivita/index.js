@@ -51,14 +51,31 @@ export const getServerSideProps = async ({ req, res }) => {
         }
 
         //Fetch classroom data
-        const classData = await axios({
-            method: "get",
-            url: url + "/classroom/getClassroomData/" + user.data.SelectedClass,
-            headers: {
-                Authorization: token,
-            },
-        });
-        // console.log(classData.data);
+        let classData;
+        //Load individual data if user is individual
+        if (user.data.IsIndividual) {
+            classData = await axios({
+                method: "get",
+                url:
+                    url + "/individual/getData/" + user.data.SelectedIndividual,
+                headers: {
+                    Authorization: token,
+                },
+            });
+            // console.log(classData.data);
+        } else {
+            classData = await axios({
+                method: "get",
+                url:
+                    url +
+                    "/classroom/getClassroomData/" +
+                    user.data.SelectedClass,
+                headers: {
+                    Authorization: token,
+                },
+            });
+            // console.log(classData.data);
+        }
 
         return {
             props: {
