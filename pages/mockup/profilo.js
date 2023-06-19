@@ -115,7 +115,7 @@ export default function Profilo({
     classRoom = { Ghiande: 0, Exp: 0 },
     selectedOptions,
     profileImg,
-    isIndividual
+    isIndividual,
 }) {
     const selectedLanguage = getSelectedLanguage();
 

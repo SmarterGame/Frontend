@@ -2,7 +2,15 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { getSession } from "@auth0/nextjs-auth0";
 import LayoutLogin from "../components/LayoutLogin";
 import Link from "next/link";
-import { getSelectedLanguage } from "@/components/lib/language";
+import {
+    getSelectedLanguage,
+    setSelectedLanguage,
+} from "@/components/lib/language";
+import { useRouter } from "next/router";
+import Image from "next/image";
+import ita from "@/public/ita.png";
+import eng from "@/public/eng.png";
+import { useState } from "react";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -18,10 +26,26 @@ export const getServerSideProps = async ({ req, res }) => {
 };
 
 export default function Home({ token, url }) {
+    const router = useRouter();
+
     const { user, isLoading } = useUser();
 
     const selectedLanguage = getSelectedLanguage();
-    console.log(selectedLanguage);
+
+    const [flag, setFlag] = useState(eng);
+
+    //Switch the language
+    const changeLanguageHandler = () => {
+        if (getSelectedLanguage() === "eng") {
+            setSelectedLanguage("ita");
+            setFlag(ita);
+        } else {
+            setSelectedLanguage("eng");
+            setFlag(eng);
+        }
+
+        router.replace(router.asPath);
+    };
 
     return (
         <>
@@ -74,23 +98,41 @@ export default function Home({ token, url }) {
                                 </h1>
                                 <button className="transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
                                     <Link href="/api/auth/login">
-                                        {selectedLanguage === "eng" ? "Login" : "Accedi"}
+                                        {selectedLanguage === "eng"
+                                            ? "Login"
+                                            : "Accedi"}
                                     </Link>
                                 </button>
                             </div>
                         ) : (
                             <div className="mx-auto text-center">
                                 <h1 className="text-3xl mt-10 font-bold">
-                                    {selectedLanguage === "eng" ? "Logout" : "Esegui il Logout"}
+                                    {selectedLanguage === "eng"
+                                        ? "Logout"
+                                        : "Esegui il Logout"}
                                 </h1>
                                 <button className="transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
                                     <Link href="/api/auth/logout">
-                                        {selectedLanguage === "eng" ? "Logout" : "Esci"}
+                                        {selectedLanguage === "eng"
+                                            ? "Logout"
+                                            : "Esci"}
                                     </Link>
                                 </button>
                             </div>
                         )}
                     </div>
+                </div>
+
+                <div className="fixed top-5 right-5">
+                    <button
+                        onClick={changeLanguageHandler}
+                        className="transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl px-4 py-2 rounded-md duration-300"
+                    >
+                        <div className="flex flex-row gap-x-4">
+                            {selectedLanguage}
+                            <Image src={flag} alt="badniera" width={40} />
+                        </div>
+                    </button>
                 </div>
             </LayoutLogin>
         </>
