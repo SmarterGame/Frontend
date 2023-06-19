@@ -278,7 +278,8 @@ export default function Game({
                     "&level=" +
                     levelGame2 +
                     "&error=" +
-                    error,
+                    error +
+                    "&individual=false",
                 headers: {
                     Authorization: "Bearer " + token,
                 },
@@ -298,9 +299,9 @@ export default function Game({
 
     return (
         <>
-            <button onClick={gameFinished} className="bg-red-500">
+            {/* <button onClick={gameFinished} className="bg-red-500">
                 test API
-            </button>
+            </button> */}
 
             <LayoutGames
                 classRoom={classRoom}

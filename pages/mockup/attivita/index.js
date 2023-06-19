@@ -23,13 +23,14 @@ export const getServerSideProps = async ({ req, res }) => {
         const token = "Bearer " + session.accessToken;
 
         //Fetch id of selected classroom
-        const user = await axios({
+        let user = await axios({
             method: "get",
             url: url + "/user/me",
             headers: {
                 Authorization: token,
             },
         });
+        if (user.data.IsIndividual === true) user.data.SelectedMode = "3";
         //console.log(user.data);
 
         //Fetch profile image

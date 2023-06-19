@@ -98,6 +98,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 classRoom: classData.data,
                 selectedOptions: selectedOptions,
                 profileImg: imageUrl,
+                isIndividual: user.data.IsIndividual,
             },
         };
     } catch (err) {
@@ -114,6 +115,7 @@ export default function Profilo({
     classRoom = { Ghiande: 0, Exp: 0 },
     selectedOptions,
     profileImg,
+    isIndividual
 }) {
     const selectedLanguage = getSelectedLanguage();
 
@@ -131,6 +133,7 @@ export default function Profilo({
                 boxes={boxes}
                 classRoom={classRoom}
                 selectedOptions={selectedOptions}
+                isIndividual={isIndividual}
             >
                 <div className="relative flex flex-col mx-auto w-1/2 min-w-[700px] bg-slate-200 rounded-xl shadow-2xl mt-8 mb-4 z-20">
                     <div className="relative">

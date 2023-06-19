@@ -78,9 +78,13 @@ export default function AttivitaLevels({
                                     router.push(
                                         "./attivita/quantita/game1/3?game=quantita"
                                     );
-                                else
+                                if (selectedMode === "2")
                                     router.push(
                                         "./attivita/quantita/game2/3?game=quantita"
+                                    );
+                                if (selectedMode === "3")
+                                    router.push(
+                                        "./attivita/quantita/individual/3?game=quantita"
                                     );
                             }}
                         >
@@ -120,9 +124,13 @@ export default function AttivitaLevels({
                                     router.push(
                                         "./attivita/quantita/game1/2?game=quantita"
                                     );
-                                else
+                                if (selectedMode === "2")
                                     router.push(
                                         "./attivita/quantita/game2/2?game=quantita"
+                                    );
+                                if (selectedMode === "3")
+                                    router.push(
+                                        "./attivita/quantita/individual/2?game=quantita"
                                     );
                             }}
                         >
@@ -156,9 +164,13 @@ export default function AttivitaLevels({
                                     router.push(
                                         "./attivita/quantita/game1/1?game=quantita"
                                     );
-                                else
+                                if (selectedMode === "2")
                                     router.push(
                                         "./attivita/quantita/game2/1?game=quantita"
+                                    );
+                                if (selectedMode === "3")
+                                    router.push(
+                                        "./attivita/quantita/individual/1?game=quantita"
                                     );
                             }}
                         >
@@ -194,9 +206,13 @@ export default function AttivitaLevels({
                                     router.push(
                                         "./attivita/ordinamenti/game1/3?game=ordinamenti"
                                     );
-                                else
+                                if (selectedMode === "2")
                                     router.push(
                                         "./attivita/ordinamenti/game2/3?game=ordinamenti"
+                                    );
+                                if (selectedMode === "3")
+                                    router.push(
+                                        "./attivita/ordinamenti/individual/3?game=ordinamenti"
                                     );
                             }}
                         >
@@ -236,9 +252,13 @@ export default function AttivitaLevels({
                                     router.push(
                                         "./attivita/ordinamenti/game1/2?game=ordinamenti"
                                     );
-                                else
+                                if (selectedMode === "2")
                                     router.push(
                                         "./attivita/ordinamenti/game2/2?game=ordinamenti"
+                                    );
+                                if (selectedMode === "3")
+                                    router.push(
+                                        "./attivita/ordinamenti/individual/2?game=ordinamenti"
                                     );
                             }}
                         >
@@ -272,9 +292,13 @@ export default function AttivitaLevels({
                                     router.push(
                                         "./attivita/ordinamenti/game1/1?game=ordinamenti"
                                     );
-                                else
+                                if (selectedMode === "2")
                                     router.push(
                                         "./attivita/ordinamenti/game2/1?game=ordinamenti"
+                                    );
+                                if (selectedMode === "3")
+                                    router.push(
+                                        "./attivita/ordinamenti/individual/1?game=ordinamenti"
                                     );
                             }}
                         >
