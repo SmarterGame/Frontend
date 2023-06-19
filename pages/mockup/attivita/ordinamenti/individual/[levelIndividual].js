@@ -102,6 +102,8 @@ export default function Game({
     ]);
     const [isWrong, setIsWrong] = useState([false, false, false, false, false]);
 
+    const [isCrescente, setisCrescente] = useState(true);
+
     const selectedLanguage = getSelectedLanguage();
 
     //Get level data
@@ -113,6 +115,11 @@ export default function Game({
                 },
             })
             .then((res) => {
+                //Check if the array is in crescent order
+                if (res.data[subLvl][0] > res.data[subLvl][1]) {
+                    setisCrescente(false);
+                } else setisCrescente(true);
+
                 // console.log(res.data);
                 setLvlData(res.data[subLvl]);
                 const data = _.shuffle(res.data[subLvl]);
@@ -287,8 +294,12 @@ export default function Game({
                 <div className="flex mt-6">
                     <h1 className="mx-auto text-2xl">
                         {selectedLanguage === "eng"
-                            ? "place the tiles “apples” corresponding to the numbers"
-                            : "Inserisci le tessere “mela” che corrispondono ai numeri"}
+                            ? isCrescente
+                                ? "Arrange the numbers in increasing orders using the tiles “apples”"
+                                : "Arrange the numbers in decreasing orders using the tiles “apples”"
+                            : isCrescente
+                            ? "Ordina i numeri in ordine crescente, usando le tessere “mela”"
+                            : "Ordina i numeri in ordine decrescente, usando le tessere “mela”"}
                     </h1>
                 </div>
                 <div className="relative flex flex-col justify-center md:h-[55vh] lg:h-[60vh] mt-10 ml-4 mr-4 z-10">
