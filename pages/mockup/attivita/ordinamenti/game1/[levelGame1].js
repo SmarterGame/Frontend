@@ -6,7 +6,6 @@ import { getSession } from "@auth0/nextjs-auth0";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import _ from "lodash";
 import { getSelectedLanguage } from "@/components/lib/language";
 
 export const getServerSideProps = async ({ req, res }) => {
@@ -91,8 +90,10 @@ export default function Game1({
 
     const [error, setError] = useState(false);
     const [subLvl, setsubLvl] = useState(0);
-    const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
-    const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
+    const [lvlDataLeft, setLvlDataLeft] = useState([]);
+    const [lvlDataRight, setLvlDataRight] = useState([]);
+    const [lvlDataLeftCorrect, setLvlDataLeftCorrect] = useState([]);
+    const [lvlDataRightCorrect, setLvlDataRightCorrect] = useState([]);
     const [inputValuesLeft, setinputValuesLeft] = useState({});
     const [isCorrectLeft, setisCorrectLeft] = useState([
         false,
@@ -138,14 +139,32 @@ export default function Game1({
                 },
             })
             .then((res) => {
+                const tmp = res.data[subLvl].pop(); //tmp = 0 incremento, tmp = 1 decreasing
+                const data = [...res.data[subLvl]];
                 //Check if the array is in crescent order
-                if (res.data[subLvl][0] > res.data[subLvl][1]) {
+                if (tmp) {
                     setisCrescente(false);
-                } else setisCrescente(true);
+                    //Set the correct solution
+                    setLvlDataLeftCorrect(
+                        res.data[subLvl].slice(0, 5).sort((a, b) => b - a)
+                    );
+                    setLvlDataRightCorrect(
+                        res.data[subLvl].slice(5, 10).sort((a, b) => b - a)
+                    );
+                } else {
+                    setisCrescente(true);
+                    //Set the correct solution
+                    setLvlDataLeftCorrect(
+                        res.data[subLvl].slice(0, 5).sort((a, b) => a - b)
+                    );
+                    setLvlDataRightCorrect(
+                        res.data[subLvl].slice(5, 10).sort((a, b) => a - b)
+                    );
+                }
 
-                setLvlData(res.data[subLvl]);
-                const data = _.shuffle(res.data[subLvl]);
-                setLvlDataShuffled(data);
+                //Set the data
+                setLvlDataLeft(data.slice(0, 5));
+                setLvlDataRight(data.slice(5, 10));
             })
             .catch((err) => {
                 console.log(err);
@@ -161,10 +180,6 @@ export default function Game1({
         setinputValuesRight({});
     }, [subLvl]);
 
-    useEffect(() => {
-        console.log(isCrescente);
-    }, [isCrescente]);
-
     //Handle left input change
     const handleInputChangeLeft = (e) => {
         const { name, value } = e.target;
@@ -179,29 +194,8 @@ export default function Game1({
 
     //Check if input of the left smarter is correct
     useEffect(() => {
-        // axios
-        //     .post(
-        //         url + "/games/insertedCard/lpi",
-        //         {
-        //             game, //quantita o ordinamenti
-        //             levelGame1,
-        //             subLvl,
-        //             inputValuesLeft,
-        //         },
-        //         {
-        //             headers: {
-        //                 Authorization: "Bearer " + token,
-        //             },
-        //         }
-        //     )
-        //     .then((res) => {
-        //         console.log(res);
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
-        for (let i = 0; i < lvlData.length; i++) {
-            if (inputValuesLeft[i] == lvlData[i]) {
+        for (let i = 0; i < lvlDataLeftCorrect.length; i++) {
+            if (inputValuesLeft[i] == lvlDataLeftCorrect[i]) {
                 setisCorrectLeft((prevState) => {
                     const newState = [...prevState];
                     newState[i] = true;
@@ -267,8 +261,8 @@ export default function Game1({
 
     //Check if input of the right smarter is correct
     useEffect(() => {
-        for (let i = 0; i < lvlData.length; i++) {
-            if (inputValuesRight[i] == lvlData[i]) {
+        for (let i = 0; i < lvlDataRightCorrect.length; i++) {
+            if (inputValuesRight[i] == lvlDataRightCorrect[i]) {
                 setisCorrectRight((prevState) => {
                     const newState = [...prevState];
                     newState[i] = true;
@@ -448,7 +442,7 @@ export default function Game1({
                             Smarter 1
                         </h1>
                         <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-4 h-full">
-                            {lvlDataShuffled.map((item, index) => (
+                            {lvlDataLeft.map((item, index) => (
                                 <div
                                     key={index}
                                     className="bg-slate-200 w-full flex justify-center items-center text-8xl"
@@ -491,7 +485,7 @@ export default function Game1({
                             Smarter 2
                         </h1>
                         <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-4 h-full">
-                            {lvlDataShuffled.map((item, index) => (
+                            {lvlDataRight.map((item, index) => (
                                 <div
                                     key={index}
                                     className="bg-slate-200 border-4 w-full flex justify-center items-center text-8xl"

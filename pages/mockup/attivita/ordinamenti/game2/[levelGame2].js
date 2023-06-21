@@ -3,7 +3,6 @@ import axios from "axios";
 import { getSession } from "@auth0/nextjs-auth0";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import _ from "lodash";
 import Swal from "sweetalert2";
 import { getSelectedLanguage } from "@/components/lib/language";
 
@@ -88,8 +87,8 @@ export default function Game({
 
     const [error, setError] = useState(false);
     const [subLvl, setsubLvl] = useState(0);
-    const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
-    const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
+    const [lvlData, setLvlData] = useState([]); //Used to display the data
+    const [lvldDataCorrect, setLvlDataCorrect] = useState([]); //Used to check the correct solution
     const [inputValues, setInputValues] = useState({}); //Used to store the input values
     const [isCorrect, setIsCorrect] = useState([
         false,
@@ -129,14 +128,20 @@ export default function Game({
                 },
             })
             .then((res) => {
+                const tmp = res.data[subLvl].pop(); //tmp = 0 incremento, tmp = 1 decreasing
+                const data = [...res.data[subLvl]];
                 //Check if the array is in crescent order
-                if (res.data[subLvl][0] > res.data[subLvl][1]) {
+                if (tmp) {
                     setisCrescente(false);
-                } else setisCrescente(true);
-                
-                setLvlData(res.data[subLvl]);
-                const data = _.shuffle(res.data[subLvl]);
-                setLvlDataShuffled(data);
+                    //sort the array in decrescent order
+                    setLvlDataCorrect(res.data[subLvl].sort((a, b) => b - a));
+                } else {
+                    setisCrescente(true);
+                    //sort the array in crescent order
+                    setLvlDataCorrect(res.data[subLvl].sort((a, b) => a - b));
+                }
+
+                setLvlData(data);
             })
             .catch((err) => {
                 console.log(err);
@@ -169,8 +174,8 @@ export default function Game({
 
     //Check if the solution is correct
     useEffect(() => {
-        for (let i = 0; i < lvlData.length; i++) {
-            if (inputValues[i] == lvlData[i]) {
+        for (let i = 0; i < lvldDataCorrect.length; i++) {
+            if (inputValues[i] == lvldDataCorrect[i]) {
                 setIsCorrect((prevState) => {
                     const newState = [...prevState];
                     newState[i] = true;
@@ -318,7 +323,7 @@ export default function Game({
             >
                 <div className="flex mt-6">
                     <h1 className="mx-auto text-2xl">
-                    {selectedLanguage === "eng"
+                        {selectedLanguage === "eng"
                             ? isCrescente
                                 ? "Arrange the numbers in increasing orders using the tiles “apples”"
                                 : "Arrange the numbers in decreasing orders using the tiles “apples”"
@@ -329,7 +334,7 @@ export default function Game({
                 </div>
                 <div className="relative flex flex-col justify-center md:h-[55vh] lg:h-[60vh] mt-10 ml-4 mr-4 z-10">
                     <div className="grid grid-cols-10 justify-items-center gap-y-4 gap-x-4 h-full">
-                        {lvlDataShuffled.map((item, index) => (
+                        {lvlData.map((item, index) => (
                             <div
                                 key={index}
                                 className="bg-slate-200 w-full flex justify-center items-center text-8xl"
