@@ -1,7 +1,6 @@
 import { useHasHydrated } from "@/utils/hooks";
 import { useEffect, useState, useMemo } from "react";
 import { initMqtt } from "./connector";
-import { convertTagToSymbol } from "@/utils/smarter";
 
 const EVENT_TAG = '/event';
 const INFO_TAG = '/info';
@@ -49,7 +48,6 @@ export const useSmarter = (props) => {
 
     client.on('message', (topic, payload) => {
         try {
-          console.log(payload.toString())
           const json = JSON.parse(payload.toString());
 
           switch(topic) {
@@ -57,14 +55,13 @@ export const useSmarter = (props) => {
                 setEvents(json);
               break;
             case infoTopic:
-              if (Array.isArray(json) && JSON.stringify(info) !== JSON.stringify(json)) setInfo(json.map((obj => convertTagToSymbol(obj.value))));
+              if (Array.isArray(json) && JSON.stringify(info) !== JSON.stringify(json)) setInfo(json);
               break;
             default:
               console.log("event not registered!");
           }
         } catch (err) {
           setError(err);
-          console.log(err);
           console.log("invalid message format");
           return;
         }

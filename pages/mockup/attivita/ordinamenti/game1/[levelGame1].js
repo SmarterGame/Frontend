@@ -7,10 +7,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import _ from "lodash";
+import { useSmarter, LED_BLUE_ACTION, LED_GREEN_ACTION } from "@/data/mqtt/hooks";
 import { getSelectedLanguage } from "@/components/lib/language";
-import { useHasHydrated } from "@/utils/hooks";
 import { convertTagToSymbol } from "@/utils/smarter";
-import { initMqtt } from "@/data/mqtt/connector";
+import { SMARTER_ID_1, SMARTER_ID_2 } from "@/data/mqtt/connector";
 
 export const getServerSideProps = async ({ req, res }) => {
     const FEEDBACK = process.env.FEEDBACK;
@@ -90,16 +90,14 @@ export default function Game1({
     profileImg,
 }) {
     const router = useRouter();
-    const hydrated = useHasHydrated();
     const { levelGame1, game } = router.query; //game = quantita or ordinamenti
-
+    const {events: eventsLeft, sendAction: sendActionLeft} = useSmarter({smarterId: SMARTER_ID_1});
+    const {events: eventsRight, sendAction: sendActionRight} = useSmarter({smarterId: SMARTER_ID_2});
     const [error, setError] = useState(false);
     const [subLvl, setsubLvl] = useState(0);
-    const [lvlDataLeft, setLvlDataLeft] = useState([]);
-    const [lvlDataRight, setLvlDataRight] = useState([]);
-    const [lvlDataLeftCorrect, setLvlDataLeftCorrect] = useState([]);
-    const [lvlDataRightCorrect, setLvlDataRightCorrect] = useState([]);
-    const [inputValuesLeft, setinputValuesLeft] = useState({});
+    const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
+    const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
+    const [inputValuesLeft, setinputValuesLeft] = useState(new Array(5));
     const [isCorrectLeft, setisCorrectLeft] = useState([
         false,
         false,
@@ -114,7 +112,7 @@ export default function Game1({
         false,
         false,
     ]);
-    const [inputValuesRight, setinputValuesRight] = useState({});
+    const [inputValuesRight, setinputValuesRight] = useState(new Array(5));
     const [isCorrectRight, setisCorrectRight] = useState([
         false,
         false,
@@ -195,21 +193,9 @@ export default function Game1({
         });
         setisCorrectLeft([false, false, false, false, false]);
         setisCorrectRight([false, false, false, false, false]);
-        setinputValuesLeft({});
-        setinputValuesRight({});
+        setinputValuesLeft(new Array(5));
+        setinputValuesRight(new Array(5));
     }, [subLvl]);
-
-    //Handle left input change
-    const handleInputChangeLeft = (e) => {
-        const { name, value } = e.target;
-        setinputValuesLeft({ ...inputValuesLeft, [name]: value });
-    };
-
-    //Handle right input change
-    const handleInputChangeRight = (e) => {
-        const { name, value } = e.target;
-        setinputValuesRight({ ...inputValuesRight, [name]: value });
-    };
 
     //Check if input of the left smarter is correct
     useEffect(() => {
@@ -356,6 +342,9 @@ export default function Game1({
                         ? "Exercise " + (subLvl + 1) + "/5 completed"
                         : "Esercizio " + (subLvl + 1) + "/5 completato";
 
+                sendActionLeft(LED_GREEN_ACTION);
+                sendActionRight(LED_GREEN_ACTION);
+
                 Swal.fire({
                     title: title,
                     color: "#ff7100",
@@ -367,6 +356,8 @@ export default function Game1({
                     },
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
+                        sendActionLeft(LED_BLUE_ACTION);
+                        sendActionRight(LED_BLUE_ACTION);
                         setsubLvl((prevState) => prevState + 1);
                     }
                 });
@@ -380,6 +371,9 @@ export default function Game1({
                         ? "Level " + levelGame1 + " completed"
                         : "Livello " + levelGame1 + " completato";
 
+                sendActionLeft(LED_GREEN_ACTION);
+                sendActionRight(LED_GREEN_ACTION);
+
                 Swal.fire({
                     title: title,
                     color: "#ff7100",
@@ -391,6 +385,8 @@ export default function Game1({
                     },
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
+                        sendActionLeft(LED_BLUE_ACTION);
+                        sendActionRight(LED_BLUE_ACTION);
                         gameFinished();
                     }
                 });
@@ -398,36 +394,29 @@ export default function Game1({
         }
     }, [isAllCorrect]);
 
-    // setup connection mqtt
     useEffect(() => {
-        // prevent to open an extraconnection during server rendering
-        if (!hydrated) return;
+        // update states left smarter
+        eventsLeft.map((event) => {
+            const convValue = convertTagToSymbol(event?.value);
+        
+            setinputValuesLeft((prev) => {
+                const newArr = [...prev];
+                newArr[event.reader] = event.event === "card_placed" ? convValue : "";
+                return newArr;
+            })
+        });
 
-        const topic = 'smarter/letturaRFID';
-
-        const client = initMqtt(topic);
-
-        client.on('connect', () => {
-            console.log('Connected')
-        })
-
-        client.on('message', (topic, payload) => {
-            console.log(payload.toString());
-            const json = JSON.parse(payload.toString());
-
-            const values = Object.keys(json).map((index) => convertTagToSymbol(json[index]?.tag));
-
-            setInputValues(values);
-            console.log(values);
-        })
-
-        return () => {
-            if (client) {
-                client.unsubscribe(topic);
-                client.end(client);
-            }
-        };
-    },[hydrated]);
+        // update states right smarter
+        eventsRight.map((event) => {
+            const convValue = convertTagToSymbol(event?.value);
+        
+            setinputValuesRight((prev) => {
+                const newArr = [...prev];
+                newArr[event.reader] = event.event === "card_placed" ? convValue : "";
+                return newArr;
+            })
+        });
+    }, [eventsLeft, eventsRight])
 
     //API call to set game as finished
     const gameFinished = async () => {
@@ -527,11 +516,15 @@ export default function Game1({
                                             : `` //If feedback is false
                                     }  w-full flex justify-center items-center text-8xl`}
                                 >
-                                    <input
+                                    {/* <input
                                         className="text-6xl text-center w-20"
                                         name={index}
                                         onChange={handleInputChangeLeft}
-                                    ></input>
+                                    ></input> */}
+                                    <div
+                                        className="text-6xl text-center w-20"
+                                        name={index}
+                                    >{inputValuesLeft?.[index]}</div>
                                 </div>
                             ))}
                         </div>
@@ -578,8 +571,7 @@ export default function Game1({
                                     <div
                                         className="text-6xl text-center w-20"
                                         name={index}
-                                        onChange={handleInputChange}
-                                    >{inputValues?.[index]}</div>
+                                    >{inputValuesRight?.[index]}</div>
                                 </div>
                             ))}
                         </div>

@@ -1,6 +1,5 @@
 export const convertTagToSymbol = (input) => {
     const polishInput = input?.replaceAll("_","")
-    console.log(polishInput)
     const conversion = {
         "zero": "0",
         "uno": "1",
