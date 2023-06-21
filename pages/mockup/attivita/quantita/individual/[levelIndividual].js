@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { getSelectedLanguage } from "@/components/lib/language";
 import { useSmarter, LED_BLUE_ACTION, LED_GREEN_ACTION } from "@/data/mqtt/hooks";
+import { convertTagToSymbol } from "@/utils/smarter";
 import { SMARTER_ID_1 } from "@/data/mqtt/connector";
 
 export const getServerSideProps = async ({ req, res }) => {
