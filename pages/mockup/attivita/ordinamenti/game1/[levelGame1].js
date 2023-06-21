@@ -129,6 +129,8 @@ export default function Game1({
     ]);
     const [isAllCorrect, setisAllCorrect] = useState([false, false]);
 
+    const [isCrescente, setisCrescente] = useState(true);
+
     const selectedLanguage = getSelectedLanguage();
 
     //Get level data
@@ -140,6 +142,11 @@ export default function Game1({
                 },
             })
             .then((res) => {
+                //Check if the array is in crescent order
+                if (res.data[subLvl][0] > res.data[subLvl][1]) {
+                    setisCrescente(false);
+                } else setisCrescente(true);
+
                 setLvlData(res.data[subLvl]);
                 const data = _.shuffle(res.data[subLvl]);
                 setLvlDataShuffled(data);
@@ -414,7 +421,8 @@ export default function Game1({
                     "&level=" +
                     levelGame1 +
                     "&error=" +
-                    error,
+                    error +
+                    "&individual=false",
                 headers: {
                     Authorization: "Bearer " + token,
                 },
@@ -448,8 +456,12 @@ export default function Game1({
                 <div className="flex mt-6">
                     <h1 className="mx-auto text-2xl">
                         {selectedLanguage === "eng"
-                            ? "Arrange the numbers in increasing orders using the tiles “apples”"
-                            : "Ordina i numeri	 in ordine crescente, usando le tessere “mela”"}
+                            ? isCrescente
+                                ? "Arrange the numbers in increasing orders using the tiles “apples”"
+                                : "Arrange the numbers in decreasing orders using the tiles “apples”"
+                            : isCrescente
+                            ? "Ordina i numeri in ordine crescente, usando le tessere “mela”"
+                            : "Ordina i numeri in ordine decrescente, usando le tessere “mela”"}
                     </h1>
                 </div>
                 <div className="relative flex flex-row justify-center gap-x-20 w-full z-10 md:h-[55vh] lg:h-[60vh]">

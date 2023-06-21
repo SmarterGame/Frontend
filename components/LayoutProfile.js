@@ -12,6 +12,7 @@ const Layout = ({
     boxes,
     classRoom,
     selectedOptions,
+    isIndividual,
 }) => {
     const styles = {
         backgroundColor: "#c4e5ff",
@@ -37,6 +38,7 @@ const Layout = ({
                         url={url}
                         classRoom={classRoom}
                         selectedOptions={selectedOptions}
+                        isIndividual={isIndividual}
                     />
                     {children}
 

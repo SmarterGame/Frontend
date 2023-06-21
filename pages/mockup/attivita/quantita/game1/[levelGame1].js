@@ -414,7 +414,8 @@ export default function Game1({
                     "&level=" +
                     levelGame1 +
                     "&error=" +
-                    error,
+                    error +
+                    "&individual=false",
                 headers: {
                     Authorization: "Bearer " + token,
                 },

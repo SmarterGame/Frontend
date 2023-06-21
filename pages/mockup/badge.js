@@ -94,11 +94,11 @@ export const getServerSideProps = async ({ req, res }) => {
             props: {
                 token: session.accessToken,
                 url: url,
-                selectedClass: user.data.SelectedClass,
                 classRoom: classData.data,
                 profileImg: imageUrl,
                 badgeData: badgeData.data,
                 badgeImg: badgeImageUrl,
+                isIndividual: user.data.IsIndividual,
             },
         };
     } catch (err) {
@@ -108,7 +108,13 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Badge({ classRoom, profileImg, badgeData, badgeImg }) {
+export default function Badge({
+    classRoom,
+    profileImg,
+    badgeData,
+    badgeImg,
+    isIndividual,
+}) {
     const router = useRouter();
     const { title, liv, id } = router.query;
 
@@ -141,6 +147,8 @@ export default function Badge({ classRoom, profileImg, badgeData, badgeImg }) {
                             <h1 className="text-grayText text-2xl">
                                 {selectedLanguage === "eng"
                                     ? "YOU HAVE EARNED A NEW BADGE:"
+                                    : isIndividual
+                                    ? "HAI VINTO UN NUOVO BADGE:"
                                     : "AVETE VINTO UN NUOVO BADGE:"}
                             </h1>
                             <h1 className="text-orangeBtn text-3xl">

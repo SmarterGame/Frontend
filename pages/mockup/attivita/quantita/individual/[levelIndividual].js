@@ -3,13 +3,10 @@ import axios from "axios";
 import { getSession } from "@auth0/nextjs-auth0";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import _ from "lodash";
 import Swal from "sweetalert2";
 import { getSelectedLanguage } from "@/components/lib/language";
-import { convertTagToSymbol } from "@/utils/smarter";
-import { useSmarter, LED_GREEN_ACTION, LED_BLUE_ACTION } from "@/data/mqtt/hooks";
-import { SMARTER_ID_1, SMARTER_ID_2 } from "@/data/mqtt/connector";
-
+import { useSmarter, LED_BLUE_ACTION, LED_GREEN_ACTION } from "@/data/mqtt/hooks";
+import { SMARTER_ID_1 } from "@/data/mqtt/connector";
 
 export const getServerSideProps = async ({ req, res }) => {
     const FEEDBACK = process.env.FEEDBACK;
@@ -25,13 +22,15 @@ export const getServerSideProps = async ({ req, res }) => {
             return { props: {} };
         }
 
-        const user = await axios({
+        let user = await axios({
             method: "get",
             url: url + "/user/me",
             headers: {
                 Authorization: token,
             },
         });
+        if (user.data.IsIndividual === true)
+            user.data.SelectedClass = user.data.SelectedIndividual;
         // console.log(user.data.SelectedClass);
 
         //Fetch profile image
@@ -52,10 +51,10 @@ export const getServerSideProps = async ({ req, res }) => {
             imageUrl = `data:image/png;base64,${image}`;
         }
 
-        //Fetch classroom data
+        //Fetch individual data
         const classData = await axios({
             method: "get",
-            url: url + "/classroom/getClassroomData/" + user.data.SelectedClass,
+            url: url + "/individual/getData/" + user.data.SelectedIndividual,
             headers: {
                 Authorization: token,
             },
@@ -88,45 +87,27 @@ export default function Game({
     profileImg,
 }) {
     const router = useRouter();
-    const { levelGame2, game } = router.query; //game = quantita or ordinamenti
-    const {events: eventsLeft, sendAction: sendActionLeft} = useSmarter({smarterId: SMARTER_ID_1});
-    const {events: eventsRight, sendAction: sendActionRight} = useSmarter({smarterId: SMARTER_ID_2});
+    const { levelIndividual, game } = router.query; //game = quantita or ordinamenti
+    const {events, sendAction} = useSmarter({smarterId: SMARTER_ID_1});
     const [error, setError] = useState(false);
     const [subLvl, setsubLvl] = useState(0);
     const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
-    //const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
-    const [inputValues, setInputValues] = useState(new Array(10)); //Used to store the input values
+    const [inputValues, setInputValues] = useState(new Array(5)); //Used to store the input values
     const [isCorrect, setIsCorrect] = useState([
         false,
         false,
         false,
         false,
         false,
-        false,
-        false,
-        false,
-        false,
-        false,
     ]);
-    const [isWrong, setIsWrong] = useState([
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-    ]);
+    const [isWrong, setIsWrong] = useState([false, false, false, false, false]);
 
     const selectedLanguage = getSelectedLanguage();
 
     //Get level data
     useEffect(() => {
         axios
-            .get(url + "/games/" + game + "/hpi/" + levelGame2, {
+            .get(url + "/games/" + game + "/individual/" + levelIndividual, {
                 headers: {
                     Authorization: "Bearer " + token,
                 },
@@ -134,8 +115,6 @@ export default function Game({
             .then((res) => {
                 // console.log(res.data);
                 setLvlData(res.data[subLvl]);
-                // const data = _.shuffle(res.data[subLvl]);
-                // setLvlDataShuffled(data);
             })
             .catch((err) => {
                 console.log(err);
@@ -145,45 +124,9 @@ export default function Game({
         inputs.forEach((input) => {
             input.value = "";
         });
-        setIsCorrect([
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-        ]);
-        setInputValues(new Array(10));
+        setIsCorrect([false, false, false, false, false]);
+        setInputValues(new Array(5));
     }, [subLvl]);
-
-    useEffect(() => {
-        // update states left smarter
-        eventsLeft.map((event) => {
-            const convValue = convertTagToSymbol(event?.value);
-        
-            setInputValues((prev) => {
-                const newArr = [...prev];
-                newArr[event.reader] = event.event === "card_placed" ? convValue : "";
-                return newArr;
-            })
-        });
-
-        // update states right smarter
-        eventsRight.map((event) => {
-            const convValue = convertTagToSymbol(event?.value);
-        
-            setInputValues((prev) => {
-                const newArr = [...prev];
-                newArr[event.reader + 5] = event.event === "card_placed" ? convValue : "";
-                return newArr;
-            })
-        });
-    }, [eventsLeft, eventsRight])
-
 
     //Check if the solution is correct
     useEffect(() => {
@@ -246,8 +189,8 @@ export default function Game({
                         ? "Exercise " + (subLvl + 1) + "/5 completed"
                         : "Esercizio " + (subLvl + 1) + "/5 completato";
 
-                sendActionLeft(LED_GREEN_ACTION);
-                sendActionRight(LED_GREEN_ACTION);
+                sendAction(LED_GREEN_ACTION);
+                sendAction(LED_GREEN_ACTION);
 
                 Swal.fire({
                     title: title,
@@ -260,9 +203,9 @@ export default function Game({
                     },
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
+                        sendAction(LED_BLUE_ACTION);
+                        sendAction(LED_BLUE_ACTION);
                         setsubLvl((prevState) => prevState + 1);
-                        sendActionLeft(LED_BLUE_ACTION);
-                        sendActionRight(LED_BLUE_ACTION);
                     }
                 });
             } else {
@@ -272,8 +215,11 @@ export default function Game({
                         : "COMPLIMENTI!";
                 const html =
                     selectedLanguage === "eng"
-                        ? "Level " + levelGame2 + " completed"
-                        : "Livello " + levelGame2 + " completato";
+                        ? "Level " + levelIndividual + " completed"
+                        : "Livello " + levelIndividual + " completato";
+
+                sendAction(LED_GREEN_ACTION);
+                sendAction(LED_GREEN_ACTION);
 
                 Swal.fire({
                     title: title,
@@ -286,15 +232,27 @@ export default function Game({
                     },
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
-                        // TODO: maybe need to send a special action to smarte
-                        sendActionLeft(LED_BLUE_ACTION);
-                        sendActionRight(LED_BLUE_ACTION);
+                        sendAction(LED_BLUE_ACTION);
+                        sendAction(LED_BLUE_ACTION);
                         gameFinished();
                     }
                 });
             }
         }
     }, [isCorrect]);
+
+    useEffect(() => {
+        // update states left smarter
+        events.map((event) => {
+            const convValue = convertTagToSymbol(event?.value);
+        
+            setInputValues((prev) => {
+                const newArr = [...prev];
+                newArr[event.reader] = event.event === "card_placed" ? convValue : "";
+                return newArr;
+            })
+        });
+    }, [events])
 
     //API call to set game as finished
     const gameFinished = async () => {
@@ -308,10 +266,10 @@ export default function Game({
                     "?game=" +
                     game +
                     "&level=" +
-                    levelGame2 +
+                    levelIndividual +
                     "&error=" +
                     error +
-                    "&individual=false",
+                    "&individual=true",
                 headers: {
                     Authorization: "Bearer " + token,
                 },
@@ -320,7 +278,7 @@ export default function Game({
                 pathname: "/mockup/gamification",
                 query: {
                     game: game,
-                    level: levelGame2,
+                    level: levelIndividual,
                     badgeData: JSON.stringify(res.data.badgeEarned),
                 },
             });
@@ -338,7 +296,7 @@ export default function Game({
             <LayoutGames
                 classRoom={classRoom}
                 title={game}
-                liv={levelGame2}
+                liv={levelIndividual}
                 profileImg={profileImg}
             >
                 <div className="flex mt-6">
@@ -349,43 +307,45 @@ export default function Game({
                     </h1>
                 </div>
                 <div className="relative flex flex-col justify-center md:h-[55vh] lg:h-[60vh] mt-10 ml-4 mr-4 z-10">
-                    <div className="grid grid-cols-10 justify-items-center gap-y-4 gap-x-4 h-full">
-                        {lvlData.map((item, index) => (
-                            <div
-                                key={index}
-                                className="bg-slate-200 w-full flex justify-center items-center text-8xl"
-                            >
-                                {item}
-                            </div>
-                        ))}
-                        {Array.from({ length: 10 }, (_, index) => (
-                            <div
-                                key={index}
-                                className={`bg-slate-200 border-4 ${
-                                    FEEDBACK === "true"
-                                        ? `${
-                                              isCorrect[index]
-                                                  ? "border-green-500"
-                                                  : ""
-                                          } ${
-                                              isWrong[index]
-                                                  ? "border-red-500"
-                                                  : ""
-                                          }`
-                                        : ``
-                                } w-full flex justify-center items-center text-8xl`}
-                            >
-                                {/* <input
-                                    className="text-6xl text-center w-20"
-                                    name={index}
-                                    onChange={handleInputChange}
-                                ></input> */}
+                    <div className="flex flex-col items-center h-full w-full">
+                        <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-14 h-full w-[65%]">
+                            {lvlData.map((item, index) => (
                                 <div
-                                    className="text-6xl text-center w-20"
-                                    name={index}
-                                >{inputValues?.[index]}</div>
-                            </div>
-                        ))}
+                                    key={index}
+                                    className="bg-slate-200 w-full flex justify-center items-center text-8xl"
+                                >
+                                    {item}
+                                </div>
+                            ))}
+                            {Array.from({ length: 5 }, (_, index) => (
+                                <div
+                                    key={index}
+                                    className={`bg-slate-200 border-4 ${
+                                        FEEDBACK === "true"
+                                            ? `${
+                                                  isCorrect[index]
+                                                      ? "border-green-500"
+                                                      : ""
+                                              } ${
+                                                  isWrong[index]
+                                                      ? "border-red-500"
+                                                      : ""
+                                              }`
+                                            : ``
+                                    } w-full flex justify-center items-center text-8xl`}
+                                >
+                                    {/* <input
+                                        className="text-6xl text-center w-20"
+                                        name={index}
+                                        onChange={handleInputChange}
+                                    ></input> */}
+                                    <div
+                                        className="text-6xl text-center w-20"
+                                        name={index}
+                                    >{inputValues?.[index]}</div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </LayoutGames>

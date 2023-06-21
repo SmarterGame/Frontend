@@ -64,14 +64,31 @@ export const getServerSideProps = async ({ req, res }) => {
         // console.log(boxes.data);
 
         //Fetch classroom data
-        const classData = await axios({
-            method: "get",
-            url: url + "/classroom/getClassroomData/" + user.data.SelectedClass,
-            headers: {
-                Authorization: token,
-            },
-        });
-        // console.log(classData.data);
+        let classData;
+        //Load individual data if user is individual
+        if (user.data.IsIndividual) {
+            classData = await axios({
+                method: "get",
+                url:
+                    url + "/individual/getData/" + user.data.SelectedIndividual,
+                headers: {
+                    Authorization: token,
+                },
+            });
+            // console.log(classData.data);
+        } else {
+            classData = await axios({
+                method: "get",
+                url:
+                    url +
+                    "/classroom/getClassroomData/" +
+                    user.data.SelectedClass,
+                headers: {
+                    Authorization: token,
+                },
+            });
+            // console.log(classData.data);
+        }
 
         return {
             props: {
@@ -81,6 +98,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 classRoom: classData.data,
                 selectedOptions: selectedOptions,
                 profileImg: imageUrl,
+                isIndividual: user.data.IsIndividual,
             },
         };
     } catch (err) {
@@ -97,6 +115,7 @@ export default function Profilo({
     classRoom = { Ghiande: 0, Exp: 0 },
     selectedOptions,
     profileImg,
+    isIndividual,
 }) {
     const selectedLanguage = getSelectedLanguage();
 
@@ -114,6 +133,7 @@ export default function Profilo({
                 boxes={boxes}
                 classRoom={classRoom}
                 selectedOptions={selectedOptions}
+                isIndividual={isIndividual}
             >
                 <div className="relative flex flex-col mx-auto w-1/2 min-w-[700px] bg-slate-200 rounded-xl shadow-2xl mt-8 mb-4 z-20">
                     <div className="relative">
