@@ -1,4 +1,3 @@
-import { getSelectedLanguage } from "@/components/lib/language";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -13,7 +12,20 @@ export default function IndividualModePopUP({
 }) {
     const router = useRouter();
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+    useEffect(() => {
+        //Fetch the language
+        const fetchLanguage = async () => {
+            try {
+                const data = await fetch("/api/language/getLanguage");
+                const language = await data.json();
+                setSelectedLanguage(language);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchLanguage();
+    }, []);
 
     const [profileName, setProfileName] = useState("");
     const [individuals, setIndividuals] = useState([]);

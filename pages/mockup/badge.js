@@ -6,7 +6,6 @@ import ProfileImg from "@/components/ProfileImg";
 import { useRouter } from "next/router";
 import url2 from "url";
 import Image from "next/image";
-import { getSelectedLanguage } from "@/components/lib/language";
 
 export const getServerSideProps = async ({ req, res }) => {
     const selectedLanguage = getSelectedLanguage();
@@ -118,7 +117,20 @@ export default function Badge({
     const router = useRouter();
     const { title, liv, id } = router.query;
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+    useEffect(() => {
+        //Fetch the language
+        const fetchLanguage = async () => {
+            try {
+                const data = await fetch("/api/language/getLanguage");
+                const language = await data.json();
+                setSelectedLanguage(language);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchLanguage();
+    }, []);
 
     return (
         <>

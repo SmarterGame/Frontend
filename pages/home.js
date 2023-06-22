@@ -11,7 +11,6 @@ import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
 import AddSmarter from "@/components/AddSmarter";
 import Link from "next/link";
-import { getSelectedLanguage } from "@/components/lib/language";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -93,12 +92,26 @@ export default function Home({
     const [showAddSmarter, setShowAddSmarter] = useState(false);
     const [popupData, setPopupData] = useState(null);
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
 
     useEffect(() => {
         if (tiles) {
             setClassroom_tiles([...tiles]);
         }
+    }, []);
+
+    useEffect(() => {
+        //Fetch the language
+        const fetchLanguage = async () => {
+            try {
+                const data = await fetch("/api/language/getLanguage");
+                const language = await data.json();
+                setSelectedLanguage(language);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchLanguage();
     }, []);
 
     //Toggle settings popup

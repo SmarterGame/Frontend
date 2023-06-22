@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
@@ -16,9 +16,24 @@ export default function HeaderProfile({
     const [showPopUp, setShowPopUp] = useState(false);
     const [showSideBar, setShowSideBar] = useState(false);
 
-    const selectedLanguage = getSelectedLanguage();
+    // const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
 
     const className = classRoom.ClassName;
+
+    useEffect(() => {
+        //Fetch the language
+        const fetchLanguage = async () => {
+            try {
+                const data = await fetch("/api/language/getLanguage");
+                const language = await data.json();
+                setSelectedLanguage(language);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchLanguage();
+    }, []);
 
     //Toggle settings popup
     function togglePopUp() {
@@ -38,7 +53,11 @@ export default function HeaderProfile({
                     </h1>
                     <div className="flex flex-row items-center">
                         <h1 className="text-4xl text-slate-100 mr-4">
-                            {isIndividual ? "" : (selectedLanguage === "eng" ? "CLASS" : "CLASSE ")}
+                            {isIndividual
+                                ? ""
+                                : selectedLanguage === "eng"
+                                ? "CLASS "
+                                : "CLASSE "}
                             {className}
                         </h1>
                         <div className="mr-6 bg-slate-400 bg-opacity-50 rounded-lg transition ease-in-out hover:bg-slate-500 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300">

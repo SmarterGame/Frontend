@@ -4,7 +4,6 @@ import { getSession } from "@auth0/nextjs-auth0";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { getSelectedLanguage } from "@/components/lib/language";
 
 export const getServerSideProps = async ({ req, res }) => {
     const FEEDBACK = process.env.FEEDBACK;
@@ -117,7 +116,20 @@ export default function Game({
 
     const [isCrescente, setisCrescente] = useState(true);
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+    useEffect(() => {
+        //Fetch the language
+        const fetchLanguage = async () => {
+            try {
+                const data = await fetch("/api/language/getLanguage");
+                const language = await data.json();
+                setSelectedLanguage(language);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchLanguage();
+    }, []);
 
     //Get level data
     useEffect(() => {

@@ -7,6 +7,7 @@ import axios from "axios";
 import ProfileImg from "@/components/ProfileImg";
 import ProgressBar from "@/components/ProgressBar";
 import { getSelectedLanguage } from "@/components/lib/language";
+import { useEffect, useState } from "react";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -117,7 +118,22 @@ export default function Profilo({
     profileImg,
     isIndividual,
 }) {
-    const selectedLanguage = getSelectedLanguage();
+    // const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+
+    useEffect(() => {
+        //Fetch the language
+        const fetchLanguage = async () => {
+            try {
+                const data = await fetch("/api/language/getLanguage");
+                const language = await data.json();
+                setSelectedLanguage(language);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchLanguage();
+    }, []);
 
     const lvlNamesIta = ["Boyscout", "Avventuriero", "Esperto", "Ranger"];
     const lvlNamesEng = ["Boyscout", "Adventurer", "Esperto", "Ranger"];

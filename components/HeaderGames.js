@@ -3,7 +3,7 @@ import ghianda from "@/public/ghianda.png";
 import Link from "next/link";
 import ClearIcon from "@mui/icons-material/Clear";
 import ProfileImg from "@/components/ProfileImg";
-import { getSelectedLanguage } from "@/components/lib/language";
+import { useEffect, useState } from "react";
 
 export default function HeaderGames({
     loading,
@@ -16,7 +16,20 @@ export default function HeaderGames({
 }) {
     const numGhiande = classRoom.Ghiande;
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+    useEffect(() => {
+        //Fetch the language
+        const fetchLanguage = async () => {
+            try {
+                const data = await fetch("/api/language/getLanguage");
+                const language = await data.json();
+                setSelectedLanguage(language);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchLanguage();
+    }, []);
 
     let tmp = false;
     if (title === "quantita") {

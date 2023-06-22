@@ -9,7 +9,22 @@ export default function Badge({ token, url, badge, blocked }) {
     const [badgeImg, setBadgeImg] = useState("");
     const [imageLoaded, setImageLoaded] = useState(false);
 
-    const selectedLanguage = getSelectedLanguage();
+    // const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+
+    useEffect(() => {
+        //Fetch the language
+        const fetchLanguage = async () => {
+            try {
+                const data = await fetch("/api/language/getLanguage");
+                const language = await data.json();
+                setSelectedLanguage(language);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchLanguage();
+    }, []);
 
     useEffect(() => {
         const getBadge = async () => {

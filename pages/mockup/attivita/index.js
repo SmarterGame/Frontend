@@ -7,7 +7,7 @@ import grass from "@/public/grass.png";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import Levels from "@/components/AttivitaLevels";
-import { getSelectedLanguage } from "@/components/lib/language";
+import { useEffect, useState } from "react";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -95,7 +95,21 @@ export const getServerSideProps = async ({ req, res }) => {
 };
 
 export default function Giochi({ classRoom, selectedMode, profileImg }) {
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+    useEffect(() => {
+        //Fetch the language
+        const fetchLanguage = async () => {
+            try {
+                const data = await fetch("/api/language/getLanguage");
+                const language = await data.json();
+                setSelectedLanguage(language);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchLanguage();
+    }, []);
+
     const titleLeft = selectedLanguage === "eng" ? "QUANTITIES" : "QUANTITA'";
     const titleRight =
         selectedLanguage === "eng" ? "ARRANGE THE NUMBERS" : "ORDINAMENTI";

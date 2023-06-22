@@ -3,10 +3,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
-import {
-    getSelectedLanguage,
-    setSelectedLanguage,
-} from "@/components/lib/language";
 
 export default function SiedBar({ token, url, show, onClose, children }) {
     const router = useRouter();
@@ -14,7 +10,21 @@ export default function SiedBar({ token, url, show, onClose, children }) {
     const sideBarRef = useRef(null);
     // const [showCustom, setShowCustom] = useState(false);
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+
+    useEffect(() => {
+        //Fetch the language
+        const fetchLanguage = async () => {
+            try {
+                const data = await fetch("/api/language/getLanguage");
+                const language = await data.json();
+                setSelectedLanguage(language);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchLanguage();
+    }, []);
 
     //Check if the click was outside of the modal
     useEffect(() => {
@@ -84,14 +94,24 @@ export default function SiedBar({ token, url, show, onClose, children }) {
     };
 
     //Switch the language
-    const changeLanguageHandler = () => {
-        if (getSelectedLanguage() === "eng") {
-            setSelectedLanguage("ita");
+    const changeLanguageHandler = async () => {
+        //Write the language
+        let newLanguage;
+        if (selectedLanguage === "eng") {
+            newLanguage = "ita";
         } else {
-            setSelectedLanguage("eng");
+            newLanguage = "eng";
         }
-
-        router.replace(router.asPath);
+        try {
+            await fetch("/api/language/writeLanguage", {
+                method: "POST",
+                body: newLanguage,
+            }).then((res) => {
+                router.reload();
+            });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

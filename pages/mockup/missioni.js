@@ -97,7 +97,22 @@ export default function BadgePage({ token, url, boxes, classRoom }) {
     ]);
     const [badgeListFiltered, setBadgeListFiltered] = useState([]);
 
-    const selectedLanguage = getSelectedLanguage();
+    // const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+
+    useEffect(() => {
+        //Fetch the language
+        const fetchLanguage = async () => {
+            try {
+                const data = await fetch("/api/language/getLanguage");
+                const language = await data.json();
+                setSelectedLanguage(language);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchLanguage();
+    }, []);
 
     //Filter badges
     useEffect(() => {

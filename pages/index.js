@@ -2,10 +2,6 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { getSession } from "@auth0/nextjs-auth0";
 import LayoutLogin from "../components/LayoutLogin";
 import Link from "next/link";
-import {
-    getSelectedLanguage,
-    setSelectedLanguage,
-} from "@/components/lib/language";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import ita from "@/public/ita.png";
@@ -30,29 +26,51 @@ export default function Home({ token, url }) {
 
     const { user, isLoading } = useUser();
 
-    const selectedLanguage = getSelectedLanguage();
-
     const [flag, setFlag] = useState();
+    const [language, setLanguage] = useState();
 
     useEffect(() => {
-        if (selectedLanguage === "eng") {
-            setFlag(eng);
-        } else {
-            setFlag(ita);
-        }
+        //Fetch the language
+        const fetchLanguage = async () => {
+            try {
+                const data = await fetch("/api/language/getLanguage");
+                const language = await data.json();
+                setLanguage(language);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchLanguage();
     }, []);
 
-    //Switch the language
-    const changeLanguageHandler = () => {
-        if (getSelectedLanguage() === "eng") {
-            setSelectedLanguage("ita");
-            setFlag(ita);
-        } else {
-            setSelectedLanguage("eng");
+    useEffect(() => {
+        //Set the flag image
+        if (language === "eng") {
             setFlag(eng);
+        } else {
+            setFlag(ita);
         }
+    }, [language]);
 
-        router.replace(router.asPath);
+    //Switch the language
+    const changeLanguageHandler = async () => {
+        //Write the language
+        let newLanguage;
+        if (language === "eng") {
+            newLanguage = "ita";
+        } else {
+            newLanguage = "eng";
+        }
+        try {
+            await fetch("/api/language/writeLanguage", {
+                method: "POST",
+                body: newLanguage,
+            }).then((res) => {
+                router.reload();
+            });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -60,9 +78,7 @@ export default function Home({ token, url }) {
             <LayoutLogin user={user} loading={isLoading}>
                 <div className="flex flex-col items-center self-start mt-10">
                     <h2 className="text-slate-100 text-xl mb-2">
-                        {selectedLanguage === "eng"
-                            ? "WELCOME TO"
-                            : "BENVENUTO SU"}
+                        {language === "eng" ? "WELCOME TO" : "BENVENUTO SU"}
                     </h2>
                     <div className="flex flex-row transition ease-in-out hover:-translatey-1 hover:scale-110 duration-300">
                         <h1 className="text-7xl text-gray-100 text-stroke-orange">
@@ -100,13 +116,13 @@ export default function Home({ token, url }) {
                         {!user ? (
                             <div className="mx-auto text-center">
                                 <h1 className="text-3xl mt-10 font-bold">
-                                    {selectedLanguage === "eng"
+                                    {language === "eng"
                                         ? "Login to continue"
                                         : "Esegui il login"}
                                 </h1>
                                 <button className="transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
                                     <Link href="/api/auth/login">
-                                        {selectedLanguage === "eng"
+                                        {language === "eng"
                                             ? "Login"
                                             : "Accedi"}
                                     </Link>
@@ -115,15 +131,13 @@ export default function Home({ token, url }) {
                         ) : (
                             <div className="mx-auto text-center">
                                 <h1 className="text-3xl mt-10 font-bold">
-                                    {selectedLanguage === "eng"
+                                    {language === "eng"
                                         ? "Logout"
                                         : "Esegui il Logout"}
                                 </h1>
                                 <button className="transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
                                     <Link href="/api/auth/logout">
-                                        {selectedLanguage === "eng"
-                                            ? "Logout"
-                                            : "Esci"}
+                                        {language === "eng" ? "Logout" : "Esci"}
                                     </Link>
                                 </button>
                             </div>
@@ -137,7 +151,7 @@ export default function Home({ token, url }) {
                         className="transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl px-4 py-2 rounded-md duration-300"
                     >
                         <div className="flex flex-row gap-x-4">
-                            {selectedLanguage}
+                            {language}
                             <Image src={flag} alt="badniera" width={40} />
                         </div>
                     </button>
