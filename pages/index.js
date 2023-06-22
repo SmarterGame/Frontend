@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import ita from "@/public/ita.png";
 import eng from "@/public/eng.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -32,7 +32,15 @@ export default function Home({ token, url }) {
 
     const selectedLanguage = getSelectedLanguage();
 
-    const [flag, setFlag] = useState(eng);
+    const [flag, setFlag] = useState();
+
+    useEffect(() => {
+        if (selectedLanguage === "eng") {
+            setFlag(eng);
+        } else {
+            setFlag(ita);
+        }
+    }, []);
 
     //Switch the language
     const changeLanguageHandler = () => {

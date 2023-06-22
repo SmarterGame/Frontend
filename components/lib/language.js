@@ -1,4 +1,4 @@
-let selectedLanguage = 'eng';
+let selectedLanguage = 'ita';
 
 export const getSelectedLanguage = () => {
   return selectedLanguage;
