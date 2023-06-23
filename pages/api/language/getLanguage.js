@@ -5,7 +5,6 @@ export default async function getLanguage(req, res) {
 
     try {
         const data = fs.readFileSync(path, "utf8");
-        console.log(data);
         res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ error });

@@ -91,7 +91,6 @@ export default function Game({
     const [subLvl, setsubLvl] = useState(0);
     const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
     const [lvlDataCorrect, setLvlDataCorrect] = useState([]);
-    const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
     const [inputValues, setInputValues] = useState({}); //Used to store the input values
     const [isCorrect, setIsCorrect] = useState([
         false,
@@ -290,6 +289,7 @@ export default function Game({
                     game: game,
                     level: levelIndividual,
                     badgeData: JSON.stringify(res.data.badgeEarned),
+                    selectedLanguage: selectedLanguage,
                 },
             });
         } catch (err) {
@@ -313,11 +313,19 @@ export default function Game({
                     <h1 className="mx-auto text-2xl">
                         {selectedLanguage === "eng"
                             ? isCrescente
-                                ? "Arrange the numbers in increasing orders using the tiles “apples”"
-                                : "Arrange the numbers in decreasing orders using the tiles “apples”"
+                                ? "Arrange the numbers in increasing orders using the tiles " +
+                                  (levelIndividual === "1"
+                                      ? "“apples”"
+                                      : "”numbers”")
+                                : "Arrange the numbers in decreasing orders using the tiles " +
+                                  (levelIndividual === "1"
+                                      ? "“apples”"
+                                      : "”numbers”")
                             : isCrescente
-                            ? "Ordina i numeri in ordine crescente, usando le tessere “mela”"
-                            : "Ordina i numeri in ordine decrescente, usando le tessere “mela”"}
+                            ? "Ordina i numeri in ordine crescente, usando le tessere " +
+                              (levelIndividual === "1" ? "”mela”" : "”cifra”")
+                            : "Ordina i numeri in ordine decrescente, usando le tessere " +
+                              (levelIndividual === "1" ? "“mela”" : "”cifra”")}
                     </h1>
                 </div>
                 <div className="relative flex flex-col justify-center md:h-[55vh] lg:h-[60vh] mt-10 ml-4 mr-4 z-10">

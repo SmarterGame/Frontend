@@ -136,7 +136,7 @@ export default function Profilo({
     }, []);
 
     const lvlNamesIta = ["Boyscout", "Avventuriero", "Esperto", "Ranger"];
-    const lvlNamesEng = ["Boyscout", "Adventurer", "Esperto", "Ranger"];
+    const lvlNamesEng = ["Boyscout", "Adventurer", "Expert", "Ranger"];
 
     const numGhiande = classRoom.Ghiande;
     const classLvl = classRoom.ClassLvl;

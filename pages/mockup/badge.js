@@ -2,16 +2,16 @@ import LayoutGames from "@/components/LayoutGames";
 import Link from "next/link";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
-import ProfileImg from "@/components/ProfileImg";
 import { useRouter } from "next/router";
 import url2 from "url";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export const getServerSideProps = async ({ req, res }) => {
-    const selectedLanguage = getSelectedLanguage();
     //Get badge id from url
     const { query } = url2.parse(req.url, true);
     const idBadgeEarned = query.id ?? null;
+    const selectedLanguage = query.lan;
 
     const url = process.env.BACKEND_URI;
     try {

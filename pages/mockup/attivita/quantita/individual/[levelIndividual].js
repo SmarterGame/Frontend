@@ -273,6 +273,7 @@ export default function Game({
                     game: game,
                     level: levelIndividual,
                     badgeData: JSON.stringify(res.data.badgeEarned),
+                    selectedLanguage: selectedLanguage,
                 },
             });
         } catch (err) {
