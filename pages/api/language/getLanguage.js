@@ -1,7 +1,10 @@
 import fs from "fs";
 
 export default async function getLanguage(req, res) {
-    const path = "./public/data/language.txt";
+    //get the path of the file
+    const path = "/public/data/language.txt";
+    const vercelUrl = process.env.VERCEL_URL;
+    console.log(vercelUrl);
 
     try {
         const data = fs.readFileSync(path, "utf8");
