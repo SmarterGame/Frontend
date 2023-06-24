@@ -27,20 +27,23 @@ export default function Home({ token, url }) {
     const { user, isLoading } = useUser();
 
     const [flag, setFlag] = useState();
-    const [language, setLanguage] = useState();
+    const [language, setLanguage] = useState("ita");
+    // sessionStorage.setItem("language", "ita");
 
     useEffect(() => {
         //Fetch the language
-        const fetchLanguage = async () => {
-            try {
-                const data = await fetch("/api/language/getLanguage");
-                const language = await data.json();
-                setLanguage(language);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchLanguage();
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        sessionStorage.setItem("language", "ita");
+        // setLanguage(sessionStorage.getItem("language"));
     }, []);
 
     useEffect(() => {
@@ -61,16 +64,18 @@ export default function Home({ token, url }) {
         } else {
             newLanguage = "eng";
         }
-        try {
-            await fetch("/api/language/writeLanguage", {
-                method: "POST",
-                body: newLanguage,
-            }).then((res) => {
-                router.reload();
-            });
-        } catch (error) {
-            console.log(error);
-        }
+        sessionStorage.setItem("language", newLanguage);
+        setLanguage(newLanguage);
+        // try {
+        //     await fetch("/api/language/writeLanguage", {
+        //         method: "POST",
+        //         body: newLanguage,
+        //     }).then((res) => {
+        //         router.reload();
+        //     });
+        // } catch (error) {
+        //     console.log(error);
+        // }
     };
 
     return (

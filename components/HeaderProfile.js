@@ -3,7 +3,6 @@ import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
 import Link from "next/link";
-import { getSelectedLanguage } from "@/components/lib/language";
 
 export default function HeaderProfile({
     token,
@@ -23,16 +22,17 @@ export default function HeaderProfile({
 
     useEffect(() => {
         //Fetch the language
-        const fetchLanguage = async () => {
-            try {
-                const data = await fetch("/api/language/getLanguage");
-                const language = await data.json();
-                setSelectedLanguage(language);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchLanguage();
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
 
     //Toggle settings popup

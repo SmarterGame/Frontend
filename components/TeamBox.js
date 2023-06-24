@@ -13,134 +13,8 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import { getSelectedLanguage } from "@/components/lib/language";
-
-function deleteClass(deleteHandler) {
-    const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-            confirmButton:
-                "border bg-green-500 hover:bg-green-600 p-4 ml-1 rounded-xl",
-            cancelButton:
-                "border bg-red-500 hover:bg-red-600 p-4 mr-1 rounded-xl focus:outline-black",
-        },
-        buttonsStyling: false,
-    });
-
-    const title =
-        getSelectedLanguage() === "eng"
-            ? "Would you like to delete the class?"
-            : "Desideri eliminare la classe?";
-    const confirmButton =
-        getSelectedLanguage() === "eng" ? "Confirm" : "Conferma";
-    const cancelButton = getSelectedLanguage() === "eng" ? "Cancel" : "Annulla";
-
-    swalWithBootstrapButtons
-        .fire({
-            title: title,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: confirmButton,
-            cancelButtonText: cancelButton,
-            reverseButtons: true,
-            focusCancel: true,
-        })
-        .then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    await deleteHandler();
-                    if (getSelectedLanguage() === "eng") {
-                        swalWithBootstrapButtons.fire(
-                            "Deleted!",
-                            "The class has been deleted.",
-                            "success"
-                        );
-                    } else {
-                        swalWithBootstrapButtons.fire(
-                            "Eliminata!",
-                            "La classe è stata cancellata.",
-                            "success"
-                        );
-                    }
-                } catch (err) {
-                    swalWithBootstrapButtons.fire(
-                        "Cancelled",
-                        "Failed to delete :(",
-                        "error"
-                    );
-                    console.log(err);
-                }
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                if (getSelectedLanguage() === "eng") {
-                    swalWithBootstrapButtons.fire(
-                        "Cancelled",
-                        "The class has not been deleted",
-                        "error"
-                    );
-                } else {
-                    swalWithBootstrapButtons.fire(
-                        "Annullato",
-                        "La classe non è stata cancellata",
-                        "error"
-                    );
-                }
-            }
-        });
-}
-
-async function renameClass(renameHandler) {
-    const title =
-        getSelectedLanguage() === "eng"
-            ? "Rename the class"
-            : "Rinomina la classe";
-    const inputPlaceholder =
-        getSelectedLanguage() === "eng" ? "Class name" : "Nome della classe";
-    const confirmButton =
-        getSelectedLanguage() === "eng" ? "Confirm" : "Conferma";
-    const cancelButton = getSelectedLanguage() === "eng" ? "Cancel" : "Annulla";
-
-    await Swal.fire({
-        title: title,
-        input: "text",
-        inputPlaceholder: inputPlaceholder,
-        showCancelButton: true,
-        closeOnCancel: true,
-        confirmButtonColor: "#ff7100",
-        cancelButtonColor: "#575757",
-        confirmButtonText: confirmButton,
-        cancelButtonText: cancelButton,
-    }).then((result) => {
-        if (result.isConfirmed) {
-            if (result.value === "") {
-                Swal.fire({
-                    title: "Errore",
-                    text: "Il nome della classe non può essere vuoto",
-                    icon: "error",
-                    confirmButtonColor: "#ff7100",
-                });
-            } else {
-                try {
-                    renameHandler(result.value);
-                    Swal.fire({
-                        title: "Rinominata!",
-                        text: "La classe è stata rinominata.",
-                        icon: "success",
-                        confirmButtonColor: "#ff7100",
-                    });
-                } catch (err) {
-                    Swal.fire({
-                        title: "Errore",
-                        text: "Impossibile rinominare la classe",
-                        icon: "error",
-                        confirmButtonColor: "#ff7100",
-                    });
-                    console.log(err);
-                }
-            }
-        }
-    });
-}
 
 const style = {
     tableRow: { "& > *": { borderBottom: "unset" }, width: "1%" },
@@ -152,7 +26,139 @@ function Row(props) {
     const { row, deleteHandler, renameHandler, toggleScegliClasse } = props;
     const [open, setOpen] = useState(false);
 
-    const selectedLanguage = getSelectedLanguage();
+    // const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+
+    //Get selected language from session storage
+    useEffect(() => {
+        setSelectedLanguage(sessionStorage.getItem("language"));
+    }, []);
+
+    function deleteClass(deleteHandler) {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton:
+                    "border bg-green-500 hover:bg-green-600 p-4 ml-1 rounded-xl",
+                cancelButton:
+                    "border bg-red-500 hover:bg-red-600 p-4 mr-1 rounded-xl focus:outline-black",
+            },
+            buttonsStyling: false,
+        });
+
+        const title =
+            selectedLanguage === "eng"
+                ? "Would you like to delete the class?"
+                : "Desideri eliminare la classe?";
+        const confirmButton =
+            selectedLanguage === "eng" ? "Confirm" : "Conferma";
+        const cancelButton = selectedLanguage === "eng" ? "Cancel" : "Annulla";
+
+        swalWithBootstrapButtons
+            .fire({
+                title: title,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: confirmButton,
+                cancelButtonText: cancelButton,
+                reverseButtons: true,
+                focusCancel: true,
+            })
+            .then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        await deleteHandler();
+                        if (selectedLanguage === "eng") {
+                            swalWithBootstrapButtons.fire(
+                                "Deleted!",
+                                "The class has been deleted.",
+                                "success"
+                            );
+                        } else {
+                            swalWithBootstrapButtons.fire(
+                                "Eliminata!",
+                                "La classe è stata cancellata.",
+                                "success"
+                            );
+                        }
+                    } catch (err) {
+                        swalWithBootstrapButtons.fire(
+                            "Cancelled",
+                            "Failed to delete :(",
+                            "error"
+                        );
+                        console.log(err);
+                    }
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    if (selectedLanguage === "eng") {
+                        swalWithBootstrapButtons.fire(
+                            "Cancelled",
+                            "The class has not been deleted",
+                            "error"
+                        );
+                    } else {
+                        swalWithBootstrapButtons.fire(
+                            "Annullato",
+                            "La classe non è stata cancellata",
+                            "error"
+                        );
+                    }
+                }
+            });
+    }
+    /*------------------------------------------------*/
+
+    async function renameClass(renameHandler) {
+        const title =
+            selectedLanguage === "eng"
+                ? "Rename the class"
+                : "Rinomina la classe";
+        const inputPlaceholder =
+            selectedLanguage === "eng" ? "Class name" : "Nome della classe";
+        const confirmButton =
+            selectedLanguage === "eng" ? "Confirm" : "Conferma";
+        const cancelButton = selectedLanguage === "eng" ? "Cancel" : "Annulla";
+
+        await Swal.fire({
+            title: title,
+            input: "text",
+            inputPlaceholder: inputPlaceholder,
+            showCancelButton: true,
+            closeOnCancel: true,
+            confirmButtonColor: "#ff7100",
+            cancelButtonColor: "#575757",
+            confirmButtonText: confirmButton,
+            cancelButtonText: cancelButton,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (result.value === "") {
+                    Swal.fire({
+                        title: "Errore",
+                        text: "Il nome della classe non può essere vuoto",
+                        icon: "error",
+                        confirmButtonColor: "#ff7100",
+                    });
+                } else {
+                    try {
+                        renameHandler(result.value);
+                        Swal.fire({
+                            title: "Rinominata!",
+                            text: "La classe è stata rinominata.",
+                            icon: "success",
+                            confirmButtonColor: "#ff7100",
+                        });
+                    } catch (err) {
+                        Swal.fire({
+                            title: "Errore",
+                            text: "Impossibile rinominare la classe",
+                            icon: "error",
+                            confirmButtonColor: "#ff7100",
+                        });
+                        console.log(err);
+                    }
+                }
+            }
+        });
+    }
 
     return (
         <React.Fragment>

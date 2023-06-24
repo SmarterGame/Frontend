@@ -118,16 +118,17 @@ export default function Game({
     const [selectedLanguage, setSelectedLanguage] = useState();
     useEffect(() => {
         //Fetch the language
-        const fetchLanguage = async () => {
-            try {
-                const data = await fetch("/api/language/getLanguage");
-                const language = await data.json();
-                setSelectedLanguage(language);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchLanguage();
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
 
     //Get level data

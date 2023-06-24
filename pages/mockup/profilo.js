@@ -6,7 +6,6 @@ import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import ProfileImg from "@/components/ProfileImg";
 import ProgressBar from "@/components/ProgressBar";
-import { getSelectedLanguage } from "@/components/lib/language";
 import { useEffect, useState } from "react";
 
 export const getServerSideProps = async ({ req, res }) => {
@@ -123,16 +122,17 @@ export default function Profilo({
 
     useEffect(() => {
         //Fetch the language
-        const fetchLanguage = async () => {
-            try {
-                const data = await fetch("/api/language/getLanguage");
-                const language = await data.json();
-                setSelectedLanguage(language);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchLanguage();
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
 
     const lvlNamesIta = ["Boyscout", "Avventuriero", "Esperto", "Ranger"];

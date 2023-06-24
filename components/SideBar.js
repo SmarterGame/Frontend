@@ -14,16 +14,17 @@ export default function SiedBar({ token, url, show, onClose, children }) {
 
     useEffect(() => {
         //Fetch the language
-        const fetchLanguage = async () => {
-            try {
-                const data = await fetch("/api/language/getLanguage");
-                const language = await data.json();
-                setSelectedLanguage(language);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchLanguage();
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
 
     //Check if the click was outside of the modal
@@ -50,8 +51,10 @@ export default function SiedBar({ token, url, show, onClose, children }) {
     }, [show]);
 
     const changeImageHandler = async () => {
+        const title =
+            selectedLanguage === "eng" ? "Select image" : "Seleziona immagine";
         const { value: file } = await Swal.fire({
-            title: "Seleziona immagine",
+            title: title,
             input: "file",
             confirmButtonColor: "#ff7100",
             inputAttributes: {
@@ -73,18 +76,31 @@ export default function SiedBar({ token, url, show, onClose, children }) {
                         "Content-Type": "multipart/form-data",
                     },
                 });
+                const title =
+                    selectedLanguage === "eng"
+                        ? "Image changed!"
+                        : "Immagine cambiata!";
+                const text =
+                    selectedLanguage === "eng"
+                        ? "The image has been changed correctly"
+                        : "L'immagine è stata cambiata correttamente";
                 Swal.fire({
-                    title: "Immagine cambiata!",
-                    text: "L'immagine è stata cambiata correttamente",
+                    title: title,
+                    text: text,
                     icon: "success",
                     confirmButtonText: "Ok",
                 }).then(() => {
                     if (router.pathname === "/mockup/profilo") router.reload();
                 });
             } catch (err) {
+                const title = selectedLanguage === "eng" ? "Error" : "Errore";
+                const text =
+                    selectedLanguage === "eng"
+                        ? "Error while changing the image"
+                        : "Si è verificato un errore nel cambiare l'immagine";
                 Swal.fire({
-                    title: "Errore",
-                    text: "Si è verificato un errore nel cambiare l'immagine",
+                    title: title,
+                    text: text,
                     icon: "error",
                     confirmButtonText: "Ok",
                 });
@@ -102,16 +118,19 @@ export default function SiedBar({ token, url, show, onClose, children }) {
         } else {
             newLanguage = "eng";
         }
-        try {
-            await fetch("/api/language/writeLanguage", {
-                method: "POST",
-                body: newLanguage,
-            }).then((res) => {
-                router.reload();
-            });
-        } catch (error) {
-            console.log(error);
-        }
+        sessionStorage.setItem("language", newLanguage);
+        setSelectedLanguage(newLanguage);
+        router.reload();
+        // try {
+        //     await fetch("/api/language/writeLanguage", {
+        //         method: "POST",
+        //         body: newLanguage,
+        //     }).then((res) => {
+        //         router.reload();
+        //     });
+        // } catch (error) {
+        //     console.log(error);
+        // }
     };
 
     return (
