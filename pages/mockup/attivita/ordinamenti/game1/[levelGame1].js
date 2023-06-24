@@ -443,11 +443,11 @@ export default function Game1({
                     <h1 className="mx-auto text-2xl">
                         {selectedLanguage === "eng"
                             ? isCrescente
-                                ? "Arrange the numbers in increasing orders using the tiles " +
+                                ? "Arrange the numbers in increasing order using the tiles " +
                                   (levelGame1 === "1"
                                       ? "“apples”"
                                       : "“numbers”")
-                                : "Arrange the numbers in decreasing orders using the tiles " +
+                                : "Arrange the numbers in decreasing order using the tiles " +
                                   (levelGame1 === "1"
                                       ? "“apples”"
                                       : "“numbers”")

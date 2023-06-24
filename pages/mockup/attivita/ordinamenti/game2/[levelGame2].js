@@ -339,8 +339,8 @@ export default function Game({
                     <h1 className="mx-auto text-2xl">
                         {selectedLanguage === "eng"
                             ? isCrescente
-                                ? "Arrange the numbers in increasing orders using the tiles " + (levelGame2 === "1" ? "“apples”" : "“numbers”")
-                                : "Arrange the numbers in decreasing orders using the tiles " + (levelGame2 === "1" ? "“apples”" : "“numbers”")
+                                ? "Arrange the numbers in increasing order using the tiles " + (levelGame2 === "1" ? "“apples”" : "“numbers”")
+                                : "Arrange the numbers in decreasing order using the tiles " + (levelGame2 === "1" ? "“apples”" : "“numbers”")
                             : isCrescente
                             ? "Ordina i numeri in ordine crescente, usando le tessere " + (levelGame2 === "1" ? "“mela”" : "“cifre”")
                             : "Ordina i numeri in ordine decrescente, usando le tessere " + (levelGame2 === "1" ? "“mela”" : "“cifre”")}

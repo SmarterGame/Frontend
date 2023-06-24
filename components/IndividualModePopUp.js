@@ -156,7 +156,7 @@ export default function IndividualModePopUP({
                             >
                                 <option>
                                     {selectedLanguage === "eng"
-                                        ? "No propfile selected"
+                                        ? "No profile selected"
                                         : "Nessun profilo selezionato"}
                                 </option>
                                 {individuals.map((individual) => (
