@@ -429,9 +429,9 @@ export default function Game1({
 
     return (
         <>
-            {/* <button onClick={gameFinished} className="bg-red-500">
+            <button onClick={gameFinished} className="bg-red-500">
                 test API
-            </button> */}
+            </button>
 
             <LayoutGames
                 title={game}
@@ -443,11 +443,19 @@ export default function Game1({
                     <h1 className="mx-auto text-2xl">
                         {selectedLanguage === "eng"
                             ? isCrescente
-                                ? "Arrange the numbers in increasing orders using the tiles " + (levelGame1 === "1" ? "“apples”" : "“numbers”")
-                                : "Arrange the numbers in decreasing orders using the tiles " + (levelGame1 === "1" ? "“apples”" : "“numbers”")
+                                ? "Arrange the numbers in increasing orders using the tiles " +
+                                  (levelGame1 === "1"
+                                      ? "“apples”"
+                                      : "“numbers”")
+                                : "Arrange the numbers in decreasing orders using the tiles " +
+                                  (levelGame1 === "1"
+                                      ? "“apples”"
+                                      : "“numbers”")
                             : isCrescente
-                            ? "Ordina i numeri in ordine crescente, usando le tessere " + (levelGame1 === "1" ? "”mela”" : "“cifre”")
-                            : "Ordina i numeri in ordine decrescente, usando le tessere " + (levelGame1 === "1" ? "“mela”" : "“cifre”")}
+                            ? "Ordina i numeri in ordine crescente, usando le tessere " +
+                              (levelGame1 === "1" ? "”mela”" : "“cifre”")
+                            : "Ordina i numeri in ordine decrescente, usando le tessere " +
+                              (levelGame1 === "1" ? "“mela”" : "“cifre”")}
                     </h1>
                 </div>
                 <div className="relative flex flex-row justify-center gap-x-20 w-full z-10 md:h-[55vh] lg:h-[60vh]">

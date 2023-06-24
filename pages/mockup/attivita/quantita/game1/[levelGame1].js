@@ -345,8 +345,8 @@ export default function Game1({
                         : "COMPLIMENTI!";
                 const html =
                     selectedLanguage === "eng"
-                        ? "Level " + levelGame2 + " completed"
-                        : "Livello " + levelGame2 + " completato";
+                        ? "Level " + levelGame1 + " completed"
+                        : "Livello " + levelGame1 + " completato";
 
                 Swal.fire({
                     title: title,
@@ -403,9 +403,9 @@ export default function Game1({
 
     return (
         <>
-            {/* <button onClick={gameFinished} className="bg-red-500">
+            <button onClick={gameFinished} className="bg-red-500">
                 test API
-            </button> */}
+            </button>
 
             <LayoutGames
                 title={game}
