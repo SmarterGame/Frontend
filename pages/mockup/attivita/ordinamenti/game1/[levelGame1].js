@@ -453,7 +453,7 @@ export default function Game1({
                                       : "“numbers”")
                             : isCrescente
                             ? "Ordina i numeri in ordine crescente, usando le tessere " +
-                              (levelGame1 === "1" ? "”mela”" : "“cifre”")
+                              (levelGame1 === "1" ? "“mela”" : "“cifre”")
                             : "Ordina i numeri in ordine decrescente, usando le tessere " +
                               (levelGame1 === "1" ? "“mela”" : "“cifre”")}
                     </h1>

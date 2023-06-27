@@ -166,8 +166,8 @@ export default function SiedBar({ token, url, show, onClose, children }) {
                             className="mx-auto text-gray-600 text-lg"
                         >
                             {selectedLanguage === "eng"
-                                ? "ENGLISH"
-                                : "ITALIANO"}
+                                ? "ITALIANO"
+                                : "ENGLISH"}
                         </button>
                     </div>
                     {/* <div className="hidden flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">

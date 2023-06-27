@@ -317,11 +317,11 @@ export default function Game({
                                 ? "Arrange the numbers in increasing orders using the tiles " +
                                   (levelIndividual === "1"
                                       ? "“apples”"
-                                      : "”numbers”")
+                                      : "“numbers”")
                                 : "Arrange the numbers in decreasing orders using the tiles " +
                                   (levelIndividual === "1"
                                       ? "“apples”"
-                                      : "”numbers”")
+                                      : "“numbers”")
                             : isCrescente
                             ? "Ordina i numeri in ordine crescente, usando le tessere " +
                               (levelIndividual === "1" ? "”mela”" : "”cifra”")

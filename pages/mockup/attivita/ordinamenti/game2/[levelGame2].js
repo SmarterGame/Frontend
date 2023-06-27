@@ -339,11 +339,19 @@ export default function Game({
                     <h1 className="mx-auto text-2xl">
                         {selectedLanguage === "eng"
                             ? isCrescente
-                                ? "Arrange the numbers in increasing order using the tiles " + (levelGame2 === "1" ? "“apples”" : "“numbers”")
-                                : "Arrange the numbers in decreasing order using the tiles " + (levelGame2 === "1" ? "“apples”" : "“numbers”")
+                                ? "Arrange the numbers in increasing order using the tiles " +
+                                  (levelGame2 === "1"
+                                      ? "“apples”"
+                                      : "“numbers”")
+                                : "Arrange the numbers in decreasing order using the tiles " +
+                                  (levelGame2 === "1"
+                                      ? "“apples”"
+                                      : "“numbers”")
                             : isCrescente
-                            ? "Ordina i numeri in ordine crescente, usando le tessere " + (levelGame2 === "1" ? "“mela”" : "“cifre”")
-                            : "Ordina i numeri in ordine decrescente, usando le tessere " + (levelGame2 === "1" ? "“mela”" : "“cifre”")}
+                            ? "Ordina i numeri in ordine crescente, usando le tessere " +
+                              (levelGame2 === "1" ? "“mela”" : "“cifre”")
+                            : "Ordina i numeri in ordine decrescente, usando le tessere " +
+                              (levelGame2 === "1" ? "“mela”" : "“cifre”")}
                     </h1>
                 </div>
                 <div className="relative flex flex-col justify-center md:h-[55vh] lg:h-[60vh] mt-10 ml-4 mr-4 z-10">

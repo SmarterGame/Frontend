@@ -49,9 +49,9 @@ export default function Home({ token, url }) {
     useEffect(() => {
         //Set the flag image
         if (language === "eng") {
-            setFlag(eng);
-        } else {
             setFlag(ita);
+        } else {
+            setFlag(eng);
         }
     }, [language]);
 
@@ -134,7 +134,7 @@ export default function Home({ token, url }) {
                         className="transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl px-4 py-2 rounded-md duration-300"
                     >
                         <div className="flex flex-row gap-x-4">
-                            {language}
+                            {language === "eng" ? "ITA" : "ENG"}
                             <Image src={flag} alt="badniera" width={40} />
                         </div>
                     </button>
