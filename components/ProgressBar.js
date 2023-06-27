@@ -17,13 +17,17 @@ export default function ProgressBar({
         console.log();
         const currentLevel = levels[classRoom.ClassLvl - 1];
         const nextLevel = levels[classRoom.ClassLvl];
-        const progress =
-            ((classRoom.Ghiande - currentLevel.ghiande) /
-                (nextLevel.ghiande - currentLevel.ghiande)) *
-            100;
+        let progress;
+        if (classRoom.Ghiande < 15) {
+            progress =
+                ((classRoom.Ghiande - currentLevel.ghiande) /
+                    (nextLevel.ghiande - currentLevel.ghiande)) *
+                100;
+        } else {
+            progress = 100;
+        }
         setNextLevel(nextLevel);
         setProgress(progress);
-        console.log(progress);
     }, []);
 
     return (
