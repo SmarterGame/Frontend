@@ -2,17 +2,16 @@ import LayoutGames from "@/components/LayoutGames";
 import Link from "next/link";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
-import ProfileImg from "@/components/ProfileImg";
 import { useRouter } from "next/router";
 import url2 from "url";
 import Image from "next/image";
-import { getSelectedLanguage } from "@/components/lib/language";
+import { useEffect, useState } from "react";
 
 export const getServerSideProps = async ({ req, res }) => {
-    const selectedLanguage = getSelectedLanguage();
     //Get badge id from url
     const { query } = url2.parse(req.url, true);
     const idBadgeEarned = query.id ?? null;
+    const selectedLanguage = query.lan;
 
     const url = process.env.BACKEND_URI;
     try {
@@ -54,14 +53,31 @@ export const getServerSideProps = async ({ req, res }) => {
         }
 
         //Fetch classroom data
-        const classData = await axios({
-            method: "get",
-            url: url + "/classroom/getClassroomData/" + user.data.SelectedClass,
-            headers: {
-                Authorization: token,
-            },
-        });
-        // console.log(classData.data);
+        let classData;
+        //Load individual data if user is individual
+        if (user.data.IsIndividual) {
+            classData = await axios({
+                method: "get",
+                url:
+                    url + "/individual/getData/" + user.data.SelectedIndividual,
+                headers: {
+                    Authorization: token,
+                },
+            });
+            // console.log(classData.data);
+        } else {
+            classData = await axios({
+                method: "get",
+                url:
+                    url +
+                    "/classroom/getClassroomData/" +
+                    user.data.SelectedClass,
+                headers: {
+                    Authorization: token,
+                },
+            });
+            // console.log(classData.data);
+        }
 
         //Fetch badge data
         const badgeData = await axios({
@@ -118,7 +134,21 @@ export default function Badge({
     const router = useRouter();
     const { title, liv, id } = router.query;
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+    useEffect(() => {
+        //Fetch the language
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
+    }, []);
 
     return (
         <>

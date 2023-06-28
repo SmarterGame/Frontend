@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { getSelectedLanguage } from "@/components/lib/language";
 
 export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+
+    useEffect(() => {
+        setSelectedLanguage(sessionStorage.getItem("language"));
+    }, []);
 
     //Filtra i box che l'utente ha già
     if (boxes === undefined) boxes = [];

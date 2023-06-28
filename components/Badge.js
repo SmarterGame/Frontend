@@ -2,14 +2,29 @@ import axios from "axios";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import ContentLoader from "react-content-loader";
-import { getSelectedLanguage } from "@/components/lib/language";
 
 export default function Badge({ token, url, badge, blocked }) {
     const [badgeData, setBadgeData] = useState({});
     const [badgeImg, setBadgeImg] = useState("");
     const [imageLoaded, setImageLoaded] = useState(false);
 
-    const selectedLanguage = getSelectedLanguage();
+    // const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+
+    useEffect(() => {
+        //Fetch the language
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
+    }, []);
 
     useEffect(() => {
         const getBadge = async () => {
@@ -51,7 +66,7 @@ export default function Badge({ token, url, badge, blocked }) {
     }, []);
 
     const checkLanguage = (badgeData) => {
-        const language = getSelectedLanguage();
+        const language = selectedLanguage;
         if (language === "ita") {
             setBadgeData(badgeData);
         } else {

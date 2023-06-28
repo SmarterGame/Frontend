@@ -95,9 +95,11 @@ export default function Game1({
     const {events: eventsRight, sendAction: sendActionRight} = useSmarter({smarterId: SMARTER_ID_2});
     const [error, setError] = useState(false);
     const [subLvl, setsubLvl] = useState(0);
-    const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
-    const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
-    const [inputValuesLeft, setinputValuesLeft] = useState(new Array(5));
+    const [lvlDataLeft, setLvlDataLeft] = useState([]);
+    const [lvlDataRight, setLvlDataRight] = useState([]);
+    const [lvlDataLeftCorrect, setLvlDataLeftCorrect] = useState([]);
+    const [lvlDataRightCorrect, setLvlDataRightCorrect] = useState([]);
+    const [inputValuesLeft, setinputValuesLeft] = useState({});
     const [isCorrectLeft, setisCorrectLeft] = useState([
         false,
         false,
@@ -131,7 +133,21 @@ export default function Game1({
 
     const [isCrescente, setisCrescente] = useState(true);
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+    useEffect(() => {
+        //Fetch the language
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
+    }, []);
 
     //Get level data
     useEffect(() => {
@@ -142,14 +158,32 @@ export default function Game1({
                 },
             })
             .then((res) => {
+                const tmp = res.data[subLvl].pop(); //tmp = 0 incremento, tmp = 1 decreasing
+                const data = [...res.data[subLvl]];
                 //Check if the array is in crescent order
-                if (res.data[subLvl][0] > res.data[subLvl][1]) {
+                if (tmp) {
                     setisCrescente(false);
-                } else setisCrescente(true);
+                    //Set the correct solution
+                    setLvlDataLeftCorrect(
+                        res.data[subLvl].slice(0, 5).sort((a, b) => b - a)
+                    );
+                    setLvlDataRightCorrect(
+                        res.data[subLvl].slice(5, 10).sort((a, b) => b - a)
+                    );
+                } else {
+                    setisCrescente(true);
+                    //Set the correct solution
+                    setLvlDataLeftCorrect(
+                        res.data[subLvl].slice(0, 5).sort((a, b) => a - b)
+                    );
+                    setLvlDataRightCorrect(
+                        res.data[subLvl].slice(5, 10).sort((a, b) => a - b)
+                    );
+                }
 
-                setLvlData(res.data[subLvl]);
-                const data = _.shuffle(res.data[subLvl]);
-                setLvlDataShuffled(data);
+                //Set the data
+                setLvlDataLeft(data.slice(0, 5));
+                setLvlDataRight(data.slice(5, 10));
             })
             .catch((err) => {
                 console.log(err);
@@ -165,31 +199,22 @@ export default function Game1({
         setinputValuesRight(new Array(5));
     }, [subLvl]);
 
+    // //Handle left input change
+    // const handleInputChangeLeft = (e) => {
+    //     const { name, value } = e.target;
+    //     setinputValuesLeft({ ...inputValuesLeft, [name]: value });
+    // };
+
+    // //Handle right input change
+    // const handleInputChangeRight = (e) => {
+    //     const { name, value } = e.target;
+    //     setinputValuesRight({ ...inputValuesRight, [name]: value });
+    // };
+
     //Check if input of the left smarter is correct
     useEffect(() => {
-        // axios
-        //     .post(
-        //         url + "/games/insertedCard/lpi",
-        //         {
-        //             game, //quantita o ordinamenti
-        //             levelGame1,
-        //             subLvl,
-        //             inputValuesLeft,
-        //         },
-        //         {
-        //             headers: {
-        //                 Authorization: "Bearer " + token,
-        //             },
-        //         }
-        //     )
-        //     .then((res) => {
-        //         console.log(res);
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
-        for (let i = 0; i < lvlData.length; i++) {
-            if (inputValuesLeft[i] == lvlData[i]) {
+        for (let i = 0; i < lvlDataLeftCorrect.length; i++) {
+            if (inputValuesLeft[i] == lvlDataLeftCorrect[i]) {
                 setisCorrectLeft((prevState) => {
                     const newState = [...prevState];
                     newState[i] = true;
@@ -255,8 +280,8 @@ export default function Game1({
 
     //Check if input of the right smarter is correct
     useEffect(() => {
-        for (let i = 0; i < lvlData.length; i++) {
-            if (inputValuesRight[i] == lvlData[i]) {
+        for (let i = 0; i < lvlDataRightCorrect.length; i++) {
+            if (inputValuesRight[i] == lvlDataRightCorrect[i]) {
                 setisCorrectRight((prevState) => {
                     const newState = [...prevState];
                     newState[i] = true;
@@ -434,6 +459,7 @@ export default function Game1({
                     game: game,
                     level: levelGame1,
                     badgeData: JSON.stringify(res.data.badgeEarned),
+                    selectedLanguage: selectedLanguage,
                 },
             });
         } catch (err) {
@@ -457,11 +483,19 @@ export default function Game1({
                     <h1 className="mx-auto text-2xl">
                         {selectedLanguage === "eng"
                             ? isCrescente
-                                ? "Arrange the numbers in increasing orders using the tiles “apples”"
-                                : "Arrange the numbers in decreasing orders using the tiles “apples”"
+                                ? "Arrange the numbers in increasing order using the tiles " +
+                                  (levelGame1 === "1"
+                                      ? "“apples”"
+                                      : "“numbers”")
+                                : "Arrange the numbers in decreasing order using the tiles " +
+                                  (levelGame1 === "1"
+                                      ? "“apples”"
+                                      : "“numbers”")
                             : isCrescente
-                            ? "Ordina i numeri in ordine crescente, usando le tessere “mela”"
-                            : "Ordina i numeri in ordine decrescente, usando le tessere “mela”"}
+                            ? "Ordina i numeri in ordine crescente, usando le tessere " +
+                              (levelGame1 === "1" ? "“mela”" : "“cifre”")
+                            : "Ordina i numeri in ordine decrescente, usando le tessere " +
+                              (levelGame1 === "1" ? "“mela”" : "“cifre”")}
                     </h1>
                 </div>
                 <div className="relative flex flex-row justify-center gap-x-20 w-full z-10 md:h-[55vh] lg:h-[60vh]">
@@ -470,7 +504,7 @@ export default function Game1({
                             Smarter 1
                         </h1>
                         <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-4 h-full">
-                            {lvlDataShuffled.map((item, index) => (
+                            {lvlDataLeft.map((item, index) => (
                                 <div
                                     key={index}
                                     className="bg-slate-200 w-full flex justify-center items-center text-8xl"
@@ -517,7 +551,7 @@ export default function Game1({
                             Smarter 2
                         </h1>
                         <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-4 h-full">
-                            {lvlDataShuffled.map((item, index) => (
+                            {lvlDataRight.map((item, index) => (
                                 <div
                                     key={index}
                                     className="bg-slate-200 border-4 w-full flex justify-center items-center text-8xl"

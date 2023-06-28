@@ -6,14 +6,13 @@ import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import { useRouter } from "next/router";
 import url2 from "url";
-import { getSelectedLanguage } from "@/components/lib/language";
+import { useEffect, useState } from "react";
 
 export const getServerSideProps = async ({ req, res }) => {
-    const selectedLanguage = getSelectedLanguage();
     //Get badge id from url
     const { query } = url2.parse(req.url, true);
     const badgeEarned = JSON.parse(query.badgeData ?? "[]");
-    // console.log(JSON.parse(query.badgeData ?? "[]"));
+    const selectedLanguage = query.selectedLanguage;
 
     const url = process.env.BACKEND_URI;
     try {
@@ -132,7 +131,21 @@ export default function Quantita({
     const { game, level, badgeData } = router.query; //game = quantita or ordinamenti
     const idBadgeEarned = JSON.parse(badgeData ?? "[]");
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+    useEffect(() => {
+        //Fetch the language
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
+    }, []);
 
     let gameType = 0;
     if (game == "quantita") gameType = 1;
@@ -186,7 +199,7 @@ export default function Quantita({
                             {idBadgeEarned.map((badge, index) => (
                                 <button key={badge}>
                                     <Link
-                                        href={`/mockup/badge?title=${game}&liv=${level}&id=${badge}`}
+                                        href={`/mockup/badge?title=${game}&liv=${level}&id=${badge}&lan=${selectedLanguage}`}
                                     >
                                         {badgesImg.length > 0 ? (
                                             <Image

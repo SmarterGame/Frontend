@@ -95,7 +95,8 @@ export default function Game1({
     const {events: eventsRight, sendAction: sendActionRight} = useSmarter({smarterId: SMARTER_ID_2});
     const [error, setError] = useState(false);
     const [subLvl, setsubLvl] = useState(0);
-    const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
+    const [lvlDataLeft, setLvlDataLeft] = useState([]);
+    const [lvlDataRight, setLvlDataRight] = useState([]);
     // const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
     const [inputValuesLeft, setinputValuesLeft] = useState(new Array(5));
     const [isCorrectLeft, setisCorrectLeft] = useState([
@@ -129,7 +130,21 @@ export default function Game1({
     ]);
     const [isAllCorrect, setisAllCorrect] = useState([false, false]);
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+    useEffect(() => {
+        //Fetch the language
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
+    }, []);
 
     //Get level data
     useEffect(() => {
@@ -140,9 +155,8 @@ export default function Game1({
                 },
             })
             .then((res) => {
-                setLvlData(res.data[subLvl]);
-                // const data = _.shuffle(res.data[subLvl]);
-                // setLvlDataShuffled(data);
+                setLvlDataLeft(res.data[subLvl].slice(0, 5));
+                setLvlDataRight(res.data[subLvl].slice(5, 10));
             })
             .catch((err) => {
                 console.log(err);
@@ -184,29 +198,8 @@ export default function Game1({
 
     //Check if input of the left smarter is correct
     useEffect(() => {
-        // axios
-        //     .post(
-        //         url + "/games/insertedCard/lpi",
-        //         {
-        //             game, //quantita o ordinamenti
-        //             levelGame1,
-        //             subLvl,
-        //             inputValuesLeft,
-        //         },
-        //         {
-        //             headers: {
-        //                 Authorization: "Bearer " + token,
-        //             },
-        //         }
-        //     )
-        //     .then((res) => {
-        //         console.log(res);
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
-        for (let i = 0; i < lvlData.length; i++) {
-            if (inputValuesLeft[i] == lvlData[i]) {
+        for (let i = 0; i < lvlDataLeft.length; i++) {
+            if (inputValuesLeft[i] == lvlDataLeft[i]) {
                 setisCorrectLeft((prevState) => {
                     const newState = [...prevState];
                     newState[i] = true;
@@ -272,8 +265,8 @@ export default function Game1({
 
     //Check if input of the right smarter is correct
     useEffect(() => {
-        for (let i = 0; i < lvlData.length; i++) {
-            if (inputValuesRight[i] == lvlData[i]) {
+        for (let i = 0; i < lvlDataRight.length; i++) {
+            if (inputValuesRight[i] == lvlDataRight[i]) {
                 setisCorrectRight((prevState) => {
                     const newState = [...prevState];
                     newState[i] = true;
@@ -427,6 +420,7 @@ export default function Game1({
                     game: game,
                     level: levelGame1,
                     badgeData: JSON.stringify(res.data.badgeEarned),
+                    selectedLanguage: selectedLanguage,
                 },
             });
         } catch (err) {
@@ -459,7 +453,7 @@ export default function Game1({
                             Smarter 1
                         </h1>
                         <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-4 h-full">
-                            {lvlData.map((item, index) => (
+                            {lvlDataLeft.map((item, index) => (
                                 <div
                                     key={index}
                                     className="bg-slate-200 w-full flex justify-center items-center text-8xl"
@@ -505,7 +499,7 @@ export default function Game1({
                             Smarter 2
                         </h1>
                         <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-4 h-full">
-                            {lvlData.map((item, index) => (
+                            {lvlDataRight.map((item, index) => (
                                 <div
                                     key={index}
                                     className="bg-slate-200 border-4 w-full flex justify-center items-center text-8xl"

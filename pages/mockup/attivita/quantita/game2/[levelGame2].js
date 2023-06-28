@@ -121,7 +121,21 @@ export default function Game({
         false,
     ]);
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+    useEffect(() => {
+        //Fetch the language
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
+    }, []);
 
     //Get level data
     useEffect(() => {
@@ -355,6 +369,7 @@ export default function Game({
                     game: game,
                     level: levelGame2,
                     badgeData: JSON.stringify(res.data.badgeEarned),
+                    selectedLanguage: selectedLanguage,
                 },
             });
         } catch (err) {

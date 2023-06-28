@@ -3,10 +3,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
-import {
-    getSelectedLanguage,
-    setSelectedLanguage,
-} from "@/components/lib/language";
 
 export default function SiedBar({ token, url, show, onClose, children }) {
     const router = useRouter();
@@ -14,7 +10,22 @@ export default function SiedBar({ token, url, show, onClose, children }) {
     const sideBarRef = useRef(null);
     // const [showCustom, setShowCustom] = useState(false);
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+
+    useEffect(() => {
+        //Fetch the language
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
+    }, []);
 
     //Check if the click was outside of the modal
     useEffect(() => {
@@ -40,8 +51,10 @@ export default function SiedBar({ token, url, show, onClose, children }) {
     }, [show]);
 
     const changeImageHandler = async () => {
+        const title =
+            selectedLanguage === "eng" ? "Select image" : "Seleziona immagine";
         const { value: file } = await Swal.fire({
-            title: "Seleziona immagine",
+            title: title,
             input: "file",
             confirmButtonColor: "#ff7100",
             inputAttributes: {
@@ -63,18 +76,31 @@ export default function SiedBar({ token, url, show, onClose, children }) {
                         "Content-Type": "multipart/form-data",
                     },
                 });
+                const title =
+                    selectedLanguage === "eng"
+                        ? "Image changed!"
+                        : "Immagine cambiata!";
+                const text =
+                    selectedLanguage === "eng"
+                        ? "The image has been changed correctly"
+                        : "L'immagine è stata cambiata correttamente";
                 Swal.fire({
-                    title: "Immagine cambiata!",
-                    text: "L'immagine è stata cambiata correttamente",
+                    title: title,
+                    text: text,
                     icon: "success",
                     confirmButtonText: "Ok",
                 }).then(() => {
                     if (router.pathname === "/mockup/profilo") router.reload();
                 });
             } catch (err) {
+                const title = selectedLanguage === "eng" ? "Error" : "Errore";
+                const text =
+                    selectedLanguage === "eng"
+                        ? "Error while changing the image"
+                        : "Si è verificato un errore nel cambiare l'immagine";
                 Swal.fire({
-                    title: "Errore",
-                    text: "Si è verificato un errore nel cambiare l'immagine",
+                    title: title,
+                    text: text,
                     icon: "error",
                     confirmButtonText: "Ok",
                 });
@@ -84,14 +110,27 @@ export default function SiedBar({ token, url, show, onClose, children }) {
     };
 
     //Switch the language
-    const changeLanguageHandler = () => {
-        if (getSelectedLanguage() === "eng") {
-            setSelectedLanguage("ita");
+    const changeLanguageHandler = async () => {
+        //Write the language
+        let newLanguage;
+        if (selectedLanguage === "eng") {
+            newLanguage = "ita";
         } else {
-            setSelectedLanguage("eng");
+            newLanguage = "eng";
         }
-
-        router.replace(router.asPath);
+        sessionStorage.setItem("language", newLanguage);
+        setSelectedLanguage(newLanguage);
+        router.reload();
+        // try {
+        //     await fetch("/api/language/writeLanguage", {
+        //         method: "POST",
+        //         body: newLanguage,
+        //     }).then((res) => {
+        //         router.reload();
+        //     });
+        // } catch (error) {
+        //     console.log(error);
+        // }
     };
 
     return (
@@ -127,8 +166,8 @@ export default function SiedBar({ token, url, show, onClose, children }) {
                             className="mx-auto text-gray-600 text-lg"
                         >
                             {selectedLanguage === "eng"
-                                ? "ENGLISH"
-                                : "ITALIANO"}
+                                ? "ITALIANO"
+                                : "ENGLISH"}
                         </button>
                     </div>
                     {/* <div className="hidden flex w-full py-2 px-2 hover:bg-gray-400 hover:bg-opacity-70 rounded-md">

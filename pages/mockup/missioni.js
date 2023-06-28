@@ -5,7 +5,6 @@ import Badge from "@/components/Badge";
 import PopUp from "@/components/settingsPopUp";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
-import { getSelectedLanguage } from "@/components/lib/language";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
@@ -73,6 +72,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url: url,
                 boxes: boxes.data,
                 classRoom: classData.data,
+                isIndividual: user.data.IsIndividual,
             },
         };
     } catch (err) {
@@ -82,7 +82,7 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function BadgePage({ token, url, boxes, classRoom }) {
+export default function BadgePage({ token, url, boxes, classRoom , isIndividual}) {
     const [showPopUp, setShowPopUp] = useState(false);
     const [loading, setLoading] = useState(true);
     const [badgeList, setBadgeList] = useState([
@@ -97,7 +97,23 @@ export default function BadgePage({ token, url, boxes, classRoom }) {
     ]);
     const [badgeListFiltered, setBadgeListFiltered] = useState([]);
 
-    const selectedLanguage = getSelectedLanguage();
+    // const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+
+    useEffect(() => {
+        //Fetch the language
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
+    }, []);
 
     //Filter badges
     useEffect(() => {
@@ -128,6 +144,7 @@ export default function BadgePage({ token, url, boxes, classRoom }) {
                 url={url}
                 boxes={boxes}
                 classRoom={classRoom}
+                isIndividual={isIndividual}
             >
                 <div className="relative flex flex-col mx-auto h-[70vh] w-[60%] bg-slate-200 rounded-xl shadow-2xl mt-10 z-20">
                     <h1 className="mx-auto text-4xl text-orangeBtn mt-6">

@@ -94,7 +94,7 @@ export default function Game({
     const [error, setError] = useState(false);
     const [subLvl, setsubLvl] = useState(0);
     const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
-    const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
+    const [lvlDataCorrect, setLvlDataCorrect] = useState([]);
     const [inputValues, setInputValues] = useState({}); //Used to store the input values
     const [isCorrect, setIsCorrect] = useState([
         false,
@@ -107,7 +107,21 @@ export default function Game({
 
     const [isCrescente, setisCrescente] = useState(true);
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+    useEffect(() => {
+        //Fetch the language
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
+    }, []);
 
     //Get level data
     useEffect(() => {
@@ -118,15 +132,20 @@ export default function Game({
                 },
             })
             .then((res) => {
+                const tmp = res.data[subLvl].pop();
+                const data = [...res.data[subLvl]];
                 //Check if the array is in crescent order
-                if (res.data[subLvl][0] > res.data[subLvl][1]) {
+                if (tmp) {
                     setisCrescente(false);
-                } else setisCrescente(true);
+                    setLvlDataCorrect(res.data[subLvl].sort((a, b) => b - a));
+                } else {
+                    setisCrescente(true);
+                    setLvlDataCorrect(res.data[subLvl].sort((a, b) => a - b));
+                }
 
-                // console.log(res.data);
-                setLvlData(res.data[subLvl]);
-                const data = _.shuffle(res.data[subLvl]);
-                setLvlDataShuffled(data);
+                setLvlData(data);
+                // const data = _.shuffle(res.data[subLvl]);
+                // setLvlDataShuffled(data);
             })
             .catch((err) => {
                 console.log(err);
@@ -142,8 +161,8 @@ export default function Game({
 
     //Check if the solution is correct
     useEffect(() => {
-        for (let i = 0; i < lvlData.length; i++) {
-            if (inputValues[i] == lvlData[i]) {
+        for (let i = 0; i < lvlDataCorrect.length; i++) {
+            if (inputValues[i] == lvlDataCorrect[i]) {
                 setIsCorrect((prevState) => {
                     const newState = [...prevState];
                     newState[i] = true;
@@ -292,6 +311,7 @@ export default function Game({
                     game: game,
                     level: levelIndividual,
                     badgeData: JSON.stringify(res.data.badgeEarned),
+                    selectedLanguage: selectedLanguage,
                 },
             });
         } catch (err) {
@@ -315,17 +335,25 @@ export default function Game({
                     <h1 className="mx-auto text-2xl">
                         {selectedLanguage === "eng"
                             ? isCrescente
-                                ? "Arrange the numbers in increasing orders using the tiles “apples”"
-                                : "Arrange the numbers in decreasing orders using the tiles “apples”"
+                                ? "Arrange the numbers in increasing orders using the tiles " +
+                                  (levelIndividual === "1"
+                                      ? "“apples”"
+                                      : "“numbers”")
+                                : "Arrange the numbers in decreasing orders using the tiles " +
+                                  (levelIndividual === "1"
+                                      ? "“apples”"
+                                      : "“numbers”")
                             : isCrescente
-                            ? "Ordina i numeri in ordine crescente, usando le tessere “mela”"
-                            : "Ordina i numeri in ordine decrescente, usando le tessere “mela”"}
+                            ? "Ordina i numeri in ordine crescente, usando le tessere " +
+                              (levelIndividual === "1" ? "”mela”" : "”cifra”")
+                            : "Ordina i numeri in ordine decrescente, usando le tessere " +
+                              (levelIndividual === "1" ? "“mela”" : "”cifra”")}
                     </h1>
                 </div>
                 <div className="relative flex flex-col justify-center md:h-[55vh] lg:h-[60vh] mt-10 ml-4 mr-4 z-10">
                     <div className="flex flex-col items-center h-full w-full">
                         <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-14 h-full w-[65%]">
-                            {lvlDataShuffled.map((item, index) => (
+                            {lvlData.map((item, index) => (
                                 <div
                                     key={index}
                                     className="bg-slate-200 w-full flex justify-center items-center text-8xl"

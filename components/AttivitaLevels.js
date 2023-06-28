@@ -1,8 +1,7 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { getSelectedLanguage } from "@/components/lib/language";
+import { useState, useEffect } from "react";
 
 export default function AttivitaLevels({
     children,
@@ -13,7 +12,21 @@ export default function AttivitaLevels({
 }) {
     const router = useRouter();
 
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+    useEffect(() => {
+        //Fetch the language
+        // const fetchLanguage = async () => {
+        //     try {
+        //         const data = await fetch("/api/language/getLanguage");
+        //         const language = await data.json();
+        //         setSelectedLanguage(language);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
+        // fetchLanguage();
+        setSelectedLanguage(sessionStorage.getItem("language"));
+    }, []);
 
     const livQuantita = classRoom.Levels[0];
     const livOrdinamenti = classRoom.Levels[1];

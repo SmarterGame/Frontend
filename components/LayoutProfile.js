@@ -16,11 +16,6 @@ const Layout = ({
 }) => {
     const styles = {
         backgroundColor: "#c4e5ff",
-        // backgroundImage: "url(/grass.png)",
-        // backgroundRepeat: "no-repeat",
-        // backgroundSize: "contain",
-        // backgroundPosition: "bottom",
-        // backgroundAttachment: "fixed",
     };
 
     return (

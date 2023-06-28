@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import axios from "axios";
 import IndividualModePopUP from "./IndividualModePopUp";
-import { getSelectedLanguage } from "@/components/lib/language";
 
 export default function PopUp({
     token,
@@ -21,7 +20,11 @@ export default function PopUp({
         selectedMode: "Nessuna modalità selezionata",
     },
 }) {
-    const selectedLanguage = getSelectedLanguage();
+    const [selectedLanguage, setSelectedLanguage] = useState();
+
+    useEffect(() => {
+        setSelectedLanguage(sessionStorage.getItem("language"));
+    }, []);
 
     // console.log(selectedOptions);
     const selectedSmarters = selectedOptions.selectedSmarters;
