@@ -72,6 +72,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url: url,
                 boxes: boxes.data,
                 classRoom: classData.data,
+                isIndividual: user.data.IsIndividual,
             },
         };
     } catch (err) {
@@ -81,7 +82,7 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function BadgePage({ token, url, boxes, classRoom }) {
+export default function BadgePage({ token, url, boxes, classRoom , isIndividual}) {
     const [showPopUp, setShowPopUp] = useState(false);
     const [loading, setLoading] = useState(true);
     const [badgeList, setBadgeList] = useState([
@@ -143,6 +144,7 @@ export default function BadgePage({ token, url, boxes, classRoom }) {
                 url={url}
                 boxes={boxes}
                 classRoom={classRoom}
+                isIndividual={isIndividual}
             >
                 <div className="relative flex flex-col mx-auto h-[70vh] w-[60%] bg-slate-200 rounded-xl shadow-2xl mt-10 z-20">
                     <h1 className="mx-auto text-4xl text-orangeBtn mt-6">

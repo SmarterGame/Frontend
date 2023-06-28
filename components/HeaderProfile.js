@@ -15,6 +15,8 @@ export default function HeaderProfile({
     const [showPopUp, setShowPopUp] = useState(false);
     const [showSideBar, setShowSideBar] = useState(false);
 
+    console.log(isIndividual);
+
     // const selectedLanguage = getSelectedLanguage();
     const [selectedLanguage, setSelectedLanguage] = useState();
 
