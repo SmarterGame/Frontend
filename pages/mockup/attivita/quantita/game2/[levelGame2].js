@@ -89,8 +89,8 @@ export default function Game({
 }) {
     const router = useRouter();
     const { levelGame2, game } = router.query; //game = quantita or ordinamenti
-    const {events: eventsLeft, sendAction: sendActionLeft} = useSmarter({smarterId: SMARTER_ID_1});
-    const {events: eventsRight, sendAction: sendActionRight} = useSmarter({smarterId: SMARTER_ID_2});
+    const {events: eventsLeft, info: infoLeft, sendAction: sendActionLeft} = useSmarter({smarterId: SMARTER_ID_1});
+    const {events: eventsRight,info: infoRight, sendAction: sendActionRight} = useSmarter({smarterId: SMARTER_ID_2});
     const [error, setError] = useState(false);
     const [subLvl, setsubLvl] = useState(0);
     const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
@@ -147,31 +147,30 @@ export default function Game({
             })
             .then((res) => {
                 // console.log(res.data);
+                sendActionLeft(LED_WHITE_ACTION)
+                sendActionRight(LED_WHITE_ACTION)
                 setLvlData(res.data[subLvl]);
-                // const data = _.shuffle(res.data[subLvl]);
-                // setLvlDataShuffled(data);
+                const inputs = document.querySelectorAll("input[name]");
+                inputs.forEach((input) => {
+                    input.value = "";
+                });
+                setIsCorrect([
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                ]);
+                setInputValues(['','','','','','','','','','']);
             })
             .catch((err) => {
                 console.log(err);
             });
-
-        const inputs = document.querySelectorAll("input[name]");
-        inputs.forEach((input) => {
-            input.value = "";
-        });
-        setIsCorrect([
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-        ]);
-        setInputValues(new Array(10));
     }, [subLvl]);
 
     useEffect(() => {
@@ -244,6 +243,24 @@ export default function Game({
         }
     }, [inputValues]);
 
+    useEffect(() => {
+        const event = eventsLeft[0];
+        if (event?.event === "card_placed") {
+            const value = convertTagToSymbol(event?.value);
+            sendAction(value == lvlData[event.reader] ? LED_GREEN_ACTION : LED_RED_ACTION);
+            setTimeout(() => sendAction(LED_WHITE_ACTION), 750);
+        }
+    }, [eventsLeft]);
+
+    useEffect(() => {
+        const event = eventsRight[0];
+        if (event?.event === "card_placed") {
+            const value = convertTagToSymbol(event?.value);
+            sendAction(value == lvlData[event.reader] ? LED_GREEN_ACTION : LED_RED_ACTION);
+            setTimeout(() => sendAction(LED_WHITE_ACTION), 750);
+        }
+    }, [eventsRight]);
+
     //Check if there is an error in the input
     useEffect(() => {
         if (isWrong.includes(true)) setError(true);
@@ -267,7 +284,7 @@ export default function Game({
                     title: title,
                     color: "#ff7100",
                     html: html,
-                    timer: 2000,
+                    timer: 4000,
                     timerProgressBar: true,
                     didOpen: () => {
                         Swal.showLoading();
@@ -309,6 +326,22 @@ export default function Game({
             }
         }
     }, [isCorrect]);
+
+    useEffect(() => {
+        if (!isCorrect.every(Boolean)) {
+            console.log("Enter")
+            console.log(isCorrect);
+            setInputValues(prev => [...infoLeft, ...prev.filter((_,id) => id >= 5)]);
+        }
+    }, [infoLeft])
+
+    useEffect(() => {
+        if (!isCorrect.every(Boolean)) {
+            console.log("Enter")
+            console.log(isCorrect);
+            setInputValues(prev => [...prev.filter((_,id) => id < 5),...infoRight]);
+        }
+    }, [infoRight])
 
     //API call to set game as finished
     const gameFinished = async () => {
