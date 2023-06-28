@@ -1,6 +1,7 @@
 import { useHasHydrated } from "@/utils/hooks";
 import { useEffect, useState, useMemo } from "react";
 import { initMqtt } from "./connector";
+import { convertTagToSymbol } from "@/utils/smarter";
 
 const EVENT_TAG = '/event';
 const INFO_TAG = '/info';
@@ -55,7 +56,7 @@ export const useSmarter = (props) => {
                 setEvents(json);
               break;
             case infoTopic:
-              if (Array.isArray(json) && JSON.stringify(info) !== JSON.stringify(json)) setInfo(json);
+              if (Array.isArray(json) && JSON.stringify(info) !== JSON.stringify(json)) setInfo(json.map((obj => convertTagToSymbol(obj.value))));
               break;
             default:
               console.log("event not registered!");
