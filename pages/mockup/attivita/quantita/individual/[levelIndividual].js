@@ -143,12 +143,6 @@ export default function Game({
             });
     }, [subLvl]);
 
-    //Handle input change
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setInputValues({ ...inputValues, [name]: value });
-    };
-
     //Check if the solution is correct
     useEffect(() => {
         for (let i = 0; i < lvlData.length; i++) {
@@ -219,6 +213,9 @@ export default function Game({
                         ? "Exercise " + (subLvl + 1) + "/5 completed"
                         : "Esercizio " + (subLvl + 1) + "/5 completato";
 
+                sendAction(LED_GREEN_ACTION);
+                sendAction(LED_GREEN_ACTION);
+
                 Swal.fire({
                     title: title,
                     color: "#ff7100",
@@ -230,6 +227,8 @@ export default function Game({
                     },
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
+                        sendAction(LED_BLUE_ACTION);
+                        sendAction(LED_BLUE_ACTION);
                         setsubLvl((prevState) => prevState + 1);
                     }
                 });
@@ -243,17 +242,22 @@ export default function Game({
                         ? "Level " + levelIndividual + " completed"
                         : "Livello " + levelIndividual + " completato";
 
+                sendAction(LED_GREEN_ACTION);
+                sendAction(LED_GREEN_ACTION);
+
                 Swal.fire({
                     title: title,
                     color: "#ff7100",
                     html: html,
-                    timer: 2000,
+                    timer: 4000,
                     timerProgressBar: true,
                     didOpen: () => {
                         Swal.showLoading();
                     },
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
+                        sendAction(LED_BLUE_ACTION);
+                        sendAction(LED_BLUE_ACTION);
                         gameFinished();
                     }
                 });
@@ -350,11 +354,15 @@ export default function Game({
                                             : ``
                                     } w-full flex justify-center items-center text-8xl`}
                                 >
-                                    <input
+                                    {/* <input
                                         className="text-6xl text-center w-20"
                                         name={index}
                                         onChange={handleInputChange}
-                                    ></input>
+                                    ></input> */}
+                                    <div
+                                        className="text-6xl text-center w-20"
+                                        name={index}
+                                    >{inputValues?.[index]}</div>
                                 </div>
                             ))}
                         </div>

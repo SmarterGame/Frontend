@@ -7,7 +7,7 @@ import _ from "lodash";
 import Swal from "sweetalert2";
 import { getSelectedLanguage } from "@/components/lib/language";
 import { convertTagToSymbol } from "@/utils/smarter";
-import { useSmarter, LED_GREEN_ACTION, LED_BLUE_ACTION } from "@/data/mqtt/hooks";
+import { useSmarter, LED_GREEN_ACTION, LED_RED_ACTION, LED_BLUE_ACTION, LED_WHITE_ACTION } from "@/data/mqtt/hooks";
 import { SMARTER_ID_1, SMARTER_ID_2 } from "@/data/mqtt/connector";
 
 
@@ -95,7 +95,7 @@ export default function Game({
     const [subLvl, setsubLvl] = useState(0);
     const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
     //const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
-    const [inputValues, setInputValues] = useState(new Array(10)); //Used to store the input values
+    const [inputValues, setInputValues] = useState(['','','','','','','','','','']); //Used to store the input values
     const [isCorrect, setIsCorrect] = useState([
         false,
         false,
@@ -173,29 +173,29 @@ export default function Game({
             });
     }, [subLvl]);
 
-    useEffect(() => {
-        // update states left smarter
-        eventsLeft.map((event) => {
-            const convValue = convertTagToSymbol(event?.value);
+    // useEffect(() => {
+    //     // update states left smarter
+    //     eventsLeft.map((event) => {
+    //         const convValue = convertTagToSymbol(event?.value);
         
-            setInputValues((prev) => {
-                const newArr = [...prev];
-                newArr[event.reader] = event.event === "card_placed" ? convValue : "";
-                return newArr;
-            })
-        });
+    //         setInputValues((prev) => {
+    //             const newArr = [...prev];
+    //             newArr[event.reader] = event.event === "card_placed" ? convValue : "";
+    //             return newArr;
+    //         })
+    //     });
 
-        // update states right smarter
-        eventsRight.map((event) => {
-            const convValue = convertTagToSymbol(event?.value);
+    //     // update states right smarter
+    //     eventsRight.map((event) => {
+    //         const convValue = convertTagToSymbol(event?.value);
         
-            setInputValues((prev) => {
-                const newArr = [...prev];
-                newArr[event.reader + 5] = event.event === "card_placed" ? convValue : "";
-                return newArr;
-            })
-        });
-    }, [eventsLeft, eventsRight])
+    //         setInputValues((prev) => {
+    //             const newArr = [...prev];
+    //             newArr[event.reader + 5] = event.event === "card_placed" ? convValue : "";
+    //             return newArr;
+    //         })
+    //     });
+    // }, [eventsLeft, eventsRight])
 
 
     //Check if the solution is correct
@@ -247,8 +247,8 @@ export default function Game({
         const event = eventsLeft[0];
         if (event?.event === "card_placed") {
             const value = convertTagToSymbol(event?.value);
-            sendAction(value == lvlData[event.reader] ? LED_GREEN_ACTION : LED_RED_ACTION);
-            setTimeout(() => sendAction(LED_WHITE_ACTION), 750);
+            sendActionLeft(value == lvlData[event.reader] ? LED_GREEN_ACTION : LED_RED_ACTION);
+            setTimeout(() => sendActionLeft(LED_WHITE_ACTION), 750);
         }
     }, [eventsLeft]);
 
@@ -256,8 +256,8 @@ export default function Game({
         const event = eventsRight[0];
         if (event?.event === "card_placed") {
             const value = convertTagToSymbol(event?.value);
-            sendAction(value == lvlData[event.reader] ? LED_GREEN_ACTION : LED_RED_ACTION);
-            setTimeout(() => sendAction(LED_WHITE_ACTION), 750);
+            sendActionRight(value == lvlData[event.reader + 5] ? LED_GREEN_ACTION : LED_RED_ACTION);
+            setTimeout(() => sendActionRight(LED_WHITE_ACTION), 750);
         }
     }, [eventsRight]);
 
@@ -310,7 +310,7 @@ export default function Game({
                     title: title,
                     color: "#ff7100",
                     html: html,
-                    timer: 2000,
+                    timer: 4000,
                     timerProgressBar: true,
                     didOpen: () => {
                         Swal.showLoading();

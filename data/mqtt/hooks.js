@@ -49,6 +49,7 @@ export const useSmarter = (props) => {
 
     client.on('message', (topic, payload) => {
         try {
+          console.log(payload.toString())
           const json = JSON.parse(payload.toString());
 
           switch(topic) {
@@ -63,6 +64,7 @@ export const useSmarter = (props) => {
           }
         } catch (err) {
           setError(err);
+          console.log(err);
           console.log("invalid message format");
           return;
         }

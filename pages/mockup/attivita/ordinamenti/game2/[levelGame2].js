@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { getSelectedLanguage } from "@/components/lib/language";
-import { useSmarter, LED_GREEN_ACTION, LED_BLUE_ACTION } from "@/data/mqtt/hooks";
+import { useSmarter, LED_GREEN_ACTION, LED_BLUE_ACTION, LED_RED_ACTION, LED_WHITE_ACTION } from "@/data/mqtt/hooks";
 import { convertTagToSymbol } from "@/utils/smarter";
 import { SMARTER_ID_1, SMARTER_ID_2 } from "@/data/mqtt/connector";
 
@@ -87,13 +87,13 @@ export default function Game({
 }) {
     const router = useRouter();
     const { levelGame2, game } = router.query; //game = quantita or ordinamenti
-    const {events: eventsLeft, sendAction: sendActionLeft} = useSmarter({smarterId: SMARTER_ID_1});
-    const {events: eventsRight, sendAction: sendActionRight} = useSmarter({smarterId: SMARTER_ID_2});
+    const {events: eventsLeft, info: infoLeft, sendAction: sendActionLeft} = useSmarter({smarterId: SMARTER_ID_1});
+    const {events: eventsRight, info: infoRight, sendAction: sendActionRight} = useSmarter({smarterId: SMARTER_ID_2});
     const [error, setError] = useState(false);
     const [subLvl, setsubLvl] = useState(0);
-    const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
-    const [lvlDataShuffled, setLvlDataShuffled] = useState([]); //Used to display the data
-    const [inputValues, setInputValues] = useState(new Array(10)); //Used to store the input values
+    const [lvlData, setLvlData] = useState([]); //Used to display the data
+    const [lvldDataCorrect, setLvlDataCorrect] = useState([]); //Used to check the correct solution
+    const [inputValues, setInputValues] = useState(['','','','','','','','','','']); //Used to store the input values
     const [isCorrect, setIsCorrect] = useState([
         false,
         false,
@@ -146,6 +146,8 @@ export default function Game({
                 },
             })
             .then((res) => {
+                sendActionLeft(LED_WHITE_ACTION)
+                sendActionRight(LED_WHITE_ACTION)
                 const tmp = res.data[subLvl].pop(); //tmp = 0 incremento, tmp = 1 decreasing
                 const data = [...res.data[subLvl]];
                 //Check if the array is in crescent order
@@ -160,28 +162,27 @@ export default function Game({
                 }
 
                 setLvlData(data);
+                const inputs = document.querySelectorAll("input[name]");
+                inputs.forEach((input) => {
+                    input.value = "";
+                });
+                setIsCorrect([
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                ]);
+                setInputValues(['','','','','','','','','','']);
             })
             .catch((err) => {
                 console.log(err);
             });
-
-        const inputs = document.querySelectorAll("input[name]");
-        inputs.forEach((input) => {
-            input.value = "";
-        });
-        setIsCorrect([
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-        ]);
-        setInputValues(new Array(10));
     }, [subLvl]);
 
     //Check if the solution is correct
@@ -229,6 +230,24 @@ export default function Game({
         }
     }, [inputValues]);
 
+    useEffect(() => {
+        const event = eventsLeft[0];
+        if (event?.event === "card_placed") {
+            const value = convertTagToSymbol(event?.value);
+            sendActionLeft(value == lvlData[event.reader] ? LED_GREEN_ACTION : LED_RED_ACTION);
+            setTimeout(() => sendActionLeft(LED_WHITE_ACTION), 750);
+        }
+    }, [eventsLeft]);
+
+    useEffect(() => {
+        const event = eventsRight[0];
+        if (event?.event === "card_placed") {
+            const value = convertTagToSymbol(event?.value);
+            sendActionRight(value == lvlData[event.reader + 5] ? LED_GREEN_ACTION : LED_RED_ACTION);
+            setTimeout(() => sendActionRight(LED_WHITE_ACTION), 750);
+        }
+    }, [eventsRight]);
+
     //Check if there is an error in the input
     useEffect(() => {
         if (isWrong.includes(true)) setError(true);
@@ -252,7 +271,7 @@ export default function Game({
                     title: title,
                     color: "#ff7100",
                     html: html,
-                    timer: 2000,
+                    timer: 4000,
                     timerProgressBar: true,
                     didOpen: () => {
                         Swal.showLoading();
@@ -281,7 +300,7 @@ export default function Game({
                     title: title,
                     color: "#ff7100",
                     html: html,
-                    timer: 2000,
+                    timer: 4000,
                     timerProgressBar: true,
                     didOpen: () => {
                         Swal.showLoading();
@@ -298,28 +317,20 @@ export default function Game({
     }, [isCorrect]);
 
     useEffect(() => {
-        // update states left smarter
-        eventsLeft.map((event) => {
-            const convValue = convertTagToSymbol(event?.value);
-        
-            setInputValues((prev) => {
-                const newArr = [...prev];
-                newArr[event.reader] = event.event === "card_placed" ? convValue : "";
-                return newArr;
-            })
-        });
+        if (!isCorrect.every(Boolean)) {
+            console.log("Enter")
+            console.log(isCorrect);
+            setInputValues(prev => [...infoLeft, ...prev.filter((_,id) => id >= 5)]);
+        }
+    }, [infoLeft])
 
-        // update states right smarter
-        eventsRight.map((event) => {
-            const convValue = convertTagToSymbol(event?.value);
-        
-            setInputValues((prev) => {
-                const newArr = [...prev];
-                newArr[event.reader + 5] = event.event === "card_placed" ? convValue : "";
-                return newArr;
-            })
-        });
-    }, [eventsLeft, eventsRight])
+    useEffect(() => {
+        if (!isCorrect.every(Boolean)) {
+            console.log("Enter")
+            console.log(isCorrect);
+            setInputValues(prev => [...prev.filter((_,id) => id < 5),...infoRight]);
+        }
+    }, [infoRight])
 
     //API call to set game as finished
     const gameFinished = async () => {

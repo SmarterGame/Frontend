@@ -13,10 +13,13 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
     if (boxes === undefined) boxes = [];
     const filteredBoxes = boxes.filter((box) => !userBoxes.includes(box));
 
-    const [isChecked, setIsChecked] = useState(Array(filteredBoxes.length).fill(false));
+    const [isChecked, setIsChecked] = useState(
+        Array(filteredBoxes.length).fill(false)
+    );
 
     const fireSwal = () => {
-        const title = selectedLanguage === "eng" ? "Box added!" : "Box aggiunti!";
+        const title =
+            selectedLanguage === "eng" ? "Box added!" : "Box aggiunti!";
         const text =
             selectedLanguage === "eng"
                 ? "The SMARTERs have been added correctly"
@@ -55,9 +58,8 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                 for (let i = 0; i < filteredBoxes.length; i++) {
                     if (isChecked[i]) {
                         res = await axios({
-                            method: "post",
-                            url: url + "/box/add/",
-                            data: filteredBoxes[i],
+                            method: "get",
+                            url: url + "/box/add/" + filteredBoxes[i],
                             headers: { authorization: "Bearer " + token },
                         });
                     }
@@ -85,20 +87,27 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                 <section className="modal-main rounded-2xl">
                     <div className="flex flex-col items-center justify-center">
                         <h1 className="text-grayText text-4xl mt-4">
-                            {selectedLanguage === "eng" ? "SELECT SMARTERS" : "SELEZIONA GLI SMARTER"}
+                            {selectedLanguage === "eng"
+                                ? "SELECT SMARTERS"
+                                : "SELEZIONA GLI SMARTER"}
                         </h1>
                         <div className="mt-4">
                             <label className="text-gray-700 text-xl cursor-pointer">
                                 {filteredBoxes && filteredBoxes.length > 0 ? (
                                     filteredBoxes.map((box, index) => (
-                                        <div key={box._id}>
+                                        <div key={box}>
                                             <input
                                                 type="checkbox"
                                                 className="mr-2 mt-3 scale-150"
                                                 checked={isChecked[index]}
-                                                onChange={(event) => handleCheckboxChange(event, index)}
+                                                onChange={(event) =>
+                                                    handleCheckboxChange(
+                                                        event,
+                                                        index
+                                                    )
+                                                }
                                             />
-                                            <span>{box.name}</span>
+                                            <span>{box}</span>
                                         </div>
                                     ))
                                 ) : (
@@ -116,13 +125,17 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                                     onClick={handleConferma}
                                     className="h-12 w-56 mt-6 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-3xl shadow-2xl rounded-md duration-300"
                                 >
-                                    {selectedLanguage === "eng" ? "CONFIRM" : "CONFERMA"}
+                                    {selectedLanguage === "eng"
+                                        ? "CONFIRM"
+                                        : "CONFERMA"}
                                 </button>
                                 <button
                                     onClick={onClose}
                                     className="h-12 w-56 mt-6 transition ease-in-out bg-orangeBtn hover:bg-orange-700 hover:-translatey-1 hover:scale-110 text-white text-3xl shadow-2xl rounded-md duration-300"
                                 >
-                                    {selectedLanguage === "eng" ? "CANCEL" : "ANNULLA"}
+                                    {selectedLanguage === "eng"
+                                        ? "CANCEL"
+                                        : "ANNULLA"}
                                 </button>
                             </div>
                         </div>

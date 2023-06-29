@@ -26,7 +26,7 @@ export default function Home({ token, url }) {
 
     const { user, isLoading } = useUser();
 
-    const [flag, setFlag] = useState(eng);
+    const [flag, setFlag] = useState();
     const [language, setLanguage] = useState("ita");
     // sessionStorage.setItem("language", "ita");
 
@@ -87,27 +87,41 @@ export default function Home({ token, url }) {
                             {language === "eng" ? "WELCOME TO" : "BENVENUTO SU"}
                         </h2>
                         <div className="flex flex-row transition ease-in-out hover:-translatey-1 hover:scale-110 duration-300">
-                            <h1 className="text-7xl text-gray-100 text-stroke-orange">SMART</h1>
-                            <h1 className="text-5xl text-gray-100 text-stroke-orange mt-[18px]">GAME</h1>
+                            <h1 className="text-7xl text-gray-100 text-stroke-orange">
+                                SMART
+                            </h1>
+                            <h1 className="text-5xl text-gray-100 text-stroke-orange mt-[18px]">
+                                GAME
+                            </h1>
                         </div>
 
                         {/* <div className="flex flex-col max-w-6xl rounded-xl mt-6 mb-4 mx-4"> */}
                         {!user ? (
                             <div className="mx-auto text-center">
                                 <h1 className="text-3xl mt-10 font-bold">
-                                    {language === "eng" ? "Login to continue" : "Esegui il login"}
+                                    {language === "eng"
+                                        ? "Login to continue"
+                                        : "Esegui il login"}
                                 </h1>
                                 <button className="transition ease-in-out delay-150 bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
-                                    <Link href="/api/auth/login">{language === "eng" ? "Login" : "Accedi"}</Link>
+                                    <Link href="/api/auth/login">
+                                        {language === "eng"
+                                            ? "Login"
+                                            : "Accedi"}
+                                    </Link>
                                 </button>
                             </div>
                         ) : (
                             <div className="mx-auto text-center">
                                 <h1 className="text-3xl mt-10 font-bold">
-                                    {language === "eng" ? "Logout" : "Esegui il Logout"}
+                                    {language === "eng"
+                                        ? "Logout"
+                                        : "Esegui il Logout"}
                                 </h1>
                                 <button className="transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-xl font-bold shadow-2xl mt-5 mb-2 px-4 py-2 rounded-md duration-300">
-                                    <Link href="/api/auth/logout">{language === "eng" ? "Logout" : "Esci"}</Link>
+                                    <Link href="/api/auth/logout">
+                                        {language === "eng" ? "Logout" : "Esci"}
+                                    </Link>
                                 </button>
                             </div>
                         )}
@@ -121,7 +135,7 @@ export default function Home({ token, url }) {
                     >
                         <div className="flex flex-row gap-x-4">
                             {language === "eng" ? "ITA" : "ENG"}
-                            <Image src={flag} alt="bandiera" width={40} />
+                            <Image src={flag} alt="badniera" width={40} />
                         </div>
                     </button>
                 </div>
