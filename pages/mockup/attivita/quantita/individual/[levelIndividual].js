@@ -249,7 +249,7 @@ export default function Game({
                     title: title,
                     color: "#ff7100",
                     html: html,
-                    timer: 2000,
+                    timer: 4000,
                     timerProgressBar: true,
                     didOpen: () => {
                         Swal.showLoading();
