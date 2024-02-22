@@ -95,7 +95,7 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                             <label className="text-gray-700 text-xl cursor-pointer">
                                 {filteredBoxes && filteredBoxes.length > 0 ? (
                                     filteredBoxes.map((box, index) => (
-                                        <div key={box}>
+                                        <div key={box._id}>
                                             <input
                                                 type="checkbox"
                                                 className="mr-2 mt-3 scale-150"
@@ -107,7 +107,7 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                                                     )
                                                 }
                                             />
-                                            <span>{box}</span>
+                                            <span>{box.name}</span>
                                         </div>
                                     ))
                                 ) : (
