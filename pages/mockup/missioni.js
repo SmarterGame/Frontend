@@ -27,7 +27,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 Authorization: token,
             },
         });
-        // console.log(boxes.data);
+        console.log("ECCOLO: "+boxes.data);
 
         //Fetch id of selected classroom
         const user = await axios({

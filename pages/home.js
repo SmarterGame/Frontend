@@ -33,13 +33,15 @@ export const getServerSideProps = async ({ req, res }) => {
                 Authorization: token,
             },
         });
-        // console.log(user.data.SelectedSmarters);
+      
         // console.log(user.data.SelectedMode);
 
         const selectedOptions = {
             selectedSmarters: user.data.SelectedSmarters,
             selectedMode: user.data.SelectedMode,
         };
+
+
 
         const tiles = await axios({
             method: "get",
@@ -58,7 +60,8 @@ export const getServerSideProps = async ({ req, res }) => {
                 Authorization: token,
             },
         });
-        // console.log(boxes.data);
+       
+        
 
         return {
             props: {
@@ -73,7 +76,7 @@ export const getServerSideProps = async ({ req, res }) => {
     } catch (err) {
         console.log(err);
         console.log(url);
-        return { props: {} };
+        return { props: {error: err} };
     }
 };
 
@@ -84,6 +87,7 @@ export default function Home({
     boxes,
     selectedOptions,
     userBoxes,
+    error
 }) {
     const { user, isLoading } = useUser();
     const [classroom_tiles, setClassroom_tiles] = useState([]); //Array of TeamBox
@@ -114,6 +118,10 @@ export default function Home({
         // fetchLanguage();
         setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
+
+    if (error) {
+        return (<>ERROR</>)
+    }
 
     //Toggle settings popup
     const togglePopUp = (id) => {
