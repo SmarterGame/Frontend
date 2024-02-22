@@ -9,9 +9,13 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
         setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
 
+
+
     //Filtra i box che l'utente ha già
     if (boxes === undefined) boxes = [];
     const filteredBoxes = boxes.filter((box) => !userBoxes.includes(box));
+
+   
 
     const [isChecked, setIsChecked] = useState(
         Array(filteredBoxes.length).fill(false)
@@ -57,9 +61,10 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                 let res;
                 for (let i = 0; i < filteredBoxes.length; i++) {
                     if (isChecked[i]) {
+                        console.log("qui devo aggiungere gli smarter selezionati all'utente loggato");
                         res = await axios({
                             method: "get",
-                            url: url + "/box/add/" + filteredBoxes[i],
+                            url: url + "/box/add/" + filteredBoxes[i].name,
                             headers: { authorization: "Bearer " + token },
                         });
                     }
@@ -95,7 +100,7 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                             <label className="text-gray-700 text-xl cursor-pointer">
                                 {filteredBoxes && filteredBoxes.length > 0 ? (
                                     filteredBoxes.map((box, index) => (
-                                        <div key={box}>
+                                        <div key={index}>
                                             <input
                                                 type="checkbox"
                                                 className="mr-2 mt-3 scale-150"
@@ -107,7 +112,7 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                                                     )
                                                 }
                                             />
-                                            <span>{box}</span>
+                                            <span>{box?.name}</span>
                                         </div>
                                     ))
                                 ) : (

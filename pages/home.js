@@ -42,7 +42,6 @@ export const getServerSideProps = async ({ req, res }) => {
         };
 
 
-
         const tiles = await axios({
             method: "get",
             url: url + "/classroom/all",
@@ -59,10 +58,8 @@ export const getServerSideProps = async ({ req, res }) => {
             headers: {
                 Authorization: token,
             },
-        });
-       
+        });       
         
-
         return {
             props: {
                 token: session.accessToken,

@@ -61,7 +61,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 Authorization: token,
             },
         });
-        // console.log(boxes.data);
+      //  console.log("ECCC: "+boxes.data);
 
         //Fetch classroom data
         let classData;
