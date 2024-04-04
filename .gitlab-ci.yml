@@ -1,0 +1,118 @@
+image: docker
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - test
+  - deploy
+
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+
+variables:
+  SECURE_LOG_LEVEL: info
+  DOCKER_DRIVER: overlay
+  CONTAINER_FRONTEND_IMAGE: smartcommunitylab/smartergame-frontend:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+  CONTAINER_FRONTEND_IMAGE_LATEST: smartcommunitylab/smartergame-frontend:$CI_COMMIT_REF_NAME-latest
+  BACKEND_URL: https://backend.smartergame.smartcommunitylab.it/
+  AUTH0_SECRET: "$AUTH0_SECRET"
+  AUTH0_CLIENT_ID: "$AUTH0_CLIENT_ID"
+  AUTH0_CLIENT_SECRET: "$AUTH0_CLIENT_SECRET"
+  AUTH0_BASE_URL: https://frontend.smartergame.smartcommunitylab.it
+
+frontend-container-build:
+  stage: build
+  environment:
+    name: $CI_COMMIT_REF_NAME
+  script:
+    - docker login -u $DHUB_USER -p $DHUB_PASS
+    - docker build 
+        --build-arg NEXT_PUBLIC_BACKEND_URL=$BACKEND_URL 
+        --build-arg AUTH0_SECRET=$AUTH0_SECRET
+        --build-arg AUTH0_CLIENT_ID=$AUTH0_CLIENT_ID
+        --build-arg AUTH0_CLIENT_SECRET=$AUTH0_CLIENT_SECRET
+        --build-arg AUTH0_BASE_URL=$AUTH0_BASE_URL
+        -t $CONTAINER_FRONTEND_IMAGE 
+        -t $CONTAINER_FRONTEND_IMAGE_LATEST .
+    - docker push $CONTAINER_FRONTEND_IMAGE
+    - docker push $CONTAINER_FRONTEND_IMAGE_LATEST
+  only:
+    - dev
+    - prod
+    - main
+  artifacts:
+    expire_in: 1 week
+    
+deploy-dev:
+  stage: deploy
+  image: 
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  environment:
+    name: dslab
+  script:
+    - echo "deploy frontend"
+    - kubectl -n smartergame-dev set image deployments/smartergame-frontend smartergame-frontend=$CONTAINER_FRONTEND_IMAGE --record=true
+    - kubectl -n smartergame-dev rollout status deployment smartergame-frontend
+  only:
+    - dev
+
+deploy-prod:
+  stage: deploy
+  image: 
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  environment:
+    name: dslab
+  script:
+    - echo "deploy frontend"
+    - kubectl -n smartergame-prod set image deployments/smartergame-frontend smartergame-frontend=$CONTAINER_FRONTEND_IMAGE --record=true
+    - kubectl -n smartergame-prod rollout status deployment smartergame-frontend
+  only:
+    - prod
+
+container_scanning:
+  dependencies:
+    - frontend-container-build
+  variables:
+    CS_IMAGE: $CONTAINER_FRONTEND_IMAGE
+    CS_DOCKERFILE_PATH: Dockerfile
+    GIT_STRATEGY: fetch
+  artifacts:
+    expire_in: 1 week
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+spotbugs-sast:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+semgrep-sast:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+nodejs-scan-sast:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+gemnasium-maven-dependency_scanning:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+gemnasium-dependency_scanning:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+kics-iac-sast:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+secret_detection:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
