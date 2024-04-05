@@ -18,13 +18,14 @@ include:
 variables:
   SECURE_LOG_LEVEL: info
   DOCKER_DRIVER: overlay
-  CONTAINER_FRONTEND_IMAGE: smartcommunitylab/smartergame-frontend:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
-  CONTAINER_FRONTEND_IMAGE_LATEST: smartcommunitylab/smartergame-frontend:$CI_COMMIT_REF_NAME-latest
+  CONTAINER_UI_IMAGE: smartcommunitylab/smartergame-ui:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+  CONTAINER_UI_IMAGE_LATEST: smartcommunitylab/smartergame-ui:$CI_COMMIT_REF_NAME-latest
   BACKEND_URL: https://backend.smartergame.smartcommunitylab.it/
   AUTH0_SECRET: "$AUTH0_SECRET"
   AUTH0_CLIENT_ID: "$AUTH0_CLIENT_ID"
   AUTH0_CLIENT_SECRET: "$AUTH0_CLIENT_SECRET"
-  AUTH0_BASE_URL: https://frontend.smartergame.smartcommunitylab.it
+  AUTH0_ISSUER_BASE_URL: https://smartgame.eu.auth0.com
+  AUTH0_BASE_URL: https://ui.smartergame.smartcommunitylab.it
 
 frontend-container-build:
   stage: build
@@ -33,15 +34,15 @@ frontend-container-build:
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
     - docker build 
-        --build-arg NEXT_PUBLIC_BACKEND_URL=$BACKEND_URL 
+        --build-arg BACKEND_URI=$BACKEND_URL 
         --build-arg AUTH0_SECRET=$AUTH0_SECRET
         --build-arg AUTH0_CLIENT_ID=$AUTH0_CLIENT_ID
         --build-arg AUTH0_CLIENT_SECRET=$AUTH0_CLIENT_SECRET
         --build-arg AUTH0_BASE_URL=$AUTH0_BASE_URL
-        -t $CONTAINER_FRONTEND_IMAGE 
-        -t $CONTAINER_FRONTEND_IMAGE_LATEST .
-    - docker push $CONTAINER_FRONTEND_IMAGE
-    - docker push $CONTAINER_FRONTEND_IMAGE_LATEST
+        -t $CONTAINER_UI_IMAGE 
+        -t $CONTAINER_UI_IMAGE_LATEST .
+    - docker push $CONTAINER_UI_IMAGE
+    - docker push $CONTAINER_UI_IMAGE_LATEST
   only:
     - dev
     - prod
@@ -58,8 +59,8 @@ deploy-dev:
     name: dslab
   script:
     - echo "deploy frontend"
-    - kubectl -n smartergame-dev set image deployments/smartergame-frontend smartergame-frontend=$CONTAINER_FRONTEND_IMAGE --record=true
-    - kubectl -n smartergame-dev rollout status deployment smartergame-frontend
+    - kubectl -n smartergame-dev set image deployments/smartergame-ui smartergame-ui=$CONTAINER_UI_IMAGE --record=true
+    - kubectl -n smartergame-dev rollout status deployment smartergame-ui
   only:
     - dev
 
@@ -72,8 +73,8 @@ deploy-prod:
     name: dslab
   script:
     - echo "deploy frontend"
-    - kubectl -n smartergame-prod set image deployments/smartergame-frontend smartergame-frontend=$CONTAINER_FRONTEND_IMAGE --record=true
-    - kubectl -n smartergame-prod rollout status deployment smartergame-frontend
+    - kubectl -n smartergame-prod set image deployments/smartergame-ui smartergame-ui=$CONTAINER_UI_IMAGE --record=true
+    - kubectl -n smartergame-prod rollout status deployment smartergame-ui
   only:
     - prod
 
@@ -81,7 +82,7 @@ container_scanning:
   dependencies:
     - frontend-container-build
   variables:
-    CS_IMAGE: $CONTAINER_FRONTEND_IMAGE
+    CS_IMAGE: $CONTAINER_UI_IMAGE
     CS_DOCKERFILE_PATH: Dockerfile
     GIT_STRATEGY: fetch
   artifacts:

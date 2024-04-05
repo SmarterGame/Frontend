@@ -21,14 +21,15 @@ WORKDIR /app
 
 ARG AUTH0_SECRET
 ARG AUTH0_BASE_URL
-ARG AUTH0_ISSUER_BASE_URL="https://smarter.eu.auth0.com"
 ARG AUTH0_CLIENT_ID
 ARG AUTH0_CLIENT_SECRET
-
 ARG BACKEND_URI
-ENV BACKEND_URI=${BACKEND_URI}
+
+ARG AUTH0_ISSUER_BASE_URL="https://smarter.eu.auth0.com"
 ARG AUDIENCE="https://smartgame.eu.auth0.com/api/v2/"
 ARG AUTH0_SCOPE="openid profile email"
+
+ENV BACKEND_URI=${BACKEND_URI}
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
