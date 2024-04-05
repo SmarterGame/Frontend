@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { getSession } from "@auth0/nextjs-auth0";
 import LayoutLogin from "@/components/LayoutLogin";
@@ -314,7 +314,8 @@ export default function Home({
                 show={showPopUp}
                 onClose={togglePopUp}
                 classId={popupData}
-                boxes={userBoxes}
+                boxes={boxes}
+                userBoxes={userBoxes}
                 selectedOptions={selectedOptions}
             />
 

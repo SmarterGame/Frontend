@@ -11,6 +11,7 @@ export default function PopUp({
     onClose,
     children,
     boxes,
+    userBoxes,
     classId,
     selectedOptions = {
         selectedSmarters: [
@@ -67,6 +68,7 @@ export default function PopUp({
 
     function handleChangeSmarter1(event) {
         const selectedOption = event.target.value;
+        console.log(event.target);
         if (
             selectedOption === "Nessuno smarter selezionato" ||
             selectedOption === "No smarter selected"
@@ -160,8 +162,12 @@ export default function PopUp({
             return;
         }
 
+        //find the selected smarters id
+        const smarter1Id = boxes.find((box) => box.name === smarter1)._id;
+        const smarter2Id = boxes.find((box) => box.name === smarter2)._id;
+
         const data = {
-            selectedSmarters: [smarter1, smarter2],
+            selectedSmarters: [smarter1Id, smarter2Id],
             mode: modalita,
             classId: classId,
         };
@@ -179,7 +185,7 @@ export default function PopUp({
                 });
                 // console.log(result.data);
 
-                if (router.asPath === "/home") router.push("/mockup/profilo");
+                if (router.asPath === "/home#" || router.asPath === "/home") router.push("/mockup/profilo");
                 //Close the popup
                 onClose();
             } catch (err) {
@@ -217,8 +223,8 @@ export default function PopUp({
                                         ? "No smarter selected"
                                         : "Nessuno smarter selezionato"}
                                 </option>
-                                {boxes && boxes.length > 0 ? (
-                                    boxes.map((box) =>
+                                {userBoxes && userBoxes.length > 0 ? (
+                                    userBoxes.map((box) =>
                                         selectedSmarters[0] === box ? (
                                             <option key={box} value={box}>
                                                 {box}
@@ -253,8 +259,8 @@ export default function PopUp({
                                         ? "No smarter selected"
                                         : "Nessuno smarter selezionato"}
                                 </option>
-                                {boxes && boxes.length > 0 ? (
-                                    boxes.map((box) =>
+                                {userBoxes && userBoxes.length > 0 ? (
+                                    userBoxes.map((box) =>
                                         selectedSmarters[1] === box ? (
                                             <option key={box} value={box}>
                                                 {box}
