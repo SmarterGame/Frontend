@@ -4,12 +4,22 @@ import axios from "axios";
 
 export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
     const [selectedLanguage, setSelectedLanguage] = useState();
+    const [smarterId, setSmarterId] = useState("");
+    const [error, setError] = useState(false);
+    const [message, setMessage] = useState("");
+    const [finished, setFinished] = useState(false);
 
     useEffect(() => {
         setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
 
-
+    useEffect(() => {
+        if (finished) {
+            error
+                ? Swal.fire("Error", `${message}`, "error")
+                : fireSwalSmarter();
+        }
+    }, [finished]);
 
     //Filtra i box che l'utente ha già
     if (boxes === undefined) boxes = [];
@@ -20,6 +30,40 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
     const [isChecked, setIsChecked] = useState(
         Array(filteredBoxes.length).fill(false)
     );
+
+    const addBoxFn = async (id) => {
+        const result = await axios({
+            method: "get",
+            url: url + "/box/new/" + id,
+            headers: { authorization: "Bearer " + token },
+        });
+        console.log(result.data);
+        setError(result.data.error);
+        setMessage(result.data.message);
+        setTimeout(() => {
+            setFinished(true);
+        }, 1000);
+    };
+
+    const fireSwalSmarter = () => {
+        const title =
+            selectedLanguage === "eng" ? "Smarter added!" : "Smarter aggiunto!";
+        const text =
+            selectedLanguage === "eng"
+                ? "The SMARTER have been created correctly"
+                : "Lo SMARTER è stato creato correttamente";
+
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: "success",
+            confirmButtonText: "Ok",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.reload();
+            }
+        });
+    };
 
     const fireSwal = () => {
         const title =
@@ -62,9 +106,9 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                 for (let i = 0; i < filteredBoxes.length; i++) {
                     if (isChecked[i]) {
                         console.log("qui devo aggiungere gli smarter selezionati all'utente loggato");
-                        res = await axios({
-                            method: "get",
-                            url: url + "/box/add/" + filteredBoxes[i].name,
+                        res = await axios.post(url + "/box/add/", {
+                            name: filteredBoxes[i].name
+                        }, {
                             headers: { authorization: "Bearer " + token },
                         });
                     }
@@ -122,6 +166,23 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
                                             : "Non ci sono box da aggiungere"}
                                     </p>
                                 )}
+                                <div className="flex gap-2">
+                                    <input
+                                        className="border-2 border-gray rounded-md p-2"
+                                        placeholder={selectedLanguage === "eng" 
+                                            ? "enter smarter id"
+                                            : "inserisci smarter id"}
+                                        value={smarterId}
+                                        onChange={(e) => setSmarterId(e.currentTarget.value)}
+                                        onKeyDown={async (event) => {
+                                            console.log(event.key)
+                                            if (event.key == "Enter") { // enter key
+                                                await addBoxFn(smarterId);
+                                            }
+                                        }}
+                                    />
+                                    <button>X</button>
+                                </div>
                             </label>
                         </div>
                         <div className="flex flex-row gap-x-6">

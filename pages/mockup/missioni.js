@@ -154,7 +154,7 @@ export default function BadgePage({ token, url, boxes, classRoom , isIndividual}
                     <div className="overflow-auto h-full">
                         {loading
                             ? ""
-                            : badgeList.map((badge) => (
+                            : badgeList?.map((badge) => (
                                   <Badge
                                       token={token}
                                       url={url}
@@ -164,7 +164,7 @@ export default function BadgePage({ token, url, boxes, classRoom , isIndividual}
                               ))}
                         {loading
                             ? ""
-                            : badgeListFiltered.map((badge) => (
+                            : badgeListFiltered?.map((badge) => (
                                   <Badge
                                       token={token}
                                       url={url}

@@ -71,8 +71,8 @@ export default function Badge({ token, url, badge, blocked }) {
             setBadgeData(badgeData);
         } else {
             const badgeDataTranslated = {
-                BadgeName: badgeData.BadgeName_en,
-                BadgeDescription: badgeData.BadgeDescription_en,
+                BadgeName: badgeData?.BadgeName_en,
+                BadgeDescription: badgeData?.BadgeDescription_en,
             };
             setBadgeData(badgeDataTranslated);
         }
@@ -120,13 +120,13 @@ export default function Badge({ token, url, badge, blocked }) {
                 <div className="flex flex-col bg-slate-100 w-[65%] h-[60%] rounded-xl">
                     <h1 className="mx-auto text-lg text-orangeBtn mt-2">
                         {selectedLanguage === "eng"
-                            ? badgeData.BadgeName_en
-                            : badgeData.BadgeName}
+                            ? badgeData?.BadgeName_en
+                            : badgeData?.BadgeName}
                     </h1>
                     <h2 className="mx-auto text-md text-slate-500 mt-4 mb-4">
                         {selectedLanguage === "eng"
-                            ? badgeData.BadgeDescription_en
-                            : badgeData.BadgeDescription}
+                            ? badgeData?.BadgeDescription_en
+                            : badgeData?.BadgeDescription}
                     </h2>
                 </div>
             </div>
