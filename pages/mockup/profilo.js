@@ -30,10 +30,6 @@ export const getServerSideProps = async ({ req, res }) => {
             },
         });
         // console.log(user.data.SelectedClass);
-        const selectedOptions = {
-            selectedSmarters: user.data.SelectedSmarters,
-            selectedMode: user.data.SelectedMode,
-        };
 
         //Fetch profile image
         const profileImg = await axios({
@@ -61,13 +57,25 @@ export const getServerSideProps = async ({ req, res }) => {
                 Authorization: token,
             },
         });
+
+        const selectedSmarters = []
+        user.data.SelectedSmarters.forEach(value => {
+            const filtered = boxes.data.filter((box) => box._id == value)
+            if (filtered.length > 0) {
+                selectedSmarters.push(filtered[0].name);
+            }
+        })
+        const selectedOptions = {
+            selectedSmarters: selectedSmarters,
+            selectedMode: user.data.SelectedMode,
+        };
       //  console.log("ECCC: "+boxes.data);
 
         //Fetch classroom data
-        let classData;
+        let individualData;
         //Load individual data if user is individual
         if (user.data.IsIndividual) {
-            classData = await axios({
+            individualData = await axios({
                 method: "get",
                 url:
                     url + "/individual/getData/" + user.data.SelectedIndividual,
@@ -76,26 +84,27 @@ export const getServerSideProps = async ({ req, res }) => {
                 },
             });
             // console.log(classData.data);
-        } else {
-            classData = await axios({
-                method: "get",
-                url:
-                    url +
-                    "/classroom/getClassroomData/" +
-                    user.data.SelectedClass,
-                headers: {
-                    Authorization: token,
-                },
-            });
-            // console.log(classData.data);
         }
+
+        const classData = await axios({
+            method: "get",
+            url:
+                url +
+                "/classroom/getClassroomData/" +
+                user.data.SelectedClass,
+            headers: {
+                Authorization: token,
+            },
+        });
 
         return {
             props: {
                 token: session.accessToken,
                 url: url,
+                user: user.data,
                 boxes: boxes.data,
-                classRoom: classData.data,
+                individual: individualData?.data ?? null,
+                classRoom: classData?.data ?? null,
                 selectedOptions: selectedOptions,
                 profileImg: imageUrl,
                 isIndividual: user.data.IsIndividual,
@@ -112,7 +121,9 @@ export default function Profilo({
     token,
     url,
     boxes,
+    user,
     classRoom = { Ghiande: 0, Exp: 0 },
+    individual,
     selectedOptions,
     profileImg,
     isIndividual,
@@ -138,15 +149,17 @@ export default function Profilo({
     const lvlNamesIta = ["Boyscout", "Avventuriero", "Esperto", "Ranger"];
     const lvlNamesEng = ["Boyscout", "Adventurer", "Expert", "Ranger"];
 
-    const numGhiande = classRoom.Ghiande;
-    const classLvl = classRoom.ClassLvl;
+    const numGhiande = isIndividual ? individual.Ghiande : classRoom.Ghiande;
+    const classLvl = isIndividual ? individual.ClassLvl: classRoom.classLvl;
 
     return (
         <>
             <LayoutProfile
                 token={token}
                 url={url}
+                userBoxes={user.Boxes}
                 boxes={boxes}
+                individual={individual}
                 classRoom={classRoom}
                 selectedOptions={selectedOptions}
                 isIndividual={isIndividual}
@@ -171,7 +184,7 @@ export default function Profilo({
                         />
                     </div>
 
-                    <ProgressBar classRoom={classRoom} />
+                    <ProgressBar lv={classLvl} ghiande={numGhiande} />
 
                     <div className="flex flex-col items-center">
                         <h1 className=" text-orangeBtn text-4xl mt-8">

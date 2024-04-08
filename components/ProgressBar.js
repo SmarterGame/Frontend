@@ -8,19 +8,18 @@ const levels = [
 ];
 
 export default function ProgressBar({
-    classRoom = { ClassLvl: 1, Ghiande: 0 },
+    lv = 1, ghiande = 0 ,
 }) {
     const [progress, setProgress] = useState(0);
     const [nextLevel, setNextLevel] = useState(levels[0]);
 
     useEffect(() => {
-        console.log();
-        const currentLevel = levels[classRoom.ClassLvl - 1];
-        const nextLevel = levels[classRoom.ClassLvl];
+        const currentLevel = levels[lv - 1];
+        const nextLevel = levels[lv];
         let progress;
-        if (classRoom.Ghiande < 15) {
+        if (ghiande < 15) {
             progress =
-                ((classRoom.Ghiande - currentLevel.ghiande) /
+                ((ghiande - currentLevel.ghiande) /
                     (nextLevel.ghiande - currentLevel.ghiande)) *
                 100;
         } else {

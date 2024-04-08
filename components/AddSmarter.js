@@ -37,7 +37,6 @@ export default function Home({ token, url, show, onClose, boxes, userBoxes }) {
             url: url + "/box/new/" + id,
             headers: { authorization: "Bearer " + token },
         });
-        console.log(result.data);
         setError(result.data.error);
         setMessage(result.data.message);
         setTimeout(() => {

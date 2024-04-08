@@ -7,8 +7,10 @@ import Link from "next/link";
 export default function HeaderProfile({
     token,
     url,
+    userBoxes,
     boxes,
     classRoom,
+    individual,
     selectedOptions,
     isIndividual,
 }) {
@@ -18,9 +20,14 @@ export default function HeaderProfile({
     console.log(isIndividual);
 
     // const selectedLanguage = getSelectedLanguage();
-    const [selectedLanguage, setSelectedLanguage] = useState();
+    const [selectedLanguage, setSelectedLanguage] = useState(); 
 
-    const className = classRoom.ClassName;
+    if (!classRoom) {
+        return null;
+    }
+
+    const className = classRoom?.ClassName;
+    const individualName = individual?.ClassName;
 
     useEffect(() => {
         //Fetch the language
@@ -60,7 +67,7 @@ export default function HeaderProfile({
                                 : selectedLanguage === "eng"
                                 ? "CLASS "
                                 : "CLASSE "}
-                            {className}
+                            {isIndividual ? individualName : className}
                         </h1>
                         <div className="mr-6 bg-slate-400 bg-opacity-50 rounded-lg transition ease-in-out hover:bg-slate-500 hover:-translatey-1 hover:scale-110 shadow-2xl duration-300">
                             <button
@@ -119,6 +126,7 @@ export default function HeaderProfile({
                     token={token}
                     url={url}
                     classId={classRoom._id}
+                    userBoxes={userBoxes}
                     selectedOptions={selectedOptions}
                 />
                 <div

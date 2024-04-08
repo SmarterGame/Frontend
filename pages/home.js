@@ -36,12 +36,6 @@ export const getServerSideProps = async ({ req, res }) => {
       
         // console.log(user.data.SelectedMode);
 
-        const selectedOptions = {
-            selectedSmarters: user.data.SelectedSmarters,
-            selectedMode: user.data.SelectedMode,
-        };
-
-
         const tiles = await axios({
             method: "get",
             url: url + "/classroom/all",
@@ -58,7 +52,19 @@ export const getServerSideProps = async ({ req, res }) => {
             headers: {
                 Authorization: token,
             },
-        });       
+        });    
+        
+        const selectedSmarters = []
+        user.data.SelectedSmarters.forEach(value => {
+            const filtered = boxes.data.filter((box) => box._id == value)
+            if (filtered.length > 0) {
+                selectedSmarters.push(filtered[0].name);
+            }
+        })
+        const selectedOptions = {
+            selectedSmarters: selectedSmarters,
+            selectedMode: user.data.SelectedMode,
+        };
         
         return {
             props: {
@@ -73,7 +79,7 @@ export const getServerSideProps = async ({ req, res }) => {
     } catch (err) {
         console.log(err);
         console.log(url);
-        return { props: {error: err} };
+        return { props: {error: err.message} };
     }
 };
 
