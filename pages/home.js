@@ -1,6 +1,6 @@
 import { useState, useEffect, use } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { getSession } from "@auth0/nextjs-auth0";
+import { getAccessToken, getSession, withPageAuthRequired } from "@auth0/nextjs-auth0";
 import LayoutLogin from "@/components/LayoutLogin";
 import Swal from "sweetalert2";
 import TeamBox from "@/components/TeamBox";
@@ -11,77 +11,88 @@ import PopUp from "@/components/settingsPopUp";
 import SideBar from "@/components/SideBar";
 import AddSmarter from "@/components/AddSmarter";
 import Link from "next/link";
+import { useRouter } from 'next/router'
 
-export const getServerSideProps = async ({ req, res }) => {
-    // const url = "http://" + process.env.BACKEND_URI;
-    const url = process.env.BACKEND_URI;
-    try {
-        const session = await getSession(req, res);
-
-        // EXIT if the session is null (Not Logged)
-        if (session == null) {
-            console.log("Early return");
-            return { props: {} };
-        }
-
-        // Fetch classrooms on Page Load
-        const token = "Bearer " + session.accessToken;
-        const user = await axios({
-            method: "get",
-            url: url + "/user/me",
-            headers: {
-                Authorization: token,
-            },
-        });
-      
-        // console.log(user.data.SelectedMode);
-
-        const tiles = await axios({
-            method: "get",
-            url: url + "/classroom/all",
-            headers: {
-                Authorization: token,
-            },
-        });
-        //console.log(tiles.data);
-
-        //Fetch boxes on Page Load
-        const boxes = await axios({
-            method: "get",
-            url: url + "/box/all",
-            headers: {
-                Authorization: token,
-            },
-        });    
-        
-        const selectedSmarters = []
-        user.data.SelectedSmarters.forEach(value => {
-            const filtered = boxes.data.filter((box) => box._id == value)
-            if (filtered.length > 0) {
-                selectedSmarters.push(filtered[0].name);
+export const getServerSideProps = withPageAuthRequired({
+    // returnTo: '/unauthorized',
+    async getServerSideProps({ req, res }) {
+        // const url = "http://" + process.env.BACKEND_URI;
+        const url = process.env.BACKEND_URI;
+        try {
+            const session = await getSession(req, res);
+    
+            // EXIT if the session is null (Not Logged)
+            if (session == null) {
+                console.log("Early return");
+                return { props: {error: "REFRESH"} };
             }
-        })
-        const selectedOptions = {
-            selectedSmarters: selectedSmarters,
-            selectedMode: user.data.SelectedMode,
-        };
-        
-        return {
-            props: {
-                token: session.accessToken,
-                url: url,
-                tiles: tiles.data,
-                boxes: boxes.data,
-                selectedOptions: selectedOptions,
-                userBoxes: user.data.Boxes,
-            },
-        };
-    } catch (err) {
-        console.log(err);
-        console.log(url);
-        return { props: {error: err.message} };
+
+            let token;
+            try {
+                token = await getAccessToken(req, res)
+            } catch (err) {
+                return {props: {error: "REFRESH"}};
+            }
+    
+            // Fetch classrooms on Page Load
+            const bearer_token = "Bearer " + token.accessToken;
+            const user = await axios({
+                method: "get",
+                url: url + "/user/me",
+                headers: {
+                    Authorization: bearer_token,
+                },
+            });
+          
+            // console.log(user.data.SelectedMode);
+    
+            const tiles = await axios({
+                method: "get",
+                url: url + "/classroom/all",
+                headers: {
+                    Authorization: bearer_token,
+                },
+            });
+            //console.log(tiles.data);
+    
+            //Fetch boxes on Page Load
+            const boxes = await axios({
+                method: "get",
+                url: url + "/box/all",
+                headers: {
+                    Authorization: bearer_token,
+                },
+            });    
+            
+            const selectedSmarters = []
+            user.data.SelectedSmarters.forEach(value => {
+                const filtered = boxes.data.filter((box) => box._id == value)
+                if (filtered.length > 0) {
+                    selectedSmarters.push(filtered[0].name);
+                }
+            })
+            const selectedOptions = {
+                selectedSmarters: selectedSmarters,
+                selectedMode: user.data.SelectedMode,
+            };
+            
+            return {
+                props: {
+                    token: token.accessToken,
+                    url: url,
+                    tiles: tiles.data,
+                    boxes: boxes.data,
+                    selectedOptions: selectedOptions,
+                    userBoxes: user.data.Boxes,
+                },
+            };
+        } catch (err) {
+            console.log(err);
+            console.log(url);
+            return { props: {error: err.message} };
+        }
     }
-};
+});
 
 export default function Home({
     token,
@@ -98,8 +109,14 @@ export default function Home({
     const [showSideBar, setShowSideBar] = useState(false);
     const [showAddSmarter, setShowAddSmarter] = useState(false);
     const [popupData, setPopupData] = useState(null);
+    const router = useRouter();
 
     const [selectedLanguage, setSelectedLanguage] = useState();
+
+    if (typeof window !== 'undefined' && error === "REFRESH") {
+        router.push("/api/auth/login")
+        return null;
+    }
 
     useEffect(() => {
         if (tiles) {
@@ -122,8 +139,11 @@ export default function Home({
         setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
 
-    if (error) {
-        return (<>ERROR</>)
+    if (error && error !== "REFRESH") {
+        Swal.fire({
+            icon: "error",
+            title: error,
+        })
     }
 
     //Toggle settings popup

@@ -186,7 +186,7 @@ export default function PopUp({
                 });
                 // console.log(result.data);
 
-                if (router.asPath === "/home#" || router.asPath === "/home") router.push("/mockup/profilo");
+                router.push("/mockup/profilo");
                 //Close the popup
                 onClose();
             } catch (err) {

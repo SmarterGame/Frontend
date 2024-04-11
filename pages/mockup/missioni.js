@@ -3,29 +3,40 @@ import Link from "next/link";
 import LayoutProfile from "@/components/LayoutProfile";
 import Badge from "@/components/Badge";
 import PopUp from "@/components/settingsPopUp";
-import { getSession } from "@auth0/nextjs-auth0";
+import { getAccessToken, getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useRouter } from "next/router";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
     const url = process.env.BACKEND_URI;
     try {
         const session = await getSession(req, res);
-
+    
         // EXIT if the session is null (Not Logged)
         if (session == null) {
             console.log("Early return");
-            return { props: {} };
+            return { props: {error: "REFRESH"} };
         }
-        const token = "Bearer " + session.accessToken;
+
+        let token;
+        try {
+            token = await getAccessToken(req, res)
+        } catch (err) {
+            console.error(err);
+            return {props: {error: "REFRESH"}};
+        }
+
+        // Fetch classrooms on Page Load
+        const bearer_token = "Bearer " + token.accessToken;
 
         //Fetch boxes on Page Load
         const boxes = await axios({
             method: "get",
             url: url + "/box/all",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
         console.log("ECCOLO: "+boxes.data);
@@ -35,7 +46,7 @@ export const getServerSideProps = async ({ req, res }) => {
             method: "get",
             url: url + "/user/me",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
         // console.log(user.data.SelectedClass);
@@ -45,7 +56,7 @@ export const getServerSideProps = async ({ req, res }) => {
             method: "get",
             url: url + "/badge/getBadges/",
             headers: {
-                Authorization: token
+                Authorization: bearer_token
             }
         })
 
@@ -58,7 +69,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url:
                     url + "/individual/getData/" + user.data.SelectedIndividual,
                 headers: {
-                    Authorization: token,
+                    Authorization: bearer_token,
                 },
             });
             // console.log(classData.data);
@@ -71,13 +82,13 @@ export const getServerSideProps = async ({ req, res }) => {
                 "/classroom/getClassroomData/" +
                 user.data.SelectedClass,
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
 
         return {
             props: {
-                token: session.accessToken,
+                token: token.accessToken,
                 url: url,
                 user: user.data,
                 boxes: boxes.data,
@@ -104,12 +115,18 @@ export default function BadgePage({ token, url, user, boxes, classRoom, individu
 
     // const selectedLanguage = getSelectedLanguage();
     const [selectedLanguage, setSelectedLanguage] = useState();
+    const router = useRouter();
 
     const badgeNotFoundLabel = selectedLanguage === "eng" ?
         "No badge available"
         : "Nessun badge disponibile"
 
-    if (error) {
+    if (typeof window !== 'undefined' && error === "REFRESH") {
+        router.push("/api/auth/login")
+        return null;
+    }
+
+    if (error && error !== "REFRESH") {
         Swal.fire({
             icon: "error",
             title: error,
@@ -120,15 +137,15 @@ export default function BadgePage({ token, url, user, boxes, classRoom, individu
     }
 
     const selectedSmarters = []
-    user.data.SelectedSmarters.forEach(value => {
-        const filtered = boxes.data.filter((box) => box._id == value)
+    user.SelectedSmarters.forEach(value => {
+        const filtered = boxes.filter((box) => box._id == value)
         if (filtered.length > 0) {
             selectedSmarters.push(filtered[0].name);
         }
     })
     const selectedOptions = {
         selectedSmarters: selectedSmarters,
-        selectedMode: user.data.SelectedMode,
+        selectedMode: user.SelectedMode,
     };
 
     useEffect(() => {
