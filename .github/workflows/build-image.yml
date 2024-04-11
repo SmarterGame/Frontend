@@ -22,10 +22,15 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Extract metadata from repository
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v4
       id: meta
       with:
-        images: ghcr.io/${{ github.repository }}
+        images: ghcr.io/${{ github.repository }}/${{matrix.image}}
+        flavor: |
+            latest=true
+        tags: |
+            type=ref,event=tag
+            type=sha, prefix={{branch}}-
     - name: Build and push to ghcr.io
       uses: docker/build-push-action@v5
       with:
