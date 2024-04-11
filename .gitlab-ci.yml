@@ -1,0 +1,106 @@
+image: docker
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - test
+  - deploy
+
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+
+variables:
+  SECURE_LOG_LEVEL: info
+  DOCKER_DRIVER: overlay
+  CONTAINER_BACKEND_IMAGE: smartcommunitylab/smartergame-ui:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+  CONTAINER_BACKEND_IMAGE_LATEST: smartcommunitylab/smartergame-ui:$CI_COMMIT_REF_NAME-latest
+
+backend-container-build:
+  stage: build
+  environment:
+    name: $CI_COMMIT_REF_NAME
+  script:
+    - docker login -u $DHUB_USER -p $DHUB_PASS
+    - docker build --build-arg BACKEND_URI=https://core.smartergame.smartcommunitylab.it -t $CONTAINER_BACKEND_IMAGE -t $CONTAINER_BACKEND_IMAGE_LATEST .
+    - docker push $CONTAINER_BACKEND_IMAGE
+    - docker push $CONTAINER_BACKEND_IMAGE_LATEST
+  only:
+    - dev
+    - prod
+    - main
+  artifacts:
+    expire_in: 1 week
+    
+deploy-dev:
+  stage: deploy
+  image: 
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  environment:
+    name: dslab
+  script:
+    - echo "deploy ui"
+    - kubectl -n smartergame-dev set image deployments/smartergame-ui smartergame-ui=$CONTAINER_BACKEND_IMAGE --record=true
+    - kubectl -n smartergame-dev rollout status deployment smartergame-ui
+  only:
+    - dev
+
+deploy-prod:
+  stage: deploy
+  image: 
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  environment:
+    name: dslab
+  script:
+    - echo "deploy ui"
+    - kubectl -n smartergame-prod set image deployments/smartergame-ui smartergame-ui=$CONTAINER_BACKEND_IMAGE --record=true
+    - kubectl -n smartergame-prod rollout status deployment smartergame-ui
+  only:
+    - prod
+
+container_scanning:
+  dependencies:
+    - backend-container-build
+  variables:
+    CS_IMAGE: $CONTAINER_BACKEND_IMAGE
+    CS_DOCKERFILE_PATH: Dockerfile
+    GIT_STRATEGY: fetch
+  artifacts:
+    expire_in: 1 week
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+spotbugs-sast:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+semgrep-sast:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+nodejs-scan-sast:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+gemnasium-maven-dependency_scanning:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+gemnasium-dependency_scanning:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+kics-iac-sast:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
+
+secret_detection:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "main"'
