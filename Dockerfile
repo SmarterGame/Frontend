@@ -19,29 +19,19 @@ RUN \
 FROM base AS builder
 WORKDIR /app
 
-ARG AUTH0_SECRET
-ARG AUTH0_BASE_URL
-ARG AUTH0_CLIENT_ID
-ARG AUTH0_CLIENT_SECRET
 ARG BACKEND_URI
-
-ARG AUTH0_ISSUER_BASE_URL="https://smarter.eu.auth0.com"
-ARG AUDIENCE="https://smartgame.eu.auth0.com/api/v2/"
-ARG AUTH0_SCOPE="openid profile email"
-
 ENV BACKEND_URI=${BACKEND_URI}
+
+ENV AUTH0_ISSUER_BASE_URL="https://smarter.eu.auth0.com"
+ENV AUDIENCE="https://smartgame.eu.auth0.com/api/v2/"
+ENV AUTH0_SCOPE="openid profile email"
+
+
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN export AUTH0_BASE_URL=${AUTH0_BASE_URL} && \
-	export AUTH0_SECRET=${AUTH0_SECRET} && \
-	export AUTH0_ISSUER_BASE_URL=${AUTH0_ISSUER_BASE_URL} && \
-	export AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID} && \
-	export AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET} && \
-	export AUDIENCE=${AUDIENCE} && \
-	export AUTH0_SCOPE=${AUTH0_SCOPE} && \
-	npm run build
+RUN npm run build
 
 
 FROM gcr.io/distroless/nodejs20-debian12:nonroot
