@@ -22,8 +22,6 @@ export default function AttivitaLevels({ children, levels = [], selectedMode, ti
         setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
 
-    console.log(levels);
-
     return (
         <>
             <div className="flex flex-row items-center sm:-mt-20 z-50">
