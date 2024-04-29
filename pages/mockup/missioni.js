@@ -165,19 +165,19 @@ export default function BadgePage({ token, url, user, boxes, classRoom, individu
 
     //Filter badges
     useEffect(() => {
-        setBadgeListFiltered(badgeList);
         //Filter non obtained badges
         const checkBadges = isIndividual ? individual.Badges : classRoom.Badges;
-        const filteredList1 = badgeList.filter(
+
+        const nonObtainedBadges = badgeList?.map(badge => badge._id).filter(
             (badge) => !checkBadges.includes(badge)
         );
-        setBadgeList(filteredList1);
 
         //Filter obtained badges
-        const filteredList2 = badgeList.filter((badge) =>
+        const obtainedBadges = badgeList?.map(badge => badge._id).filter((badge) =>
             checkBadges.includes(badge)
         );
-        setBadgeListFiltered(filteredList2);
+        setBadgeList(badgeList.filter(badge => badge._id == nonObtainedBadges));
+        setBadgeListFiltered(badgeList.filter(badge => badge._id == obtainedBadges));
         setLoading(false);
     }, []);
 
@@ -206,7 +206,7 @@ export default function BadgePage({ token, url, user, boxes, classRoom, individu
                     <div className="overflow-auto h-full flex flex-col items-center justify-center">
                         {loading
                             ? ""
-                            : badgeList?.map((badge) => (
+                            : badgeListFiltered?.map((badge) => (
                                   <Badge
                                       token={token}
                                       url={url}
@@ -217,9 +217,9 @@ export default function BadgePage({ token, url, user, boxes, classRoom, individu
                         <div className="mt-10"></div>
                         {loading
                             ? ""
-                            : badgeListFiltered?.length === 0 ?
+                            : badgeList?.length === 0 ?
                             (<div>{badgeNotFoundLabel}</div>)
-                            : badgeListFiltered?.map((badge) => (
+                            : badgeList?.map((badge) => (
                                   <Badge
                                       token={token}
                                       url={url}
