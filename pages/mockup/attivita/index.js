@@ -78,13 +78,22 @@ export const getServerSideProps = async ({ req, res }) => {
             // console.log(classData.data);
         }
 
+        const games = await axios({
+            method: "get",
+            url: url + "/games?limit=2",
+            headers: {
+                Authorization: token,
+            },
+        });
+
         return {
             props: {
-                token: session.accessToken,
+                token: token,
                 url: url,
                 classRoom: classData.data,
                 selectedMode: user.data.SelectedMode,
                 profileImg: imageUrl,
+                games: games.data
             },
         };
     } catch (err) {
@@ -94,30 +103,35 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Giochi({ classRoom, selectedMode, profileImg }) {
+export default function Giochi({ classRoom, selectedMode, profileImg, games, url, token }) {
     const [selectedLanguage, setSelectedLanguage] = useState();
+    const [loadedGames, setLoadedGames] = useState(games.data);
+    const [nextPage, setNextPage] = useState((games.meta.page == games.meta.numPages) ? 1 : (1+games.meta.page));
     useEffect(() => {
-        //Fetch the language
-        // const fetchLanguage = async () => {
-        //     try {
-        //         const data = await fetch("/api/language/getLanguage");
-        //         const language = await data.json();
-        //         setSelectedLanguage(language);
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // };
-        // fetchLanguage();
         setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
 
-    const titleLeft = selectedLanguage === "eng" ? "QUANTITIES" : "QUANTITA'";
-    const titleRight =
-        selectedLanguage === "eng" ? "ARRANGE THE NUMBERS" : "ORDINAMENTI";
+    const nextGamePage = async () => {
+        const games = (await axios({
+            method: "get",
+            url: url + "/games?limit=2&page="+ nextPage,
+            headers: {
+                Authorization: token,
+            },
+        })).data;
+        setNextPage((games.meta.page == games.meta.numPages) ? 1 : (1+games.meta.page));
+        setLoadedGames(games.data);
+    };
+
     const title = selectedLanguage === "eng" ? "GAMES" : "GIOCHI";
 
     return (
         <>
+            <Image
+                src={montagna}
+                alt="montagna"
+                className="absolute bottom-0 left-[16vw] w-[65vw] h-[75vh]"
+            />
             <LayoutSelezioneGiochi
                 classRoom={classRoom}
                 title={title}
@@ -130,40 +144,40 @@ export default function Giochi({ classRoom, selectedMode, profileImg }) {
                             ? "CHOOSE A GAME"
                             : "SCEGLI UN GIOCO"}
                     </h1>
-                    <div className="flex flex-row items-center justify-center h-full">
-                        <Levels
-                            classRoom={classRoom}
-                            selectedMode={selectedMode}
-                            title={titleLeft}
-                            left={true}
-                        >
-                            <Image
-                                src={procioneFaccia}
-                                alt="procione faccia"
-                                width={90}
-                            />
-                        </Levels>
+                    <div className="flex flex-row items-center justify-between h-full w-[95%]" id="test">
+                        {loadedGames.length === 0 && (<div>No Games...</div>)}
+                        {loadedGames.length > 0 && (
+                            <Levels
+                                classRoom={classRoom}
+                                selectedMode={selectedMode}
+                                title={loadedGames[0].name}
+                                levels={loadedGames[0].levels}
+                                left={true}
+                            >
+                                <Image
+                                    src={procioneFaccia}
+                                    alt="procione faccia"
+                                    width={90}
+                                />
+                            </Levels>
+                        )}
 
-                        <Image
-                            src={montagna}
-                            alt="montagna"
-                            width={900}
-                            className="translate-y-12 sm:w-[40%] md:w-[50%] lg:w-[65%]"
-                        />
-
-                        <Levels
-                            classRoom={classRoom}
-                            selectedMode={selectedMode}
-                            title={titleRight}
-                            left={false}
-                        >
-                            <Image
-                                src={orsoFaccia}
-                                alt="orso faccia"
-                                width={80}
-                            />
-                        </Levels>
+                        {loadedGames.length > 1 && (
+                            <Levels
+                                levels={loadedGames[1].levels}
+                                selectedMode={selectedMode}
+                                title={loadedGames[1].name}
+                                left={false}
+                            >
+                                <Image
+                                    src={orsoFaccia}
+                                    alt="orso faccia"
+                                    width={80}
+                                />
+                            </Levels>
+                        )}
                     </div>
+                    <button onClick={nextGamePage}>cliccami</button>
                 </div>
 
                 <Image

@@ -150,7 +150,7 @@ export default function Profilo({
     const lvlNamesEng = ["Boyscout", "Adventurer", "Expert", "Ranger"];
 
     const numGhiande = isIndividual ? individual.Ghiande : classRoom.Ghiande;
-    const classLvl = isIndividual ? individual.ClassLvl: classRoom.classLvl;
+    const classLvl = isIndividual ? individual.ClassLvl: classRoom.ClassLvl;
 
     return (
         <>
