@@ -118,8 +118,8 @@ export default function BadgePage({ token, url, user, boxes, classRoom, individu
     const router = useRouter();
 
     const badgeNotFoundLabel = selectedLanguage === "eng" ?
-        "No badge available"
-        : "Nessun badge disponibile"
+        "No new badges to unlock"
+        : "Nessun nuovo badge da poter sbloccare"
 
     if (typeof window !== 'undefined' && error === "REFRESH") {
         router.push("/api/auth/login")
@@ -171,13 +171,13 @@ export default function BadgePage({ token, url, user, boxes, classRoom, individu
         const filteredList1 = badgeList.filter(
             (badge) => !checkBadges.includes(badge)
         );
-        setBadgeListFiltered(filteredList1);
+        setBadgeList(filteredList1);
 
         //Filter obtained badges
         const filteredList2 = badgeList.filter((badge) =>
             checkBadges.includes(badge)
         );
-        setBadgeList(filteredList2);
+        setBadgeListFiltered(filteredList2);
         setLoading(false);
     }, []);
 
@@ -214,6 +214,7 @@ export default function BadgePage({ token, url, user, boxes, classRoom, individu
                                       blocked={false}
                                   />
                               ))}
+                        <div className="mt-10"></div>
                         {loading
                             ? ""
                             : badgeListFiltered?.length === 0 ?
