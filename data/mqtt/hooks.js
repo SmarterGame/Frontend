@@ -54,7 +54,7 @@ export const useSmarter = (props) => {
 
           switch(topic) {
             case eventTopic:
-                setEvents(json);
+              if (Array.isArray(json) && JSON.stringify(info) !== JSON.stringify(json)) setEvents(json.map((obj => obj.values?.map(value => convertTagToSymbol(value)))));
               break;
             case infoTopic:
               if (Array.isArray(json) && JSON.stringify(info) !== JSON.stringify(json)) setInfo(json.map((obj => convertTagToSymbol(obj.value))));

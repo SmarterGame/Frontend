@@ -180,6 +180,7 @@ export default function Giochi({ classRoom, selectedMode, profileImg, games, max
                         {loadedGames.length === 0 && (<div>No Games...</div>)}
                         {loadedGames.length > 0 && (
                             <Levels
+                                gameId={loadedGames[0]?._id}
                                 classRoom={classRoom}
                                 selectedMode={selectedMode}
                                 title={loadedGames[0].name}
@@ -196,6 +197,7 @@ export default function Giochi({ classRoom, selectedMode, profileImg, games, max
 
                         {loadedGames.length > 1 && (
                             <Levels
+                                gameId={loadedGames[1]?._id}
                                 levels={loadedGames[1].levels}
                                 selectedMode={selectedMode}
                                 title={loadedGames[1].name}

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { useState, useEffect } from "react";
 
-export default function AttivitaLevels({ children, levels = [], selectedMode, title, left }) {
+export default function AttivitaLevels({ children, gameId, levels = [], selectedMode, title, left }) {
     const router = useRouter();
 
     const [selectedLanguage, setSelectedLanguage] = useState();
@@ -41,9 +41,7 @@ export default function AttivitaLevels({ children, levels = [], selectedMode, ti
                                         className={`${lv.enabled ? "" : "disabled:cursor-not-allowed"}`}
                                         disabled={lv.enabled ? false : true}
                                         onClick={() => {
-                                            if (selectedMode === "1") router.push("./attivita/quantita/game1/3?game=quantita");
-                                            if (selectedMode === "2") router.push("./attivita/quantita/game2/3?game=quantita");
-                                            if (selectedMode === "3") router.push("./attivita/quantita/individual/3?game=quantita");
+                                            router.push("./attivita/"+ gameId +"?level="+ lv.name);
                                         }}
                                     >
                                         <div
