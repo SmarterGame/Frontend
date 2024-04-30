@@ -97,6 +97,14 @@ export const getServerSideProps = async ({ req, res }) => {
             },
         });
 
+        const expLvlData = await axios({
+            method: "get",
+            url: url + "/levels" ,
+            headers: {
+                Authorization: token,
+            },
+        });
+
         return {
             props: {
                 token: session.accessToken,
@@ -108,6 +116,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 selectedOptions: selectedOptions,
                 profileImg: imageUrl,
                 isIndividual: user.data.IsIndividual,
+                expLvlData: expLvlData.data
             },
         };
     } catch (err) {
@@ -127,6 +136,7 @@ export default function Profilo({
     selectedOptions,
     profileImg,
     isIndividual,
+    expLvlData
 }) {
     // const selectedLanguage = getSelectedLanguage();
     const [selectedLanguage, setSelectedLanguage] = useState();
@@ -146,8 +156,7 @@ export default function Profilo({
         setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
 
-    const lvlNamesIta = ["Boyscout", "Avventuriero", "Esperto", "Ranger"];
-    const lvlNamesEng = ["Boyscout", "Adventurer", "Expert", "Ranger"];
+    const lvlNamesIta = expLvlData;
 
     const numGhiande = isIndividual ? individual.Ghiande : classRoom.Ghiande;
     const classLvl = isIndividual ? individual.ClassLvl: classRoom.ClassLvl;
@@ -190,9 +199,7 @@ export default function Profilo({
                         <h1 className=" text-orangeBtn text-4xl mt-8">
                             {selectedLanguage === "eng" ? "Level" : "Livello"}{" "}
                             {classLvl}{" "}
-                            {selectedLanguage === "eng"
-                                ? lvlNamesEng[classLvl - 1]
-                                : lvlNamesIta[classLvl - 1]}
+                            {lvlNamesIta?.[classLvl - 1]}
                         </h1>
                         <div className="flex flex-col h-full mt-8 mb-10 gap-y-6">
                             <button className=" mx-auto transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-56 h-14 rounded-md duration-300">
