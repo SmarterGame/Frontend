@@ -29,15 +29,14 @@ export default function PopUp({
 
     // console.log(selectedOptions);
     const selectedSmarters = selectedOptions.selectedSmarters;
-    const selectedMode = selectedOptions.selectedMode;
 
     const router = useRouter();
 
     const popUpRef = useRef(null);
 
+    const [selectedMode, setSelectedMode] = useState(selectedOptions?.selectedMode)
     const [smarter1, setSmarter1] = useState(selectedSmarters[0]);
     const [smarter2, setSmarter2] = useState(selectedSmarters[1]);
-    const [modalita, setModalita] = useState(selectedMode);
     const [individualMode, setIndividualMode] = useState(false);
 
     const [swalPopup, setSwalPopup] = useState(false);
@@ -66,42 +65,43 @@ export default function PopUp({
         };
     }, [show, swalPopup]);
 
-    function handleChangeSmarter1(event) {
-        const selectedOption = event.target.value;
-        console.log(event.target);
-        if (
-            selectedOption === "Nessuno smarter selezionato" ||
-            selectedOption === "No smarter selected"
-        )
-            setSmarter1(null);
-        else setSmarter1(selectedOption);
-    }
+    // function handleChangeSmarter1(event) {
+    //     const selectedOption = event.target.value;
+    //     console.log(event.target);
+    //     if (
+    //         selectedOption === "Nessuno smarter selezionato" ||
+    //         selectedOption === "No smarter selected"
+    //     )
+    //         setSmarter1(null);
+    //     else setSmarter1(selectedOption);
+    // }
 
-    function handleChangeSmarter2(event) {
-        const selectedOption = event.target.value;
-        if (
-            selectedOption === "Nessuno smarter selezionato" ||
-            selectedOption === "No smarter selected"
-        )
-            setSmarter2(null);
-        else setSmarter2(selectedOption);
-    }
+    // function handleChangeSmarter2(event) {
+    //     const selectedOption = event.target.value;
+    //     if (
+    //         selectedOption === "Nessuno smarter selezionato" ||
+    //         selectedOption === "No smarter selected"
+    //     )
+    //         setSmarter2(null);
+    //     else setSmarter2(selectedOption);
+    // }
 
-    function handleChangeModalita(event) {
-        const selectedOption = event.target.value;
-        if (
-            selectedOption === "Nessuna modalità selezionata" ||
-            selectedOption === "No mode selected"
-        ) {
-            setModalita(null);
-        } else {
-            if (selectedOption === "Low positive interdependence")
-                setModalita(1);
-            else if (selectedOption === "High positive interdependence")
-                setModalita(2);
-            else if (selectedOption === "Individual") setModalita(3);
-        }
-    }
+    // function handleChangeModalita(event) {
+    //     const selectedOption = event.target.value;
+    //     setSelectedMode(selectedOption)
+    //     if (
+    //         selectedOption === "Nessuna modalità selezionata" ||
+    //         selectedOption === "No mode selected"
+    //     ) {
+    //         setModalita(null);
+    //     } else {
+    //         if (selectedOption === "Low positive interdependence")
+    //             setModalita(1);
+    //         else if (selectedOption === "High positive interdependence")
+    //             setModalita(2);
+    //         else if (selectedOption === "Individual") setModalita(3);
+    //     }
+    // }
 
     const toggleIndividualMode = async () => {
         setIndividualMode(!individualMode);
@@ -109,7 +109,7 @@ export default function PopUp({
 
     async function handleConferma() {
         setSwalPopup(true);
-        if ((smarter1 === null || smarter2 === null) && modalita !== 3) {
+        if ((smarter1 === null || smarter2 === null) && selectedMode != 3) {
             const title =
                 selectedLanguage === "eng"
                     ? "Select both smarters"
@@ -122,7 +122,7 @@ export default function PopUp({
             });
             return;
         }
-        if (modalita === null) {
+        if (selectedMode == 0) {
             const title =
                 selectedLanguage === "eng"
                     ? "Select a mode"
@@ -148,7 +148,8 @@ export default function PopUp({
             });
             return;
         }
-        if (modalita === 3 && smarter2 !== null) {
+    
+        if (selectedMode == 3 && smarter2) {
             const title =
                 selectedLanguage === "eng"
                     ? "Select only smarter 1"
@@ -163,17 +164,17 @@ export default function PopUp({
         }
 
         //find the selected smarters id
-        const smarter1Id = boxes.find((box) => box.name === smarter1)._id;
-        const smarter2Id = boxes.find((box) => box.name === smarter2)._id;
+        const smarter1Id = boxes.find((box) => box.name === smarter1)?._id;
+        const smarter2Id = boxes.find((box) => box.name === smarter2)?._id;
 
         const data = {
             selectedSmarters: [smarter1Id, smarter2Id],
-            mode: modalita,
+            mode: selectedMode,
             classId: classId,
         };
 
         //Individual mode
-        if (modalita === 3) {
+        if (selectedMode == 3) {
             toggleIndividualMode();
         } else {
             try {
@@ -185,7 +186,7 @@ export default function PopUp({
                 });
                 // console.log(result.data);
 
-                if (router.asPath === "/home#" || router.asPath === "/home") router.push("/mockup/profilo");
+                router.push("/mockup/profilo");
                 //Close the popup
                 onClose();
             } catch (err) {
@@ -215,28 +216,22 @@ export default function PopUp({
                             </h1>
                             <select
                                 className="w-96 h-12 bg-grayLight text-center"
-                                onChange={handleChangeSmarter1}
-                                defaultValue={selectedSmarters[0]}
+                                value={smarter1}
+                                onChange={(event) => setSmarter1(event.currentTarget.value != -1 ? event.currentTarget.value : null)}
                             >
-                                <option>
+                                <option value={-1}>
                                     {selectedLanguage === "eng"
                                         ? "No smarter selected"
                                         : "Nessuno smarter selezionato"}
                                 </option>
                                 {userBoxes && userBoxes.length > 0 ? (
                                     userBoxes.map((box) =>
-                                        selectedSmarters[0] === box ? (
-                                            <option key={box} value={box}>
-                                                {box}
-                                            </option>
-                                        ) : (
-                                            <option key={box} value={box}>
-                                                {box}
-                                            </option>
-                                        )
+                                        <option key={box} value={box}>
+                                            {box}
+                                        </option>
                                     )
                                 ) : (
-                                    <option>
+                                    <option value={-1}>
                                         {selectedLanguage === "eng"
                                             ? "No associated SMARTER"
                                             : "Nessuno SMARTER associato"}
@@ -251,28 +246,22 @@ export default function PopUp({
                             </h1>
                             <select
                                 className="w-96 h-12 bg-grayLight text-center"
-                                onChange={handleChangeSmarter2}
-                                defaultValue={selectedSmarters[1]}
+                                value={smarter2}
+                                onChange={(event) => setSmarter2(event.currentTarget.value != -1 ? event.currentTarget.value : null)}
                             >
-                                <option>
+                                <option value={-1}>
                                     {selectedLanguage === "eng"
                                         ? "No smarter selected"
                                         : "Nessuno smarter selezionato"}
                                 </option>
                                 {userBoxes && userBoxes.length > 0 ? (
                                     userBoxes.map((box) =>
-                                        selectedSmarters[1] === box ? (
-                                            <option key={box} value={box}>
-                                                {box}
-                                            </option>
-                                        ) : (
-                                            <option key={box} value={box}>
-                                                {box}
-                                            </option>
-                                        )
+                                        <option key={box} value={box}>
+                                            {box}
+                                        </option>
                                     )
                                 ) : (
-                                    <option>
+                                    <option value={-1}>
                                         {selectedLanguage === "eng"
                                             ? "No associated SMARTER"
                                             : "Nessuno SMARTER associato"}
@@ -289,21 +278,17 @@ export default function PopUp({
                             </h1>
                             <select
                                 className="w-96 h-12 bg-grayLight text-center"
-                                onChange={handleChangeModalita}
-                                defaultValue={
-                                    selectedMode == 1
-                                        ? "Low positive interdependence"
-                                        : "High positive interdependence"
-                                }
+                                value={selectedMode}
+                                onChange={(event) => setSelectedMode(event.currentTarget.value)}
                             >
-                                <option>
+                                <option value={0}>
                                     {selectedLanguage === "eng"
                                         ? "No mode selected"
                                         : "Nessuna modalità selezionata"}
                                 </option>
-                                <option>Low positive interdependence</option>
-                                <option>High positive interdependence</option>
-                                <option>Individual</option>
+                                <option value={1}>Low positive interdependence</option>
+                                <option value={2}>High positive interdependence</option>
+                                <option value={3}>Individual</option>
                             </select>
                         </div>
 
@@ -337,6 +322,10 @@ export default function PopUp({
                 url={url}
                 classId={classId}
                 show={individualMode}
+                smarter1={smarter1}
+                smarter2={smarter2}
+                boxes={boxes}
+                selectedMode={selectedMode}
                 onClose={toggleIndividualMode}
             />
         </>
