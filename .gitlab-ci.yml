@@ -21,7 +21,7 @@ variables:
   CONTAINER_BACKEND_IMAGE: smartcommunitylab/smartergame-ui:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
   CONTAINER_BACKEND_IMAGE_LATEST: smartcommunitylab/smartergame-ui:$CI_COMMIT_REF_NAME-latest
 
-backend-container-build:
+ui-container-build:
   stage: build
   environment:
     name: $CI_COMMIT_REF_NAME
