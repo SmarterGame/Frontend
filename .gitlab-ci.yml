@@ -67,7 +67,7 @@ deploy-prod:
 
 container_scanning:
   dependencies:
-    - backend-container-build
+    - ui-container-build
   variables:
     CS_IMAGE: $CONTAINER_BACKEND_IMAGE
     CS_DOCKERFILE_PATH: Dockerfile
