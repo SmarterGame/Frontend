@@ -8,6 +8,10 @@ export default function IndividualModePopUP({
     url,
     classId,
     show,
+    smarter1,
+    smarter2,
+    boxes,
+    selectedMode,
     onClose,
 }) {
     const router = useRouter();
@@ -32,6 +36,9 @@ export default function IndividualModePopUP({
     const [individuals, setIndividuals] = useState([]);
     const [tmp, setTmp] = useState(false);
     const [selectedIndividual, setSelectedIndividual] = useState(null);
+
+    const smarter1Id = boxes.find((box) => box.name === smarter1)?._id;
+    const smarter2Id = boxes.find((box) => box.name === smarter2)?._id;
 
     useEffect(() => {
         const getClassIndividuals = async () => {
@@ -106,6 +113,8 @@ export default function IndividualModePopUP({
                 const data = {
                     classId: classId,
                     individualId: selectedIndividual,
+                    selectedSmarters: [smarter1Id, smarter2Id],
+                    mode: selectedMode,
                 };
                 axios({
                     method: "post",

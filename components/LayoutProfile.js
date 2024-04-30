@@ -9,6 +9,8 @@ const Layout = ({
     url,
     loading = false,
     children,
+    userBoxes,
+    individual,
     boxes,
     classRoom,
     selectedOptions,
@@ -28,10 +30,12 @@ const Layout = ({
                 <div className="min-h-[100vh]">
                     <HeaderProfile
                         loading={loading}
+                        userBoxes={userBoxes}
                         boxes={boxes}
                         token={token}
                         url={url}
                         classRoom={classRoom}
+                        individual={individual}
                         selectedOptions={selectedOptions}
                         isIndividual={isIndividual}
                     />

@@ -1,6 +1,8 @@
 import LayoutSelezioneGiochi from "@/components/LayoutSelezioneGiochi";
 import Image from "next/image";
 import montagna from "@/public/montagnaSMARTER.png";
+import leftArrow from "@/public/leftArrow.svg";
+import rightArrow from "@/public/rightArrow.svg";
 import orsoFaccia from "@/public/orsoFaccia.png";
 import procioneFaccia from "@/public/procioneFaccia.png";
 import grass from "@/public/grass.png";
@@ -78,13 +80,23 @@ export const getServerSideProps = async ({ req, res }) => {
             // console.log(classData.data);
         }
 
+        const games = await axios({
+            method: "get",
+            url: url + "/games?limit=2",
+            headers: {
+                Authorization: token,
+            },
+        });
+
         return {
             props: {
-                token: session.accessToken,
+                token: token,
                 url: url,
                 classRoom: classData.data,
                 selectedMode: user.data.SelectedMode,
                 profileImg: imageUrl,
+                games: games.data,
+                maxPages: games.data.meta.numPages
             },
         };
     } catch (err) {
@@ -94,30 +106,64 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 };
 
-export default function Giochi({ classRoom, selectedMode, profileImg }) {
+export default function Giochi({ classRoom, selectedMode, profileImg, games, maxPages, url, token }) {
     const [selectedLanguage, setSelectedLanguage] = useState();
+    const [loadedGames, setLoadedGames] = useState(games.data);
+    const [currentPage, setCurrentPage] = useState(games.meta.page);
+    
     useEffect(() => {
-        //Fetch the language
-        // const fetchLanguage = async () => {
-        //     try {
-        //         const data = await fetch("/api/language/getLanguage");
-        //         const language = await data.json();
-        //         setSelectedLanguage(language);
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // };
-        // fetchLanguage();
         setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
 
-    const titleLeft = selectedLanguage === "eng" ? "QUANTITIES" : "QUANTITA'";
-    const titleRight =
-        selectedLanguage === "eng" ? "ARRANGE THE NUMBERS" : "ORDINAMENTI";
+    const nextGamePage = async (right) => {
+        const nextPage = right ? currentPage+1 : currentPage-1;
+        const games = (await axios({
+            method: "get",
+            url: url + "/games?limit=2&page="+ nextPage,
+            headers: {
+                Authorization: token,
+            },
+        })).data;
+        setCurrentPage(nextPage);
+        setLoadedGames(games.data);
+    };
+
     const title = selectedLanguage === "eng" ? "GAMES" : "GIOCHI";
 
     return (
         <>
+            <Image
+                src={montagna}
+                alt="montagna"
+                className="absolute bottom-0 left-[16vw] w-[65vw] h-[75vh]"
+            />
+            <div 
+                className="cursor-pointer"
+                hidden={currentPage == 1}
+                onClick={() => {
+                    nextGamePage(false)
+                }}
+            >
+                <Image
+                    src={leftArrow}
+                    alt="left arrow"
+                    className="absolute top-[33vh] left-[1vw] w-[50px] h-[50px]"
+                />
+            </div>
+            <div
+                className="cursor-pointer"
+                hidden={currentPage >= maxPages}
+                onClick={() => {
+                    nextGamePage(true)
+                }}
+            >
+                <Image
+                    src={rightArrow}
+                    alt="right arrow"
+                    className="absolute top-[33vh] right-[1vw] w-[50px] h-[50px]"
+                />
+            </div>
+            
             <LayoutSelezioneGiochi
                 classRoom={classRoom}
                 title={title}
@@ -130,39 +176,40 @@ export default function Giochi({ classRoom, selectedMode, profileImg }) {
                             ? "CHOOSE A GAME"
                             : "SCEGLI UN GIOCO"}
                     </h1>
-                    <div className="flex flex-row items-center justify-center h-full">
-                        <Levels
-                            classRoom={classRoom}
-                            selectedMode={selectedMode}
-                            title={titleLeft}
-                            left={true}
-                        >
-                            <Image
-                                src={procioneFaccia}
-                                alt="procione faccia"
-                                width={90}
-                            />
-                        </Levels>
+                    <div className="flex flex-row items-center justify-between h-full w-[95%]" id="test">
+                        {loadedGames.length === 0 && (<div>No Games...</div>)}
+                        {loadedGames.length > 0 && (
+                            <Levels
+                                gameId={loadedGames[0]?._id}
+                                classRoom={classRoom}
+                                selectedMode={selectedMode}
+                                title={loadedGames[0].name}
+                                levels={loadedGames[0].levels}
+                                left={true}
+                            >
+                                <Image
+                                    src={procioneFaccia}
+                                    alt="procione faccia"
+                                    width={90}
+                                />
+                            </Levels>
+                        )}
 
-                        <Image
-                            src={montagna}
-                            alt="montagna"
-                            width={900}
-                            className="translate-y-12 sm:w-[40%] md:w-[50%] lg:w-[65%]"
-                        />
-
-                        <Levels
-                            classRoom={classRoom}
-                            selectedMode={selectedMode}
-                            title={titleRight}
-                            left={false}
-                        >
-                            <Image
-                                src={orsoFaccia}
-                                alt="orso faccia"
-                                width={80}
-                            />
-                        </Levels>
+                        {loadedGames.length > 1 && (
+                            <Levels
+                                gameId={loadedGames[1]?._id}
+                                levels={loadedGames[1].levels}
+                                selectedMode={selectedMode}
+                                title={loadedGames[1].name}
+                                left={false}
+                            >
+                                <Image
+                                    src={orsoFaccia}
+                                    alt="orso faccia"
+                                    width={80}
+                                />
+                            </Levels>
+                        )}
                     </div>
                 </div>
 

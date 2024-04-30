@@ -3,17 +3,17 @@ import axios from "axios";
 import { getSession } from "@auth0/nextjs-auth0";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import _ from "lodash";
 import Swal from "sweetalert2";
 import { getSelectedLanguage } from "@/components/lib/language";
-import { useSmarter, LED_BLUE_ACTION, LED_GREEN_ACTION, LED_RED_ACTION, LED_WHITE_ACTION } from "@/data/mqtt/hooks";
-import { convertTagToSymbol } from "@/utils/smarter";
+import { useSmarter, LED_BLUE_ACTION, LED_RED_ACTION, LED_WHITE_ACTION, LED_GREEN_ACTION } from "@/data/mqtt/hooks";
 import { SMARTER_ID_1 } from "@/data/mqtt/connector";
+import { convertTagToSymbol } from "@/utils/smarter";
 
-export const getServerSideProps = async ({ req, res }) => {
+export const getServerSideProps = async ({ req, res, query }) => {
     const FEEDBACK = process.env.FEEDBACK;
     const url = process.env.BACKEND_URI;
     try {
+        const {gameId, level = 1} = query;
         const session = await getSession(req, res);
 
         const token = "Bearer " + session.accessToken;
@@ -63,6 +63,13 @@ export const getServerSideProps = async ({ req, res }) => {
         });
         // console.log(classData.data);
 
+        const game = await axios
+            .get(url + "/games/" + gameId, {
+                headers: {
+                    Authorization: token,
+                },
+            })
+
         return {
             props: {
                 token: session.accessToken,
@@ -71,6 +78,8 @@ export const getServerSideProps = async ({ req, res }) => {
                 classRoom: classData.data,
                 FEEDBACK: FEEDBACK,
                 profileImg: imageUrl,
+                game: game.data,
+                level: level
             },
         };
     } catch (err) {
@@ -87,14 +96,18 @@ export default function Game({
     classRoom,
     FEEDBACK,
     profileImg,
+    game,
+    level
 }) {
     const router = useRouter();
-    const { levelIndividual, game } = router.query; //game = quantita or ordinamenti
-    const {info, events, sendAction} = useSmarter({smarterId: SMARTER_ID_1});
+    //const { gameId, level } = router.query; //game = quantita or ordinamenti
+    const mode = game?.mode;
+    const {events, sendAction} = useSmarter({smarterId: SMARTER_ID_1});
     const [error, setError] = useState(false);
     const [subLvl, setsubLvl] = useState(0);
-    const [lvlData, setLvlData] = useState([]); //Used to check the correct solution
-    const [lvlDataCorrect, setLvlDataCorrect] = useState([]);
+    const [currentExe, setCurrentExe] = useState(0);
+    const [lvlDataCorrect, setLvlDataCorrect] = useState(game?.levels[+level-1]?.exercises?.[currentExe]?.endSeq ?? ['x','x','x','x','x']);
+    const [lvlData, setLvlData] = useState(game?.levels[+level-1]?.exercises?.[currentExe]?.startSeq?.map(item => item === "_" ? "" : item) ?? []); //Used to check the correct solution
     const [inputValues, setInputValues] = useState(['','','','','']); //Used to store the input values
     const [isCorrect, setIsCorrect] = useState([
         false,
@@ -104,8 +117,6 @@ export default function Game({
         false,
     ]);
     const [isWrong, setIsWrong] = useState([false, false, false, false, false]);
-
-    const [isCrescente, setisCrescente] = useState(true);
 
     const [selectedLanguage, setSelectedLanguage] = useState();
     useEffect(() => {
@@ -124,44 +135,36 @@ export default function Game({
     }, []);
 
     //Get level data
-    useEffect(() => {
-        axios
-            .get(url + "/games/" + game + "/individual/" + levelIndividual, {
-                headers: {
-                    Authorization: "Bearer " + token,
-                },
-            })
-            .then((res) => {
-                sendAction(LED_WHITE_ACTION);
-                const tmp = res.data[subLvl].pop();
-                const data = [...res.data[subLvl]];
-                const inputs = document.querySelectorAll("input[name]");
-                inputs.forEach((input) => {
-                    input.value = "";
-                });
-                setIsCorrect([false, false, false, false, false]);
-                setInputValues(['','','','','']);
-                //Check if the array is in crescent order
-                if (tmp) {
-                    setisCrescente(false);
-                    setLvlDataCorrect(res.data[subLvl].sort((a, b) => b - a));
-                } else {
-                    setisCrescente(true);
-                    setLvlDataCorrect(res.data[subLvl].sort((a, b) => a - b));
-                }
-
-                setLvlData(data);
-                // const data = _.shuffle(res.data[subLvl]);
-                // setLvlDataShuffled(data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, [subLvl]);
+    // useEffect(() => {
+    //     // TODO: reimplement subLvl
+    //     axios
+    //         .get(url + "/games/" + gameId, {
+    //             headers: {
+    //                 Authorization: "Bearer " + token,
+    //             },
+    //         })
+    //         .then((res) => {
+    //             // Set led to white when starting game
+    //             console.log(res.data.levels[+level]);
+    //             sendAction(LED_WHITE_ACTION)
+    //             setLvlData(res.data.levels[+level-1].startSeq?.map(item => item === "_" ? "" : item));
+    //             const inputs = document.querySelectorAll("input[name]");
+    //             inputs.forEach((input) => {
+    //                 input.value = "";
+    //             });
+    //             setIsCorrect([false, false, false, false, false]);
+    //             setInputValues(['','','','','']);
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // }, [subLvl]);
 
     //Check if the solution is correct
     useEffect(() => {
-        for (let i = 0; i < lvlDataCorrect.length; i++) {
+        console.log(inputValues);
+        console.log(lvlData);
+        for (let i = 0; i < lvlData.length; i++) {
             if (inputValues[i] == lvlDataCorrect[i]) {
                 setIsCorrect((prevState) => {
                     const newState = [...prevState];
@@ -204,14 +207,14 @@ export default function Game({
         }
     }, [inputValues]);
 
-    useEffect(() => {
-        const event = events[0];
-        if (event?.event === "card_placed") {
-            const value = convertTagToSymbol(event?.value);
-            sendAction(value == lvlDataCorrect[event.reader] ? LED_GREEN_ACTION : LED_RED_ACTION);
-            setTimeout(() => sendAction(LED_WHITE_ACTION), 750);
-        }
-    }, [events])
+    // useEffect(() => {
+    //     const event = events[events.length-1];
+    //     if (event?.event === "card_placed") {
+    //         const value = convertTagToSymbol(event?.value);
+    //         // sendAction(value == lvlData[event.reader] ? LED_GREEN_ACTION : LED_RED_ACTION);
+    //         // setTimeout(() => sendAction(LED_WHITE_ACTION), 750);
+    //     }
+    // }, [events])
 
     //Check if there is an error in the input
     useEffect(() => {
@@ -221,16 +224,13 @@ export default function Game({
     //Handle next level
     useEffect(() => {
         if (isCorrect.every((el) => el === true)) {
-            if (subLvl < 4) {
+            if (subLvl < game?.levels[+level-1]?.exercises?.length-1) {
                 const title =
                     selectedLanguage === "eng" ? "CORRECT!" : "CORRETTO!";
                 const html =
                     selectedLanguage === "eng"
-                        ? "Exercise " + (subLvl + 1) + "/5 completed"
-                        : "Esercizio " + (subLvl + 1) + "/5 completato";
-
-                sendAction(LED_GREEN_ACTION);
-                sendAction(LED_GREEN_ACTION);
+                        ? "Exercise " + (subLvl + 1) + "/" + game?.levels[+level-1]?.exercises?.length + "completed"
+                        : "Esercizio " + (subLvl + 1) + "/" + game?.levels[+level-1]?.exercises?.length + "completato";
 
                 Swal.fire({
                     title: title,
@@ -243,8 +243,8 @@ export default function Game({
                     },
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
-                        sendAction(LED_BLUE_ACTION);
-                        sendAction(LED_BLUE_ACTION);
+                        setLvlData(game?.levels[+level-1]?.exercises?.[currentExe]?.startSeq ?? ['x','x','x','x','x'])
+                        setLvlDataCorrect(game?.levels[+level-1]?.exercises?.[currentExe]?.endSeq ?? ['x','x','x','x','x']);
                         setsubLvl((prevState) => prevState + 1);
                     }
                 });
@@ -255,8 +255,8 @@ export default function Game({
                         : "COMPLIMENTI!";
                 const html =
                     selectedLanguage === "eng"
-                        ? "Level " + levelIndividual + " completed"
-                        : "Livello " + levelIndividual + " completato";
+                        ? "Level " + level + " completed"
+                        : "Livello " + level + " completato";
 
                 sendAction(LED_GREEN_ACTION);
                 sendAction(LED_GREEN_ACTION);
@@ -285,36 +285,37 @@ export default function Game({
         if (!isCorrect.every(Boolean)) {
             console.log("Enter")
             console.log(isCorrect);
-            setInputValues(info);
+            setInputValues(events[events.length-1] ?? ['','','','','']);
         }
-    }, [info])
+    }, [events])
 
-    //API call to set game as finished
+    //API TODO: pensaci sopra
     const gameFinished = async () => {
         try {
-            const res = await axios({
-                method: "get",
-                url:
-                    url +
-                    "/classroom/gameFinished/" +
-                    selectedClass +
-                    "?game=" +
-                    game +
-                    "&level=" +
-                    levelIndividual +
-                    "&error=" +
-                    error +
-                    "&individual=true",
-                headers: {
-                    Authorization: "Bearer " + token,
-                },
-            });
+            // const res = await axios({
+            //     method: "get",
+            //     url:
+            //         url +
+            //         "/classroom/gameFinished/" +
+            //         selectedClass +
+            //         "?game=" +
+            //         game +
+            //         "&level=" +
+            //         levelIndividual +
+            //         "&error=" +
+            //         error +
+            //         "&individual=true",
+            //     headers: {
+            //         Authorization: "Bearer " + token,
+            //     },
+            // });
+            // Da capire come posso fare a tirare fuori queste info ? probabilemente dall'istanza di gioco
             router.push({
                 pathname: "/mockup/gamification",
                 query: {
                     game: game,
-                    level: levelIndividual,
-                    badgeData: JSON.stringify(res.data.badgeEarned),
+                    level: level,
+                    //badgeData: JSON.stringify(res.data.badgeEarned),
                     selectedLanguage: selectedLanguage,
                 },
             });
@@ -322,6 +323,12 @@ export default function Game({
             console.log(err);
         }
     };
+
+    if (!game) {
+        return null;
+    }
+
+    console.log(lvlData);
 
     return (
         <>
@@ -331,27 +338,13 @@ export default function Game({
 
             <LayoutGames
                 classRoom={classRoom}
-                title={game}
-                liv={levelIndividual}
+                title={game?.name}
+                liv={level}
                 profileImg={profileImg}
             >
                 <div className="flex mt-6">
                     <h1 className="mx-auto text-2xl">
-                        {selectedLanguage === "eng"
-                            ? isCrescente
-                                ? "Arrange the numbers in increasing orders using the tiles " +
-                                  (levelIndividual === "1"
-                                      ? "“apples”"
-                                      : "“numbers”")
-                                : "Arrange the numbers in decreasing orders using the tiles " +
-                                  (levelIndividual === "1"
-                                      ? "“apples”"
-                                      : "“numbers”")
-                            : isCrescente
-                            ? "Ordina i numeri in ordine crescente, usando le tessere " +
-                              (levelIndividual === "1" ? "”mela”" : "”cifra”")
-                            : "Ordina i numeri in ordine decrescente, usando le tessere " +
-                              (levelIndividual === "1" ? "“mela”" : "”cifra”")}
+                        {game?.assignment}
                     </h1>
                 </div>
                 <div className="relative flex flex-col justify-center md:h-[55vh] lg:h-[60vh] mt-10 ml-4 mr-4 z-10">
@@ -360,7 +353,7 @@ export default function Game({
                             {lvlData.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="bg-slate-200 w-full flex justify-center items-center text-8xl"
+                                    className="bg-slate-200 w-full flex justify-center items-center text-8xl col-span-1 row-span-1 overflow-hidden"
                                 >
                                     {item}
                                 </div>
@@ -380,17 +373,14 @@ export default function Game({
                                                       : ""
                                               }`
                                             : ``
-                                    } w-full flex justify-center items-center text-8xl`}
+                                    } w-full flex justify-center items-center text-8xl col-span-1 row-span-1 h-full`}
                                 >
                                     {/* <input
                                         className="text-6xl text-center w-20"
                                         name={index}
                                         onChange={handleInputChange}
                                     ></input> */}
-                                    <div
-                                        className="text-6xl text-center w-20"
-                                        name={index}
-                                    >{inputValues?.[index]}</div>
+                                    {inputValues?.[index]}
                                 </div>
                             ))}
                         </div>
