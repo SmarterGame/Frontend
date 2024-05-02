@@ -97,14 +97,10 @@ export default function Badge({ token, url, badge, blocked }) {
                 />
                 <div className="flex flex-col bg-slate-100 w-[65%] rounded-xl">
                     <h1 className="mx-auto text-lg text-orangeBtn mt-2">
-                        {selectedLanguage === "eng"
-                            ? badge?.BadgeName_en
-                            : badge?.BadgeName}
+                        {badge?.name}
                     </h1>
                     <h2 className="mx-auto text-md text-slate-500 mt-4 mb-4">
-                        {selectedLanguage === "eng"
-                            ? badge?.BadgeDescription_en
-                            : badge?.BadgeDescription}
+                        {badge?.description}
                     </h2>
                 </div>
             </div>

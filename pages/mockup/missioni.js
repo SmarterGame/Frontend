@@ -176,8 +176,8 @@ export default function BadgePage({ token, url, user, boxes, classRoom, individu
         const obtainedBadges = badgeList?.map(badge => badge._id).filter((badge) =>
             checkBadges.includes(badge)
         );
-        setBadgeList(badgeList.filter(badge => badge._id == nonObtainedBadges));
-        setBadgeListFiltered(badgeList.filter(badge => badge._id == obtainedBadges));
+        setBadgeList(badges.filter(badge => nonObtainedBadges.includes(badge._id)));
+        setBadgeListFiltered(badges.filter(badge => obtainedBadges.includes(badge._id)));
         setLoading(false);
     }, []);
 

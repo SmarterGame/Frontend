@@ -114,6 +114,7 @@ export default function IndividualModePopUP({
                     classId: classId,
                     individualId: selectedIndividual,
                     selectedSmarters: [smarter1Id, smarter2Id],
+                    selectedClass: classId,
                     mode: selectedMode,
                 };
                 axios({
