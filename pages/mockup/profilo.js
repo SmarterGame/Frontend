@@ -199,7 +199,7 @@ export default function Profilo({
                         <h1 className=" text-orangeBtn text-4xl mt-8">
                             {selectedLanguage === "eng" ? "Level" : "Livello"}{" "}
                             {classLvl}{" "}
-                            {lvlNamesIta?.[classLvl - 1]}
+                            {lvlNamesIta?.[classLvl - 1]?.name}
                         </h1>
                         <div className="flex flex-col h-full mt-8 mb-10 gap-y-6">
                             <button className=" mx-auto transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl w-56 h-14 rounded-md duration-300">
