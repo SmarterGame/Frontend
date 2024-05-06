@@ -279,7 +279,7 @@ export default function Game({
     //Check if the solution is correct
     useEffect(() => {
         console.log(inputValues);
-        console.log(lvlData);
+        console.log(lvlDataCorrect);
         for (let i = 0; i < lvlData.length; i++) {
             if (inputValues[i] == lvlDataCorrect[i]) {
                 setIsCorrect((prevState) => {
@@ -359,8 +359,9 @@ export default function Game({
                     },
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
-                        setLvlData(game?.levels[+level-1]?.exercises?.[currentExe]?.startSeq ?? ['x','x','x','x','x'])
-                        setLvlDataCorrect(game?.levels[+level-1]?.exercises?.[currentExe]?.endSeq ?? ['x','x','x','x','x']);
+                        const ce = currentExe+1;
+                        setLvlData(game?.levels[+level-1]?.exercises?.[ce]?.startSeq ?? ['x','x','x','x','x'])
+                        setLvlDataCorrect(game?.levels[+level-1]?.exercises?.[ce]?.endSeq ?? ['x','x','x','x','x']);
                         setCurrentExe((prevState) => prevState + 1);
                     }
                 });
