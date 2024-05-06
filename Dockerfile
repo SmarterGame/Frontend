@@ -28,6 +28,9 @@ ARG AUTH0_BASE_URL
 ARG AUTH0_AUDIENCE=https://smarter.com
 ARG AUTH0_SCOPE="openid profile email"
 ARG AUTH0_ISSUER_BASE_URL=https://smarter.eu.auth0.com
+ARG MQTT_URI=wss://ib05a168.ala.us-east-1.emqxsl.com:8084
+ARG MQTT_USER="smarter"
+ARG MQTT_PSW="melaC-melaV"
 
 
 COPY --from=deps /app/node_modules ./node_modules
@@ -41,6 +44,9 @@ RUN	export BACKEND_URI=${BACKEND_URI} && \
 	export AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET} && \
 	export AUTH0_AUDIENCE=${AUTH0_AUDIENCE} && \
 	export AUTH0_SCOPE=${AUTH0_SCOPE} && \
+	export MQTT_URI=${MQTT_URI} && \
+	export MQTT_USER=${MQTT_USER} && \
+	export MQTT_PSW=${MQTT_PSW} && \
 	npm run build
 
 
