@@ -4,10 +4,9 @@ import { getSession } from "@auth0/nextjs-auth0";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { getSelectedLanguage } from "@/components/lib/language";
-import { useSmarter, LED_BLUE_ACTION, LED_RED_ACTION, LED_WHITE_ACTION, LED_GREEN_ACTION } from "@/data/mqtt/hooks";
-import { SMARTER_ID_1 } from "@/data/mqtt/connector";
-import { convertTagToSymbol } from "@/utils/smarter";
+import { useSmarter } from "@/data/mqtt/hooks";
+import leone from "@/public/leone.svg";
+import Image from "next/image";
 
 export const getServerSideProps = async ({ req, res, query }) => {
     const FEEDBACK = process.env.FEEDBACK;
@@ -26,7 +25,7 @@ export const getServerSideProps = async ({ req, res, query }) => {
 
         let user = await axios({
             method: "get",
-            url: url + "/user/me",
+            url: url + "/user/me?query=smarter",
             headers: {
                 Authorization: token,
             },
@@ -75,6 +74,7 @@ export const getServerSideProps = async ({ req, res, query }) => {
                 token: session.accessToken,
                 url: url,
                 selectedClass: user.data.SelectedClass,
+                selectedSmarters: user.data.SelectedSmarters,
                 classRoom: classData.data,
                 FEEDBACK: FEEDBACK,
                 profileImg: imageUrl,
@@ -89,10 +89,139 @@ export const getServerSideProps = async ({ req, res, query }) => {
     }
 };
 
+function SingleGui({
+    FEEDBACK,
+    assignment,
+    lvlData,
+    isCorrect,
+    inputValues,
+    selectedSmarters
+}) {
+    return (
+        <>
+            <div className="flex mt-6">
+                <h1 className="mx-auto text-2xl">
+                    {assignment}
+                </h1>
+            </div>
+            <div className="relative flex flex-col justify-center md:h-[55vh] lg:h-[60vh] mt-10 ml-4 mr-4 z-10">
+                <div className={(lvlData.length <= 5 ? "flex flex-col items-center w-full " : "") + "h-full"}>
+                    <div className={"grid grid-cols-"+ lvlData.length+" justify-items-center gap-y-4 gap-x-" + (lvlData.length > 5 ? "4" : "14") + " h-full "+ (lvlData.length > 5 ? "" : "w-[65%]")}>
+                        {lvlData.map((item, index) => (
+                            <div
+                                key={index}
+                                className="bg-slate-200 w-full flex justify-center items-center text-8xl col-span-1 row-span-1 overflow-hidden"
+                            >
+                                {item}
+                            </div>
+                        ))}
+                        {Array.from({ length: lvlData.length }, (_, index) => (
+                            <div
+                                key={index}
+                                className={`bg-slate-200 border-4 ${
+                                    FEEDBACK === "true"
+                                        ? `${
+                                                isCorrect[index]
+                                                    ? "border-green-500"
+                                                    : ""
+                                            } ${
+                                                isWrong[index]
+                                                    ? "border-red-500"
+                                                    : ""
+                                            }`
+                                        : ``
+                                } w-full flex justify-center items-center text-8xl col-span-1 row-span-1 h-full`}
+                            >
+                                {/* <input
+                                    className="text-6xl text-center w-20"
+                                    name={index}
+                                    onChange={handleInputChange}
+                                ></input> */}
+                                {inputValues?.[index]}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
+
+function SeparatedGui({
+    FEEDBACK,
+    assignment,
+    lvlData,
+    isCorrect,
+    inputValues,
+    selectedSmarters
+}) {
+    return (
+        <>
+            <div className="flex mt-6">
+                <h1 className="mx-auto text-2xl">
+                    {assignment}
+                </h1>
+            </div>
+            <div className="relative flex flex-row justify-center gap-x-20 md:h-[55vh] lg:h-[60vh] w-full z-10">
+                {selectedSmarters.map((_, smarterIndex) => (
+                    <>
+                        <div className="flex flex-col justify-center h-full w-[45%] mt-4 ml-4 mr-4">
+                            <h1 className="mx-auto text-xl  mb-4 text-grayText">
+                                Smarter {smarterIndex+1}
+                            </h1>
+                            <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-4 h-full">
+                                {Array.from({ length: 5 }, (_, i) => (
+                                    <div
+                                        key={i}
+                                        className="bg-slate-200 w-full flex justify-center items-center text-8xl"
+                                    >
+                                        {lvlData[i+5*smarterIndex]}
+                                    </div>
+                                ))}
+                                {Array.from({ length: 5 }, (_, i) => (
+                                    <div
+                                        key={i}
+                                        className={`bg-slate-200 border-4 ${
+                                            FEEDBACK === "true"
+                                                ? `${
+                                                        isCorrect[i+5*smarterIndex]
+                                                            ? "border-green-500"
+                                                            : ""
+                                                    } ${
+                                                        isWrong[i+5*smarterIndex]
+                                                            ? "border-red-500"
+                                                            : ""
+                                                    }`
+                                                : ``
+                                        } w-full flex justify-center items-center text-8xl`}
+                                    >
+                                        <div
+                                            className="text-8xl text-center w-20"
+                                            name={i}
+                                        >{inputValues?.[i+5*smarterIndex]}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        {(smarterIndex < selectedSmarters.length-1) && (<div className="border-2 border-dashed border-gray-700 w-0 h-[60vh] mt-10"></div>)}
+                    </>
+                ))}
+            </div>
+            <Image
+                src={leone}
+                alt="leone"
+                width={120}
+                className="fixed bottom-6 left-40"
+            ></Image>
+        </>
+    )
+}
+
 export default function Game({
     token,
     url,
     selectedClass,
+    selectedSmarters,
     classRoom,
     FEEDBACK,
     profileImg,
@@ -101,14 +230,15 @@ export default function Game({
 }) {
     const router = useRouter();
     //const { gameId, level } = router.query; //game = quantita or ordinamenti
-    const mode = game?.mode;
-    const {events, sendAction} = useSmarter({smarterId: SMARTER_ID_1});
+    const mode = game?.levels[+level-1].mode;
+    // TODO: prendi i dati degli smarter dalle informazioni utente quindi userData.SelectedSmarter -> [{name: string}]
+    // da quell'array posso cavarmi fuori i dati di quanti smarter sono collegati e di conseguenza modulare l'interfaccia grafica
+    const {events, sendAction} = useSmarter({smarterIds: selectedSmarters.map(smarter => smarter.name)});
     const [error, setError] = useState(false);
-    const [subLvl, setsubLvl] = useState(0);
     const [currentExe, setCurrentExe] = useState(0);
-    const [lvlDataCorrect, setLvlDataCorrect] = useState(game?.levels[+level-1]?.exercises?.[currentExe]?.endSeq ?? ['x','x','x','x','x']);
+    const [lvlDataCorrect, setLvlDataCorrect] = useState(game?.levels[+level-1]?.exercises?.[currentExe]?.endSeq ?? [['x' * selectedSmarters.length]]);
     const [lvlData, setLvlData] = useState(game?.levels[+level-1]?.exercises?.[currentExe]?.startSeq?.map(item => item === "_" ? "" : item) ?? []); //Used to check the correct solution
-    const [inputValues, setInputValues] = useState(['','','','','']); //Used to store the input values
+    const [inputValues, setInputValues] = useState(new Array(selectedSmarters.length*5).map(() => "")); //Used to store the input values
     const [isCorrect, setIsCorrect] = useState([
         false,
         false,
@@ -135,30 +265,16 @@ export default function Game({
     }, []);
 
     //Get level data
-    // useEffect(() => {
-    //     // TODO: reimplement subLvl
-    //     axios
-    //         .get(url + "/games/" + gameId, {
-    //             headers: {
-    //                 Authorization: "Bearer " + token,
-    //             },
-    //         })
-    //         .then((res) => {
-    //             // Set led to white when starting game
-    //             console.log(res.data.levels[+level]);
-    //             sendAction(LED_WHITE_ACTION)
-    //             setLvlData(res.data.levels[+level-1].startSeq?.map(item => item === "_" ? "" : item));
-    //             const inputs = document.querySelectorAll("input[name]");
-    //             inputs.forEach((input) => {
-    //                 input.value = "";
-    //             });
-    //             setIsCorrect([false, false, false, false, false]);
-    //             setInputValues(['','','','','']);
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // }, [subLvl]);
+    useEffect(() => {
+        //sendAction(LED_WHITE_ACTION)
+        setLvlData(game?.levels[+level-1]?.exercises?.[currentExe]?.startSeq?.map(item => item === "_" ? "" : item));
+        const inputs = document.querySelectorAll("input[name]");
+        inputs.forEach((input) => {
+            input.value = "";
+        });
+        setIsCorrect([false, false, false, false, false]);
+        setInputValues(new Array(selectedSmarters.length*5).map(() => ""));
+    }, [currentExe]);
 
     //Check if the solution is correct
     useEffect(() => {
@@ -224,13 +340,13 @@ export default function Game({
     //Handle next level
     useEffect(() => {
         if (isCorrect.every((el) => el === true)) {
-            if (subLvl < game?.levels[+level-1]?.exercises?.length-1) {
+            if (currentExe < game?.levels[+level-1]?.exercises?.length-1) {
                 const title =
                     selectedLanguage === "eng" ? "CORRECT!" : "CORRETTO!";
                 const html =
                     selectedLanguage === "eng"
-                        ? "Exercise " + (subLvl + 1) + "/" + game?.levels[+level-1]?.exercises?.length + "completed"
-                        : "Esercizio " + (subLvl + 1) + "/" + game?.levels[+level-1]?.exercises?.length + "completato";
+                        ? "Exercise " + (currentExe + 1) + "/" + game?.levels[+level-1]?.exercises?.length + "completed"
+                        : "Esercizio " + (currentExe + 1) + "/" + game?.levels[+level-1]?.exercises?.length + "completato";
 
                 Swal.fire({
                     title: title,
@@ -245,7 +361,7 @@ export default function Game({
                     if (result.dismiss === Swal.DismissReason.timer) {
                         setLvlData(game?.levels[+level-1]?.exercises?.[currentExe]?.startSeq ?? ['x','x','x','x','x'])
                         setLvlDataCorrect(game?.levels[+level-1]?.exercises?.[currentExe]?.endSeq ?? ['x','x','x','x','x']);
-                        setsubLvl((prevState) => prevState + 1);
+                        setCurrentExe((prevState) => prevState + 1);
                     }
                 });
             } else {
@@ -258,8 +374,8 @@ export default function Game({
                         ? "Level " + level + " completed"
                         : "Livello " + level + " completato";
 
-                sendAction(LED_GREEN_ACTION);
-                sendAction(LED_GREEN_ACTION);
+                // sendAction(LED_GREEN_ACTION);
+                // sendAction(LED_GREEN_ACTION);
 
                 Swal.fire({
                     title: title,
@@ -272,8 +388,8 @@ export default function Game({
                     },
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
-                        sendAction(LED_BLUE_ACTION);
-                        sendAction(LED_BLUE_ACTION);
+                        // sendAction(LED_BLUE_ACTION);
+                        // sendAction(LED_BLUE_ACTION);
                         gameFinished();
                     }
                 });
@@ -285,7 +401,22 @@ export default function Game({
         if (!isCorrect.every(Boolean)) {
             console.log("Enter")
             console.log(isCorrect);
-            setInputValues(events[events.length-1] ?? ['','','','','']);
+            const copy_events = [...events];
+            const result = Object.groupBy(copy_events, ({ smarter_id }) => smarter_id);
+            
+            setInputValues((prev) => {
+                let copy = [...prev]
+                selectedSmarters.forEach((smarter, index) => {
+                    console.log(result[smarter.name]);
+                    const msg = result[smarter.name]
+                    if (msg && msg.length > 0) {
+                        msg[msg.length-1]?.payload?.forEach((value, sindex) => {
+                            copy[sindex+5*index] = value;
+                        })
+                    }
+                })
+                return copy ?? ['' * selectedSmarters.length]
+            } );
         }
     }, [events])
 
@@ -328,64 +459,34 @@ export default function Game({
         return null;
     }
 
-    console.log(lvlData);
-
     return (
         <>
-            {/* <button onClick={gameFinished} className="bg-red-500">
-                test API
-            </button> */}
-
             <LayoutGames
                 classRoom={classRoom}
                 title={game?.name}
                 liv={level}
                 profileImg={profileImg}
             >
-                <div className="flex mt-6">
-                    <h1 className="mx-auto text-2xl">
-                        {game?.assignment}
-                    </h1>
-                </div>
-                <div className="relative flex flex-col justify-center md:h-[55vh] lg:h-[60vh] mt-10 ml-4 mr-4 z-10">
-                    <div className="flex flex-col items-center h-full w-full">
-                        <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-14 h-full w-[65%]">
-                            {lvlData.map((item, index) => (
-                                <div
-                                    key={index}
-                                    className="bg-slate-200 w-full flex justify-center items-center text-8xl col-span-1 row-span-1 overflow-hidden"
-                                >
-                                    {item}
-                                </div>
-                            ))}
-                            {Array.from({ length: 5 }, (_, index) => (
-                                <div
-                                    key={index}
-                                    className={`bg-slate-200 border-4 ${
-                                        FEEDBACK === "true"
-                                            ? `${
-                                                  isCorrect[index]
-                                                      ? "border-green-500"
-                                                      : ""
-                                              } ${
-                                                  isWrong[index]
-                                                      ? "border-red-500"
-                                                      : ""
-                                              }`
-                                            : ``
-                                    } w-full flex justify-center items-center text-8xl col-span-1 row-span-1 h-full`}
-                                >
-                                    {/* <input
-                                        className="text-6xl text-center w-20"
-                                        name={index}
-                                        onChange={handleInputChange}
-                                    ></input> */}
-                                    {inputValues?.[index]}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+                {mode == 2 ? (
+                    <SeparatedGui 
+                        FEEDBACK={FEEDBACK} 
+                        assignment={game?.levels[+level-1]?.exercises?.[currentExe]?.assignment} 
+                        lvlData={lvlData} 
+                        isCorrect={isCorrect} 
+                        inputValues={inputValues} 
+                        selectedSmarters={selectedSmarters}
+                    />
+                ) : (
+                    <SingleGui 
+                        FEEDBACK={FEEDBACK} 
+                        assignment={game?.levels[+level-1]?.exercises?.[currentExe]?.assignment} 
+                        lvlData={lvlData} 
+                        isCorrect={isCorrect} 
+                        inputValues={inputValues} 
+                        selectedSmarters={selectedSmarters}
+                    />
+                )}
+                
             </LayoutGames>
         </>
     );

@@ -41,7 +41,7 @@ export default function AttivitaLevels({ children, gameId, levels = [], selected
                                         className={`${lv.enabled ? "" : "disabled:cursor-not-allowed"}`}
                                         disabled={lv.enabled ? false : true}
                                         onClick={() => {
-                                            router.push("./attivita/"+ gameId +"?level="+ lv.name);
+                                            router.push("./attivita/"+ gameId +"?level="+ lv.n);
                                         }}
                                     >
                                         <div
@@ -52,7 +52,7 @@ export default function AttivitaLevels({ children, gameId, levels = [], selected
                                             } text-neutral-500 text-xl flex justify-center items-center h-[100px] w-[100px] rounded-full -mt-[3px]`}
                                         >
                                             {lv.enabled ? (
-                                                "Liv. " + lv.name
+                                                "Liv. " + lv.n
                                             ) : (
                                                 <LockOutlinedIcon fontSize="large" className="text-slate-200" />
                                             )}

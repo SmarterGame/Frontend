@@ -82,7 +82,7 @@ export const getServerSideProps = async ({ req, res }) => {
 
         const games = await axios({
             method: "get",
-            url: url + "/games?limit=2",
+            url: url + "/games?limit=2&mode=" + user.data.SelectedMode,
             headers: {
                 Authorization: token,
             },
@@ -119,7 +119,7 @@ export default function Giochi({ classRoom, selectedMode, profileImg, games, max
         const nextPage = right ? currentPage+1 : currentPage-1;
         const games = (await axios({
             method: "get",
-            url: url + "/games?limit=2&page="+ nextPage,
+            url: url + "/games?limit=2&page="+ nextPage + "&mode=" + selectedMode,
             headers: {
                 Authorization: token,
             },

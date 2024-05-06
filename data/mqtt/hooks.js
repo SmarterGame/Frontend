@@ -14,7 +14,7 @@ export const LED_WHITE_ACTION = '{"action":"led", "value": "white"}';
 
 
 export const useSmarter = (props) => {
-  const { smarterId, onConnect, onMessage, onError } = props;
+  const { smarterIds, onConnect, onMessage, onError } = props;
 
   const hydrated = useHasHydrated();
 
@@ -24,16 +24,20 @@ export const useSmarter = (props) => {
   const [error, setError] = useState();
   const [isConnecting, setIsConnecting] = useState(true);
 
-  const eventTopic = smarterId + EVENT_TAG;
-  const infoTopic = smarterId + INFO_TAG;
-  const actionTopic = smarterId + ACTION_TAG;
+  const actionTopics = smarterIds.map(id => ({
+    smarter_id: id,
+    topic: id+ACTION_TAG
+  }));
 
-  const topics = [eventTopic, infoTopic];
+  const topics = smarterIds.flatMap(id => [
+    id+EVENT_TAG,
+    id+INFO_TAG,
+  ]);
 
   const client = useMemo(() => initMqtt(topics),[]);
 
-  const sendAction = (action) => {
-    client.publish(actionTopic, action);
+  const sendAction = (smarter_id, action) => {
+    client.publish(actionTopics.find(topic => topic.smarter_id === smarter_id), action);
   }
 
   // setup connection mqtt
@@ -52,12 +56,24 @@ export const useSmarter = (props) => {
           console.log(payload.toString())
           const json = JSON.parse(payload.toString());
 
-          switch(topic) {
-            case eventTopic:
-              if (Array.isArray(json) && JSON.stringify(info) !== JSON.stringify(json)) setEvents(json.map((obj => obj.values?.map(value => convertTagToSymbol(value)))));
+          const message_splitted = topic.split("/");
+
+          switch("/"+message_splitted[1]) {
+            case EVENT_TAG:
+              if (Array.isArray(json) && JSON.stringify(info) !== JSON.stringify(json)) {
+                  setEvents(json.map((obj => ({
+                    smarter_id: message_splitted[0],
+                    payload: obj.values?.map(value => convertTagToSymbol(value))
+                }))));
+              }
               break;
-            case infoTopic:
-              if (Array.isArray(json) && JSON.stringify(info) !== JSON.stringify(json)) setInfo(json.map((obj => convertTagToSymbol(obj.value))));
+            case INFO_TAG:
+              if (Array.isArray(json) && JSON.stringify(info) !== JSON.stringify(json)) {
+                setInfo(json.map((obj => ({
+                  smarter_id: message_splitted[0],
+                  payload: convertTagToSymbol(obj.value)
+                }))));
+              }
               break;
             default:
               console.log("event not registered!");
