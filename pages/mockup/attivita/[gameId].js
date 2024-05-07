@@ -110,8 +110,9 @@ export const getServerSideProps = async ({ req, res, query }) => {
                 headers: JSON.parse(JSON.stringify(err?.config?.headers, Object.getOwnPropertyNames(err?.config?.headers))),
                 method: err?.config?.method,
                 url: err?.config?.url,
-                data: err?.config?.data,
-                stack: err?.stack
+                data: err?.config?.data ?? "",
+                stack: err?.stack,
+                respDate: err?.response?.data
             }
         }
         return { props: { 
