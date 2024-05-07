@@ -1,4 +1,6 @@
 import LayoutGames from "@/components/LayoutGames";
+import HeaderGames from "@/components/HeaderGames";
+import Head from "next/head";
 import axios from "axios";
 import { getSession } from "@auth0/nextjs-auth0";
 import { useRouter } from "next/router";
@@ -101,7 +103,20 @@ export const getServerSideProps = async ({ req, res, query }) => {
     } catch (err) {
         console.log(err);
         console.log(url);
-        return { props: {} };
+        const customError = {
+            error: JSON.stringify(err, Object.getOwnPropertyNames(err)),
+            debug: {
+                name: err?.name,
+                headers: JSON.parse(JSON.stringify(err?.config?.headers, Object.getOwnPropertyNames(err?.config?.headers))),
+                method: err?.config?.method,
+                url: err?.config?.url,
+                data: err?.config?.data,
+                stack: err?.stack
+            }
+        }
+        return { props: { 
+            err: customError
+        } };
     }
 };
 
@@ -237,24 +252,25 @@ export default function Game({
     token,
     url,
     selectedClass,
-    selectedSmarters,
+    selectedSmarters = [],
     classRoom,
     FEEDBACK,
     profileImg,
     game,
-    level
+    level,
+    err
 }) {
     const router = useRouter();
     //const { gameId, level } = router.query; //game = quantita or ordinamenti
     const mode = game?.levels[+level-1].mode;
     // TODO: prendi i dati degli smarter dalle informazioni utente quindi userData.SelectedSmarter -> [{name: string}]
     // da quell'array posso cavarmi fuori i dati di quanti smarter sono collegati e di conseguenza modulare l'interfaccia grafica
-    const {events, sendAction} = useSmarter({smarterIds: selectedSmarters.map(smarter => smarter.name)});
+    const {events, sendAction} = useSmarter({smarterIds: selectedSmarters?.map(smarter => smarter.name) ?? []});
     const [error, setError] = useState(false);
     const [currentExe, setCurrentExe] = useState(0);
-    const [lvlDataCorrect, setLvlDataCorrect] = useState(game?.levels[+level-1]?.exercises?.[currentExe]?.endSeq ?? [['x' * selectedSmarters.length]]);
+    const [lvlDataCorrect, setLvlDataCorrect] = useState(game?.levels[+level-1]?.exercises?.[currentExe]?.endSeq ?? []);
     const [lvlData, setLvlData] = useState(game?.levels[+level-1]?.exercises?.[currentExe]?.startSeq?.map(item => item === "_" ? "" : item) ?? []); //Used to check the correct solution
-    const [inputValues, setInputValues] = useState(new Array(selectedSmarters.length*5).map(() => "")); //Used to store the input values
+    const [inputValues, setInputValues] = useState(new Array(selectedSmarters?.length*5).map(() => "")); //Used to store the input values
     const [isCorrect, setIsCorrect] = useState([
         false,
         false,
@@ -283,13 +299,13 @@ export default function Game({
     //Get level data
     useEffect(() => {
         //sendAction(LED_WHITE_ACTION)
-        setLvlData(game?.levels[+level-1]?.exercises?.[currentExe]?.startSeq?.map(item => item === "_" ? "" : item));
+        setLvlData(game?.levels[+level-1]?.exercises?.[currentExe]?.startSeq?.map(item => item === "_" ? "" : item) ?? []);
         const inputs = document.querySelectorAll("input[name]");
         inputs.forEach((input) => {
             input.value = "";
         });
         setIsCorrect([false, false, false, false, false]);
-        setInputValues(new Array(selectedSmarters.length*5).map(() => ""));
+        setInputValues(new Array(selectedSmarters.length*5).map(() => "") ?? []);
     }, [currentExe]);
 
     //Check if the solution is correct
@@ -472,11 +488,47 @@ export default function Game({
         }
     };
 
+    if (err) {
+        const styles = {
+            backgroundColor: "#c4e5ff",
+            backgroundImage: "url(/grass.png)",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "contain",
+            backgroundPosition: "bottom",
+        };
+
+        return (
+            <>
+                <Head>
+                    <title>SmartGame</title>
+                </Head>
+
+                <main style={styles}>
+                    <div className="min-h-[100vh] min-w-[100vh]">
+                        <HeaderGames
+                            title={"error"}
+                        />
+                        <div className="flex items-center justify-center h-full w-full p-10">
+                            <div className="flex flex-col gap-4 max-w-[75%] break-words">
+                                <div className="text-4xl">Scusaci, abbiamo un problema tecnico. Prova a ricaricare la pagina</div>
+                                <div className="flex flex-col border-4 border-black bg-white p-4 font-sans max-h-[50vh] overflow-y-scroll">
+                                    <div >{JSON.stringify(err.debug, null, 4)}</div>
+                                    <div>{err.error}</div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </main>
+            </>
+        )
+    }
+
     if (!game) {
         return null;
     }
 
-    return (
+    return (   
         <>
             <LayoutGames
                 classRoom={classRoom}
