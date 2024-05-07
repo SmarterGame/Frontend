@@ -14,8 +14,8 @@ export default function ProgressBar({
     const [nextLevel, setNextLevel] = useState(levels[0]);
 
     useEffect(() => {
-        const currentLevel = levels[lv - 1];
-        const nextLevel = levels[lv];
+        const currentLevel = levels[(lv - 1) % levels.length];
+        const nextLevel = levels[lv % levels.length];
         let progress;
         if (ghiande < 15) {
             progress =

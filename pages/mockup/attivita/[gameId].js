@@ -69,6 +69,21 @@ export const getServerSideProps = async ({ req, res, query }) => {
                 },
             })
 
+        const gameInstance = await axios
+            .post(url+"/games/"+gameId+"/instances", {
+                mqttBroker: "ssl://ib05a168.ala.us-east-1.emqxsl.com:8883",
+                mqttUser: "smarter",
+                mqttPassword: "melaC-melaV",
+                mqttSmarter: user.data.SelectedSmarters[0].name,
+                entityId: classData.data._id,
+                mode: user.data.SelectedMode
+            }, {
+                headers: {
+                    Authorization: token,
+                },
+            })
+        
+
         return {
             props: {
                 token: session.accessToken,
@@ -79,7 +94,8 @@ export const getServerSideProps = async ({ req, res, query }) => {
                 FEEDBACK: FEEDBACK,
                 profileImg: imageUrl,
                 game: game.data,
-                level: level
+                level: level,
+                gameInstance: gameInstance.data
             },
         };
     } catch (err) {
