@@ -9,8 +9,8 @@ export default handleAuth({
     try {
       await handleLogin(req, res, {
         authorizationParams: {
-          audience: process.env.AUDIENCE,
-          scope: 'openid profile email '
+          audience: process.env.AUTH0_AUDIENCE,
+          scope: process.env.AUTH0_SCOPE
         },
         returnTo: "/api/loginHandler"
       });
