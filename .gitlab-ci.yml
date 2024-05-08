@@ -27,7 +27,7 @@ ui-container-build:
     name: $CI_COMMIT_REF_NAME
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
-    - docker build --build-arg BACKEND_URI=https://core.smartergame.smartcommunitylab.it -t $CONTAINER_BACKEND_IMAGE -t $CONTAINER_BACKEND_IMAGE_LATEST .
+    - docker build --build-arg BACKEND_URI=https://smartgame-api.polyglot-edu.com -t $CONTAINER_BACKEND_IMAGE -t $CONTAINER_BACKEND_IMAGE_LATEST .
     - docker push $CONTAINER_BACKEND_IMAGE
     - docker push $CONTAINER_BACKEND_IMAGE_LATEST
   only:
