@@ -393,8 +393,8 @@ export default function Game({
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
                         const ce = currentExe+1;
-                        setLvlData(game?.levels[+level-1]?.exercises?.[ce]?.startSeq ?? ['x','x','x','x','x'])
-                        setLvlDataCorrect(game?.levels[+level-1]?.exercises?.[ce]?.endSeq ?? ['x','x','x','x','x']);
+                        setLvlData(game?.levels[+level-1]?.exercises?.[ce]?.startSeq?.map(item => item === "_" ? "" : item) ?? ['x','x','x','x','x'])
+                        setLvlDataCorrect(game?.levels[+level-1]?.exercises?.[ce]?.endSeq?.map(item => item === "_" ? "" : item) ?? ['x','x','x','x','x']);
                         setCurrentExe((prevState) => prevState + 1);
                     }
                 });
