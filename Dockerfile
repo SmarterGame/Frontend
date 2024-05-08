@@ -19,15 +19,13 @@ RUN \
 FROM base AS builder
 WORKDIR /app
 
-#AUTH0_AUDIENCE dovrebbe essere smartergame.com però abbiamo problemi di machine to machine config
-
 ARG BACKEND_URI
 ENV BACKEND_URI=${BACKEND_URI}
 ARG AUTH0_SECRET
 ARG AUTH0_CLIENT_ID
 ARG AUTH0_CLIENT_SECRET
 ARG AUTH0_BASE_URL
-ARG AUTH0_AUDIENCE=https://smarter.com
+ARG AUTH0_AUDIENCE="https://smartergame.com"
 ARG AUTH0_SCOPE="openid profile email offline_access"
 ARG AUTH0_ISSUER_BASE_URL=https://smarter.eu.auth0.com
 ARG MQTT_URI=wss://ib05a168.ala.us-east-1.emqxsl.com:8084
@@ -59,7 +57,7 @@ COPY --from=builder /app/.next/static /app/.next/static
 ENV HOSTNAME="0.0.0.0"
 
 ENV AUTH0_ISSUER_BASE_URL="https://smarter.eu.auth0.com"
-ENV AUTH0_AUDIENCE="https://smarter.com"
+ENV AUTH0_AUDIENCE="https://smartergame.com"
 ENV AUTH0_SCOPE="openid profile email offline_access"
 
 
