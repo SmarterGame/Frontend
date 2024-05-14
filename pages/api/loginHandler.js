@@ -3,7 +3,7 @@ import axios from "axios"
 
 export default async function loginHandler(req, res) {
 
-  const url = process.env.BACKEND_URI + "/user/saveProfile"
+  const url = process.env.INTERNAL_BACKEND_URI + "/user/saveProfile"
   let token = await getAccessToken(req,res)
   token = "Bearer " + token.accessToken
 

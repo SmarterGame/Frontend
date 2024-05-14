@@ -3,29 +3,27 @@ import Link from "next/link";
 import LayoutProfile from "@/components/LayoutProfile";
 import Badge from "@/components/Badge";
 import PopUp from "@/components/settingsPopUp";
-import { getAccessToken, getSession } from "@auth0/nextjs-auth0";
+import { getAccessToken } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
-    const url = process.env.BACKEND_URI;
+    const url = process.env.INTERNAL_BACKEND_URI;
     try {
-        const session = await getSession(req, res);
-    
-        // EXIT if the session is null (Not Logged)
-        if (session == null) {
-            console.log("Early return");
-            return { props: {error: "REFRESH"} };
-        }
-
         let token;
         try {
-            token = await getAccessToken(req, res)
-        } catch (err) {
-            console.error(err);
-            return {props: {error: "REFRESH"}};
+            token = await getAccessToken(req, res);
+        }
+        catch (err) {
+            return { 
+                redirect: {
+                    permanent: false,
+                    destination: "/api/auth/login",
+                },
+                props: {}
+            };
         }
 
         // Fetch classrooms on Page Load
@@ -52,13 +50,13 @@ export const getServerSideProps = async ({ req, res }) => {
         // console.log(user.data.SelectedClass);
 
         //Fetch badges data
-        const badges = await axios({
-            method: "get",
-            url: url + "/badge/getBadges/",
-            headers: {
-                Authorization: bearer_token
-            }
-        })
+        // const badges = await axios({
+        //     method: "get",
+        //     url: url + "/badge/getBadges/",
+        //     headers: {
+        //         Authorization: bearer_token
+        //     }
+        // })
 
         //Fetch classroom data
         let individualData;
@@ -86,16 +84,18 @@ export const getServerSideProps = async ({ req, res }) => {
             },
         });
 
+        console.log(classData.data)
+
         return {
             props: {
                 token: token.accessToken,
-                url: url,
+                url: process.env.BACKEND_URI,
                 user: user.data,
                 boxes: boxes.data,
                 classRoom: classData?.data ?? null,
                 individual: individualData?.data ?? null,
                 isIndividual: user.data.IsIndividual,
-                badges: badges.data
+                badges: classData.data.Badges
             },
         };
     } catch (err) {
@@ -121,12 +121,7 @@ export default function BadgePage({ token, url, user, boxes, classRoom, individu
         "No new badges to unlock"
         : "Nessun nuovo badge da poter sbloccare"
 
-    if (typeof window !== 'undefined' && error === "REFRESH") {
-        router.push("/api/auth/login")
-        return null;
-    }
-
-    if (error && error !== "REFRESH") {
+    if (error) {
         Swal.fire({
             icon: "error",
             title: error,
@@ -165,9 +160,10 @@ export default function BadgePage({ token, url, user, boxes, classRoom, individu
 
     //Filter badges
     useEffect(() => {
-        //Filter non obtained badges
-        const checkBadges = isIndividual ? individual.Badges : classRoom.Badges;
+        const checkBadges = (isIndividual ? individual.Badges : classRoom.ObtainedBadges);
 
+        console.log(checkBadges)
+        //Filter non obtained badges
         const nonObtainedBadges = badgeList?.map(badge => badge._id).filter(
             (badge) => !checkBadges.includes(badge)
         );
@@ -198,54 +194,54 @@ export default function BadgePage({ token, url, user, boxes, classRoom, individu
                 userBoxes={user.Boxes}
                 selectedOptions={selectedOptions}
             >
-                <div className="relative flex flex-col mx-auto h-[70vh] w-[60%] bg-slate-200 rounded-xl shadow-2xl mt-10 z-20">
-                    <h1 className="mx-auto text-4xl text-orangeBtn mt-6">
-                        BADGE
-                    </h1>
+                    <div className="relative flex flex-col mx-auto h-[70vh] w-[60%] bg-slate-200 rounded-xl mt-10 shadow-2xl z-20">
+                        <div className="mx-auto text-4xl text-orangeBtn h-18 align-middle mt-5">
+                            BADGE
+                        </div>
 
-                    <div className="overflow-auto h-full flex flex-col items-center justify-center">
-                        {loading
-                            ? ""
-                            : badgeListFiltered?.map((badge) => (
-                                  <Badge
-                                      token={token}
-                                      url={url}
-                                      badge={badge}
-                                      blocked={false}
-                                  />
-                              ))}
-                        <div className="mt-10"></div>
-                        {loading
-                            ? ""
-                            : badgeList?.length === 0 ?
-                            (<div>{badgeNotFoundLabel}</div>)
-                            : badgeList?.map((badge) => (
-                                  <Badge
-                                      token={token}
-                                      url={url}
-                                      badge={badge}
-                                      blocked={true}
-                                  />
-                              ))}
-                    </div>
+                        <div className="overflow-auto flex flex-col items-center justify-center pt-36">
+                            {loading
+                                ? ""
+                                : badgeListFiltered?.map((badge) => (
+                                    <Badge
+                                        token={token}
+                                        url={url}
+                                        badge={badge}
+                                        blocked={false}
+                                    />
+                                ))}
+                            <div className="mt-10"></div>
+                            {loading
+                                ? ""
+                                : badgeList?.length === 0 ?
+                                (<div>{badgeNotFoundLabel}</div>)
+                                : badgeList?.map((badge) => (
+                                    <Badge
+                                        token={token}
+                                        url={url}
+                                        badge={badge}
+                                        blocked={true}
+                                    />
+                                ))}
+                        </div>
 
-                    <div className="flex justify-center gap-x-4 mb-4 mt-4 h-[20%] w-full">
-                        <button className="self-end h-12 w-40 transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl rounded-md duration-300">
-                            <Link href="./attivita">
-                                {selectedLanguage === "eng"
-                                    ? "GAMES"
-                                    : "GIOCHI"}
-                            </Link>
-                        </button>
-                        <button className="self-end h-12 w-40 transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl rounded-md duration-300">
-                            <Link href="./profilo">
-                                {selectedLanguage === "eng"
-                                    ? "PROFILE"
-                                    : "PROFILO"}
-                            </Link>
-                        </button>
+                        <div className="flex justify-center gap-x-4 mb-4 mt-4 h-[20%] w-full">
+                            <button className="self-end h-12 w-40 transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl rounded-md duration-300">
+                                <Link href="./attivita">
+                                    {selectedLanguage === "eng"
+                                        ? "GAMES"
+                                        : "GIOCHI"}
+                                </Link>
+                            </button>
+                            <button className="self-end h-12 w-40 transition ease-in-out bg-orangeBtn hover:bg-orange-600 hover:-translatey-1 hover:scale-110 text-gray-100 text-2xl font-bold shadow-2xl rounded-md duration-300">
+                                <Link href="./profilo">
+                                    {selectedLanguage === "eng"
+                                        ? "PROFILE"
+                                        : "PROFILO"}
+                                </Link>
+                            </button>
+                        </div>
                     </div>
-                </div>
 
                 <PopUp show={showPopUp} onClose={togglePopUp} classId={classRoom._id} url={url} token={token} boxes={boxes} userBoxes={user.Boxes} selectedOptions={selectedOptions}></PopUp>
             </LayoutProfile>

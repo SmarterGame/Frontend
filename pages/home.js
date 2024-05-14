@@ -17,21 +17,21 @@ export const getServerSideProps = withPageAuthRequired({
     // returnTo: '/unauthorized',
     async getServerSideProps({ req, res }) {
         // const url = "http://" + process.env.BACKEND_URI;
-        const url = process.env.BACKEND_URI;
+        const url = process.env.INTERNAL_BACKEND_URI;
         try {
-            const session = await getSession(req, res);
-    
-            // EXIT if the session is null (Not Logged)
-            if (session == null) {
-                console.log("Early return");
-                return { props: {error: "REFRESH"} };
-            }
-
+            
             let token;
             try {
-                token = await getAccessToken(req, res)
-            } catch (err) {
-                return {props: {error: "REFRESH"}};
+                token = await getAccessToken(req, res);
+            }
+            catch (err) {
+                return { 
+                    redirect: {
+                        permanent: false,
+                        destination: "/api/auth/login",
+                    },
+                    props: {}
+                };
             }
     
             // Fetch classrooms on Page Load
@@ -74,12 +74,13 @@ export const getServerSideProps = withPageAuthRequired({
             const selectedOptions = {
                 selectedSmarters: selectedSmarters,
                 selectedMode: user.data.SelectedMode,
+                selectedIndividual: user.data.SelectedIndividual
             };
             
             return {
                 props: {
                     token: token.accessToken,
-                    url: url,
+                    url: process.env.BACKEND_URI,
                     tiles: tiles.data,
                     boxes: boxes.data,
                     selectedOptions: selectedOptions,
@@ -113,11 +114,6 @@ export default function Home({
 
     const [selectedLanguage, setSelectedLanguage] = useState();
 
-    if (typeof window !== 'undefined' && error === "REFRESH") {
-        router.push("/api/auth/login")
-        return null;
-    }
-
     useEffect(() => {
         if (tiles) {
             setClassroom_tiles([...tiles]);
@@ -139,7 +135,7 @@ export default function Home({
         setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
 
-    if (error && error !== "REFRESH") {
+    if (error) {
         Swal.fire({
             icon: "error",
             title: error,

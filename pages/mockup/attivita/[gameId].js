@@ -2,7 +2,7 @@ import LayoutGames from "@/components/LayoutGames";
 import HeaderGames from "@/components/HeaderGames";
 import Head from "next/head";
 import axios from "axios";
-import { getSession } from "@auth0/nextjs-auth0";
+import { getAccessToken } from "@auth0/nextjs-auth0";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -12,24 +12,30 @@ import Image from "next/image";
 
 export const getServerSideProps = async ({ req, res, query }) => {
     const FEEDBACK = process.env.FEEDBACK;
-    const url = process.env.BACKEND_URI;
+    const url = process.env.INTERNAL_BACKEND_URI;
     try {
         const {gameId, level = 1} = query;
-        const session = await getSession(req, res);
 
-        const token = "Bearer " + session.accessToken;
-
-        // EXIT if the session is null (Not Logged)
-        if (session == null) {
-            console.log("Early return");
-            return { props: {} };
+        let token;
+        try {
+            token = await getAccessToken(req, res);
         }
-
+        catch (err) {
+            return { 
+                redirect: {
+                    permanent: false,
+                    destination: "/api/auth/login",
+                },
+                props: {}
+            };
+        }
+        const bearer_token = "Bearer " + token.accessToken;
+        
         let user = await axios({
             method: "get",
             url: url + "/user/me?query=smarter",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
         if (user.data.IsIndividual === true)
@@ -41,7 +47,7 @@ export const getServerSideProps = async ({ req, res, query }) => {
             method: "get",
             url: url + "/user/profileImg",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
             responseType: "arraybuffer",
         });
@@ -55,41 +61,55 @@ export const getServerSideProps = async ({ req, res, query }) => {
         }
 
         //Fetch individual data
-        const classData = await axios({
-            method: "get",
-            url: url + "/individual/getData/" + user.data.SelectedIndividual,
-            headers: {
-                Authorization: token,
-            },
-        });
+
+        let classData;
+        if (user.data.IsIndividual) {
+            classData = await axios({
+                method: "get",
+                url: url + "/individual/getData/" + user.data.SelectedIndividual,
+                headers: {
+                    Authorization: bearer_token,
+                },
+            });
+        } else {
+            classData = await axios({
+                method: "get",
+                url: url + "/classroom/getClassroomData/" + user.data.SelectedClass,
+                headers: {
+                    Authorization: bearer_token,
+                },
+            });
+        }
+        
         // console.log(classData.data);
 
         const game = await axios
             .get(url + "/games/" + gameId, {
                 headers: {
-                    Authorization: token,
+                    Authorization: bearer_token,
                 },
             })
 
         const gameInstance = await axios
             .post(url+"/games/"+gameId+"/instances", {
-                mqttBroker: "ssl://ib05a168.ala.us-east-1.emqxsl.com:8883",
-                mqttUser: "smarter",
-                mqttPassword: "melaC-melaV",
-                mqttSmarter: user.data.SelectedSmarters[0].name,
+                mqttBroker: process.env.MQTT_URI.replace(),
+                mqttUser: process.env.MQTT_USER,
+                mqttPassword: process.env.MQTT_PSW,
+                mqttSmarters: user.data.SelectedSmarters.map(s => s.name),
+                mqttMode: (user.data.SelectedMode == 1 ? "COLLABORATIVE" : "INDIVIDUAL"),
                 entityId: classData.data._id,
                 mode: user.data.SelectedMode
             }, {
                 headers: {
-                    Authorization: token,
+                    Authorization: bearer_token,
                 },
             })
         
 
         return {
             props: {
-                token: session.accessToken,
-                url: url,
+                token: token.accessToken,
+                url: process.env.BACKEND_URI,
                 selectedClass: user.data.SelectedClass,
                 selectedSmarters: user.data.SelectedSmarters,
                 classRoom: classData.data,
@@ -107,12 +127,12 @@ export const getServerSideProps = async ({ req, res, query }) => {
             error: JSON.stringify(err, Object.getOwnPropertyNames(err)),
             debug: {
                 name: err?.name,
-                headers: JSON.parse(JSON.stringify(err?.config?.headers, Object.getOwnPropertyNames(err?.config?.headers))),
-                method: err?.config?.method,
-                url: err?.config?.url,
+                headers: JSON.parse(JSON.stringify(err?.config?.headers, Object.getOwnPropertyNames(err?.config?.headers ?? {})) ?? "{}"),
+                method: err?.config?.method ?? "",
+                url: err?.config?.url ?? "",
                 data: err?.config?.data ?? "",
                 stack: err?.stack,
-                respDate: err?.response?.data
+                respDate: err?.response?.data ?? ""
             }
         }
         return { props: { 

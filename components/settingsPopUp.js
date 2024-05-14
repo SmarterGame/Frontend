@@ -19,6 +19,7 @@ export default function PopUp({
             "Nessuno smarter selezionato",
         ],
         selectedMode: "Nessuna modalità selezionata",
+        selectedIndividual: ""
     },
 }) {
     const [selectedLanguage, setSelectedLanguage] = useState();
@@ -326,6 +327,7 @@ export default function PopUp({
                 smarter2={smarter2}
                 boxes={boxes}
                 selectedMode={selectedMode}
+                selectIndividual={selectedOptions.selectedIndividual}
                 onClose={toggleIndividualMode}
             />
         </>

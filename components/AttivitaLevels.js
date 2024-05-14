@@ -32,8 +32,8 @@ export default function AttivitaLevels({ children, gameId, levels = [], selected
                         <h1 className={`text-grayText text-3xl ${ left ? "self-end" :  "self-start"}`}>{title.substring(0, 11) + ".."}</h1>
                     )}
                     <div className="flex flex-col items-center mt-8">
-                        {levels.toReversed().map((lv, index) => (
-                            <>
+                        {levels?.toReversed?.().map((lv, index) => (
+                            <div key={index}>
                                 <div className={`flex ${ left ? "" :  "flex-row-reverse"} items-center`}>
                                     {lv.enabled ? (<div className={`w-[80px] ${ left ? "mr-10" :  "ml-10"}`}>{children}</div>) : (<div className={`w-[80px] ${ left ? "mr-10" :  "ml-10"}`}></div>)}
                                     <button
@@ -61,7 +61,7 @@ export default function AttivitaLevels({ children, gameId, levels = [], selected
                                 </div>
                                 {(index < levels.length-1) && (
                                     <div className={`flex ${ left ? "" :  "flex-row-reverse"}`}>
-                                        <div className={`w-[80px] ${ left ? "mr-10" :  "ml-10"}`}></div>
+                                        <div className={`w-[80px] ${ left ? "mr-20" :  "ml-20"}`}></div>
                                         <div
                                             className={`${
                                                 lv.enabled ? "border-yellowLevel bg-yellowLevel" : "border-neutral-500 bg-neutral-500"
@@ -69,7 +69,7 @@ export default function AttivitaLevels({ children, gameId, levels = [], selected
                                         />
                                     </div>
                                 )}
-                            </>
+                            </div>
                         ))}
                     </div>
                 </div>

@@ -6,30 +6,37 @@ import rightArrow from "@/public/rightArrow.svg";
 import orsoFaccia from "@/public/orsoFaccia.png";
 import procioneFaccia from "@/public/procioneFaccia.png";
 import grass from "@/public/grass.png";
-import { getSession } from "@auth0/nextjs-auth0";
+import { getAccessToken } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import Levels from "@/components/AttivitaLevels";
 import { useEffect, useState } from "react";
+import { useHasHydrated } from "@/utils/hooks";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
-    const url = process.env.BACKEND_URI;
+    const url = process.env.INTERNAL_BACKEND_URI;
     try {
-        const session = await getSession(req, res);
-
-        // EXIT if the session is null (Not Logged)
-        if (session == null) {
-            console.log("Early return");
-            return { props: {} };
+        let token;
+        try {
+            token = await getAccessToken(req, res);
         }
-        const token = "Bearer " + session.accessToken;
+        catch (err) {
+            return { 
+                redirect: {
+                    permanent: false,
+                    destination: "/api/auth/login",
+                },
+                props: {}
+            };
+        }
+        const bearer_token = "Bearer " + token.accessToken;
 
         //Fetch id of selected classroom
         let user = await axios({
             method: "get",
             url: url + "/user/me",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
         if (user.data.IsIndividual === true) user.data.SelectedMode = "3";
@@ -40,7 +47,7 @@ export const getServerSideProps = async ({ req, res }) => {
             method: "get",
             url: url + "/user/profileImg",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
             responseType: "arraybuffer",
         });
@@ -62,7 +69,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url:
                     url + "/individual/getData/" + user.data.SelectedIndividual,
                 headers: {
-                    Authorization: token,
+                    Authorization: bearer_token,
                 },
             });
             // console.log(classData.data);
@@ -74,7 +81,7 @@ export const getServerSideProps = async ({ req, res }) => {
                     "/classroom/getClassroomData/" +
                     user.data.SelectedClass,
                 headers: {
-                    Authorization: token,
+                    Authorization: bearer_token,
                 },
             });
             // console.log(classData.data);
@@ -84,14 +91,24 @@ export const getServerSideProps = async ({ req, res }) => {
             method: "get",
             url: url + "/games?limit=2&mode=" + user.data.SelectedMode,
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
 
+        console.log({
+            token: token.accessToken,
+            url: process.env.BACKEND_URI,
+            classRoom: classData.data,
+            selectedMode: user.data.SelectedMode,
+            profileImg: imageUrl,
+            games: games.data,
+            maxPages: games.data.meta.numPages
+        })
+
         return {
             props: {
-                token: token,
-                url: url,
+                token: token.accessToken,
+                url: process.env.BACKEND_URI,
                 classRoom: classData.data,
                 selectedMode: user.data.SelectedMode,
                 profileImg: imageUrl,
@@ -100,6 +117,7 @@ export const getServerSideProps = async ({ req, res }) => {
             },
         };
     } catch (err) {
+        console.log("error")
         console.log(err);
         console.log(url);
         return { props: {} };
@@ -108,8 +126,9 @@ export const getServerSideProps = async ({ req, res }) => {
 
 export default function Giochi({ classRoom, selectedMode, profileImg, games, maxPages, url, token }) {
     const [selectedLanguage, setSelectedLanguage] = useState();
-    const [loadedGames, setLoadedGames] = useState(games.data);
+    const [loadedGames, setLoadedGames] = useState(games.data ?? []);
     const [currentPage, setCurrentPage] = useState(games.meta.page);
+    const isHydrated = useHasHydrated();
     
     useEffect(() => {
         setSelectedLanguage(sessionStorage.getItem("language"));
@@ -121,14 +140,20 @@ export default function Giochi({ classRoom, selectedMode, profileImg, games, max
             method: "get",
             url: url + "/games?limit=2&page="+ nextPage + "&mode=" + selectedMode,
             headers: {
-                Authorization: token,
+                Authorization: "Bearer " + token,
             },
         })).data;
         setCurrentPage(nextPage);
         setLoadedGames(games.data);
     };
 
+    console.log(loadedGames)
+
     const title = selectedLanguage === "eng" ? "GAMES" : "GIOCHI";
+
+    if (!isHydrated) {
+        return null;
+    }
 
     return (
         <>
@@ -180,11 +205,12 @@ export default function Giochi({ classRoom, selectedMode, profileImg, games, max
                         {loadedGames.length === 0 && (<div>No Games...</div>)}
                         {loadedGames.length > 0 && (
                             <Levels
+                                key={0}
                                 gameId={loadedGames[0]?._id}
                                 classRoom={classRoom}
                                 selectedMode={selectedMode}
                                 title={loadedGames[0].name}
-                                levels={loadedGames[0].levels}
+                                levels={loadedGames[0].levels ?? []}
                                 left={true}
                             >
                                 <Image
@@ -197,6 +223,7 @@ export default function Giochi({ classRoom, selectedMode, profileImg, games, max
 
                         {loadedGames.length > 1 && (
                             <Levels
+                                key={1}
                                 gameId={loadedGames[1]?._id}
                                 levels={loadedGames[1].levels}
                                 selectedMode={selectedMode}

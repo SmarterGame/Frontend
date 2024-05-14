@@ -11,7 +11,7 @@ import { SMARTER_ID_1, SMARTER_ID_2 } from "@/data/mqtt/connector";
 
 export const getServerSideProps = async ({ req, res }) => {
     const FEEDBACK = process.env.FEEDBACK;
-    const url = process.env.BACKEND_URI;
+    const url = process.env.INTERNAL_BACKEND_URI;
     try {
         const session = await getSession(req, res);
 
@@ -20,7 +20,13 @@ export const getServerSideProps = async ({ req, res }) => {
         // EXIT if the session is null (Not Logged)
         if (session == null) {
             console.log("Early return");
-            return { props: {} };
+            return { 
+                redirect: {
+                    permanent: false,
+                    destination: "/api/auth/login",
+                },
+                props: {}
+            };
         }
 
         const user = await axios({
@@ -63,7 +69,7 @@ export const getServerSideProps = async ({ req, res }) => {
         return {
             props: {
                 token: session.accessToken,
-                url: url,
+                url: process.env.BACKEND_URI,
                 selectedClass: user.data.SelectedClass,
                 classRoom: classData.data,
                 FEEDBACK: FEEDBACK,

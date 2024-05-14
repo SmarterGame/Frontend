@@ -12,6 +12,7 @@ export default function IndividualModePopUP({
     smarter2,
     boxes,
     selectedMode,
+    selectIndividual,
     onClose,
 }) {
     const router = useRouter();
@@ -35,7 +36,11 @@ export default function IndividualModePopUP({
     const [profileName, setProfileName] = useState("");
     const [individuals, setIndividuals] = useState([]);
     const [tmp, setTmp] = useState(false);
-    const [selectedIndividual, setSelectedIndividual] = useState(null);
+    const [selectedIndividual, setSelectedIndividual] = useState(selectIndividual ?? 
+        selectedLanguage === "eng"
+            ? "No profile selected"
+            : "Nessun profilo selezionato"
+    );
 
     const smarter1Id = boxes.find((box) => box.name === smarter1)?._id;
     const smarter2Id = boxes.find((box) => box.name === smarter2)?._id;
@@ -155,11 +160,7 @@ export default function IndividualModePopUP({
                             </h1>
                             <select
                                 className="w-96 h-12 bg-grayLight text-center"
-                                defaultValue={
-                                    selectedLanguage === "eng"
-                                        ? "No profile selected"
-                                        : "Nessun profilo selezionato"
-                                }
+                                value={selectedIndividual}
                                 onChange={(e) => {
                                     setSelectedIndividual(e.target.value);
                                 }}

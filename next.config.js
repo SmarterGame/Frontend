@@ -5,6 +5,7 @@ const nextConfig = {
   reactStrictMode: true,
 	output: "standalone",
   env: {
+    INTERNAL_BACKEND_URI: process.env.INTERNAL_BACKEND_URI ?? process.env.BACKEND_URI,
     BACKEND_URI: process.env.BACKEND_URI,
 		AUTH0_BASE_URL: process.env.AUTH0_BASE_URL,
 		AUTH0_SECRET: process.env.AUTH0_SECRET,

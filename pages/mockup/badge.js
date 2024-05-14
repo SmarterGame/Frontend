@@ -1,6 +1,6 @@
 import LayoutGames from "@/components/LayoutGames";
 import Link from "next/link";
-import { getSession } from "@auth0/nextjs-auth0";
+import { getAccessToken } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import { useRouter } from "next/router";
 import url2 from "url";
@@ -13,23 +13,31 @@ export const getServerSideProps = async ({ req, res }) => {
     const idBadgeEarned = query.id ?? null;
     const selectedLanguage = query.lan;
 
-    const url = process.env.BACKEND_URI;
+    const url = process.env.INTERNAL_BACKEND_URI;
     try {
-        const session = await getSession(req, res);
+        let token;
 
-        // EXIT if the session is null (Not Logged)
-        if (session == null) {
-            console.log("Early return");
-            return { props: {} };
+        try {
+            token = await getAccessToken(req, res);
+        }
+        catch (err) {
+            console.log(err);
+            return { 
+                redirect: {
+                    permanent: false,
+                    destination: "/api/auth/login",
+                },
+                props: {}
+            };
         }
 
-        const token = "Bearer " + session.accessToken;
+        const bearer_token = "Bearer " + token.accessToken;
 
         const user = await axios({
             method: "get",
             url: url + "/user/me",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
         // console.log(user.data.SelectedClass);
@@ -39,7 +47,7 @@ export const getServerSideProps = async ({ req, res }) => {
             method: "get",
             url: url + "/user/profileImg",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
             responseType: "arraybuffer",
         });
@@ -61,7 +69,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url:
                     url + "/individual/getData/" + user.data.SelectedIndividual,
                 headers: {
-                    Authorization: token,
+                    Authorization: bearer_token,
                 },
             });
             // console.log(classData.data);
@@ -73,7 +81,7 @@ export const getServerSideProps = async ({ req, res }) => {
                     "/classroom/getClassroomData/" +
                     user.data.SelectedClass,
                 headers: {
-                    Authorization: token,
+                    Authorization: bearer_token,
                 },
             });
             // console.log(classData.data);
@@ -84,7 +92,7 @@ export const getServerSideProps = async ({ req, res }) => {
             method: "get",
             url: url + "/badge/getBadge/" + idBadgeEarned,
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
         // console.log(badgeData.data);
@@ -99,7 +107,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 "?blocked=false&eng=" +
                 (selectedLanguage === "eng"),
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
             responseType: "arraybuffer",
         });
@@ -108,8 +116,8 @@ export const getServerSideProps = async ({ req, res }) => {
 
         return {
             props: {
-                token: session.accessToken,
-                url: url,
+                token: token.accessToken,
+                url: process.env.BACKEND_URI,
                 classRoom: classData.data,
                 profileImg: imageUrl,
                 badgeData: badgeData.data,

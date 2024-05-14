@@ -14,23 +14,29 @@ export const getServerSideProps = async ({ req, res }) => {
     const badgeEarned = JSON.parse(query.badgeData ?? "[]");
     const selectedLanguage = query.selectedLanguage;
 
-    const url = process.env.BACKEND_URI;
+    const url = process.env.INTERNAL_BACKEND_URI;
     try {
         const session = await getSession(req, res);
 
-        const token = "Bearer " + session.accessToken;
+        const bearer_token = "Bearer " + token.accessToken;
 
         // EXIT if the session is null (Not Logged)
         if (session == null) {
             console.log("Early return");
-            return { props: {} };
+            return { 
+                redirect: {
+                    permanent: false,
+                    destination: "/api/auth/login",
+                },
+                props: {}
+            };
         }
 
         const user = await axios({
             method: "get",
             url: url + "/user/me",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
         // console.log(user.data.SelectedClass);
@@ -40,7 +46,7 @@ export const getServerSideProps = async ({ req, res }) => {
             method: "get",
             url: url + "/user/profileImg",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
             responseType: "arraybuffer",
         });
@@ -62,7 +68,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url:
                     url + "/individual/getData/" + user.data.SelectedIndividual,
                 headers: {
-                    Authorization: token,
+                    Authorization: bearer_token,
                 },
             });
             // console.log(classData.data);
@@ -74,7 +80,7 @@ export const getServerSideProps = async ({ req, res }) => {
                     "/classroom/getClassroomData/" +
                     user.data.SelectedClass,
                 headers: {
-                    Authorization: token,
+                    Authorization: bearer_token,
                 },
             });
             // console.log(classData.data);
@@ -92,7 +98,7 @@ export const getServerSideProps = async ({ req, res }) => {
                     "?blocked=false&eng=" +
                     (selectedLanguage === "eng"),
                 headers: {
-                    Authorization: token,
+                    Authorization: bearer_token,
                 },
                 responseType: "arraybuffer",
             });
@@ -106,7 +112,7 @@ export const getServerSideProps = async ({ req, res }) => {
         return {
             props: {
                 token: session.accessToken,
-                url: url,
+                url: process.env.BACKEND_URI,
                 selectedClass: user.data.SelectedClass,
                 classRoom: classData.data,
                 profileImg: imageUrl,

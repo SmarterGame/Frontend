@@ -5,23 +5,29 @@ import { getSession } from "@auth0/nextjs-auth0";
 import { useState } from "react";
 
 export async function getServerSideProps({ req, res }) {
-    const url = process.env.BACKEND_URI;
+    const url = process.env.INTERNAL_BACKEND_URI;
     try {
-        const session = await getSession(req, res);
-
-        // EXIT if the session is null (Not Logged)
-        if (session == null) {
-            console.log("Early return");
-            return { props: {} };
-        }
+        let token;
+            try {
+                token = await getAccessToken(req, res);
+            }
+            catch (err) {
+                return { 
+                    redirect: {
+                        permanent: false,
+                        destination: "/api/auth/login",
+                    },
+                    props: {}
+                };
+            }
 
         // Fetch classrooms on Page Load
-        const token = "Bearer " + session.accessToken;
+        const bearer_token = "Bearer " + token.accessToken;
         const gamesData = await axios({
             method: "get",
             url: url + "/games/getGamesData",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
         // console.log(gamesData.data);
@@ -29,7 +35,7 @@ export async function getServerSideProps({ req, res }) {
         return {
             props: {
                 token: session.accessToken,
-                url: url,
+                url: process.env.BACKEND_URI,
                 gamesData: gamesData.data,
             },
         };

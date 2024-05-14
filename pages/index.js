@@ -10,15 +10,21 @@ import { useEffect, useState } from "react";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
-    const url = process.env.BACKEND_URI;
+    const url = process.env.INTERNAL_BACKEND_URI;
     const session = await getSession(req, res);
 
     if (session == null) {
         console.log("Early return");
-        return { props: {} };
+        return { 
+            redirect: {
+                permanent: false,
+                destination: "/api/auth/login",
+            },
+            props: {}
+        };
     }
     // console.log(session.accessToken)
-    return { props: { token: session.accessToken, url: url } };
+    return { props: { token: session.accessToken, url: process.env.BACKEND_URI } };
 };
 
 export default function Home({ token, url }) {

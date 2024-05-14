@@ -12,7 +12,14 @@ export const getServerSideProps = async ({ req, res }) => {
     try {
         const session = await getSession(req, res);
         if (session == null) {
-            return { props: {} };
+            console.log("Early return");
+            return { 
+                redirect: {
+                    permanent: false,
+                    destination: "/api/auth/login",
+                },
+                props: {}
+            };
         }
         return { props: { token: session.accessToken, url: url } };
     } catch (err) {

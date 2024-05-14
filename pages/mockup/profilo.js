@@ -2,7 +2,7 @@ import LayoutProfile from "@/components/LayoutProfile";
 import Image from "next/image";
 import Link from "next/link";
 import ghianda from "@/public/ghianda.svg";
-import { getSession } from "@auth0/nextjs-auth0";
+import { getAccessToken } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import ProfileImg from "@/components/ProfileImg";
 import ProgressBar from "@/components/ProgressBar";
@@ -10,23 +10,30 @@ import { useEffect, useState } from "react";
 
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
-    const url = process.env.BACKEND_URI;
+    const url = process.env.INTERNAL_BACKEND_URI;
     try {
-        const session = await getSession(req, res);
-
-        // EXIT if the session is null (Not Logged)
-        if (session == null) {
-            console.log("Early return");
-            return { props: {} };
+        let token;
+        try {
+            token = await getAccessToken(req, res);
         }
-        const token = "Bearer " + session.accessToken;
+        catch (err) {
+            console.log(err);
+            return { 
+                redirect: {
+                    permanent: false,
+                    destination: "/api/auth/login",
+                },
+                props: {}
+            };
+        }
+        const bearer_token = "Bearer " + token.accessToken;
 
         //Fetch id of selected classroom
         const user = await axios({
             method: "get",
             url: url + "/user/me",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
         // console.log(user.data.SelectedClass);
@@ -36,7 +43,7 @@ export const getServerSideProps = async ({ req, res }) => {
             method: "get",
             url: url + "/user/profileImg",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
             responseType: "arraybuffer",
         });
@@ -54,7 +61,7 @@ export const getServerSideProps = async ({ req, res }) => {
             method: "get",
             url: url + "/box/all",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
 
@@ -80,7 +87,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 url:
                     url + "/individual/getData/" + user.data.SelectedIndividual,
                 headers: {
-                    Authorization: token,
+                    Authorization: bearer_token,
                 },
             });
             // console.log(classData.data);
@@ -93,7 +100,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 "/classroom/getClassroomData/" +
                 user.data.SelectedClass,
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
 
@@ -101,14 +108,14 @@ export const getServerSideProps = async ({ req, res }) => {
             method: "get",
             url: url + "/levels" ,
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
         });
 
         return {
             props: {
-                token: session.accessToken,
-                url: url,
+                token: token.accessToken,
+                url: process.env.BACKEND_URI,
                 user: user.data,
                 boxes: boxes.data,
                 individual: individualData?.data ?? null,

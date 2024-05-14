@@ -13,17 +13,23 @@ const idPerfezionisti2 = "644e69ea44aa8453d1edc377";
 const idPerfezionisti3 = "644e69f2dc0afb58fbf07f5f";
 
 export const getServerSideProps = async ({ req, res }) => {
-    const url = process.env.BACKEND_URI;
+    const url = process.env.INTERNAL_BACKEND_URI;
     try {
-        const session = await getSession(req, res);
+        let token;
+            try {
+                token = await getAccessToken(req, res);
+            }
+            catch (err) {
+                return { 
+                    redirect: {
+                        permanent: false,
+                        destination: "/api/auth/login",
+                    },
+                    props: {}
+                };
+            }
 
-        // EXIT if the session is null (Not Logged)
-        if (session == null) {
-            console.log("Early return");
-            return { props: {} };
-        }
-
-        const token = "Bearer " + session.accessToken;
+        const bearer_token = "Bearer " + token.accessToken;
 
         const badgeImg = await axios({
             method: "get",
@@ -33,7 +39,7 @@ export const getServerSideProps = async ({ req, res }) => {
                 idPerfezionisti3 +
                 "?blocked=false&eng=true",
             headers: {
-                Authorization: token,
+                Authorization: bearer_token,
             },
             responseType: "arraybuffer",
         });
@@ -44,7 +50,7 @@ export const getServerSideProps = async ({ req, res }) => {
         return {
             props: {
                 token: session.accessToken,
-                url: url,
+                url: process.env.BACKEND_URI,
                 badgeImg: imageUrl,
             },
         };
