@@ -98,7 +98,11 @@ export const getServerSideProps = async ({ req, res, query }) => {
                 mqttSmarters: user.data.SelectedSmarters.map(s => s.name),
                 mqttMode: (user.data.SelectedMode == 1 ? "COLLABORATIVE" : "INDIVIDUAL"),
                 entityId: classData.data._id,
-                mode: user.data.SelectedMode
+                mode: user.data.SelectedMode,
+                currentGameLevel: level,
+                classLvl: classData.data.ClassLvl,
+                expPoints: +classData.data.Ghiande,
+                currentBadges: classData.data.ObtainedBadges
             }, {
                 headers: {
                     Authorization: bearer_token,
@@ -110,6 +114,7 @@ export const getServerSideProps = async ({ req, res, query }) => {
             props: {
                 token: token.accessToken,
                 url: process.env.BACKEND_URI,
+                selectedMode: user.data.SelectedMode,
                 selectedClass: user.data.SelectedClass,
                 selectedSmarters: user.data.SelectedSmarters,
                 classRoom: classData.data,
@@ -273,6 +278,7 @@ export default function Game({
     token,
     url,
     selectedClass,
+    selectedMode,
     selectedSmarters = [],
     classRoom,
     FEEDBACK,
@@ -281,16 +287,17 @@ export default function Game({
     level,
     err
 }) {
+    console.log(game);
     const router = useRouter();
     //const { gameId, level } = router.query; //game = quantita or ordinamenti
-    const mode = game?.levels[+level-1].mode;
+    const mode = game?.levels.filter(l => l?.mode == selectedMode )[+level-1].mode;
     // TODO: prendi i dati degli smarter dalle informazioni utente quindi userData.SelectedSmarter -> [{name: string}]
     // da quell'array posso cavarmi fuori i dati di quanti smarter sono collegati e di conseguenza modulare l'interfaccia grafica
     const {events, sendAction} = useSmarter({smarterIds: selectedSmarters?.map(smarter => smarter.name) ?? []});
     const [error, setError] = useState(false);
     const [currentExe, setCurrentExe] = useState(0);
-    const [lvlDataCorrect, setLvlDataCorrect] = useState(game?.levels[+level-1]?.exercises?.[currentExe]?.endSeq?.map(item => item === "_" ? "" : item) ?? []); //Used to check the correct solution
-    const [lvlData, setLvlData] = useState(game?.levels[+level-1]?.exercises?.[currentExe]?.startSeq?.map(item => item === "_" ? "" : item) ?? []);
+    const [lvlDataCorrect, setLvlDataCorrect] = useState(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.endSeq?.map(item => item === "_" ? "" : item) ?? []); //Used to check the correct solution
+    const [lvlData, setLvlData] = useState(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.startSeq?.map(item => item === "_" ? "" : item) ?? []);
     const [inputValues, setInputValues] = useState(new Array(selectedSmarters?.length*5).map(() => "")); //Used to store the input values
     const [isCorrect, setIsCorrect] = useState([
         false,
@@ -320,7 +327,7 @@ export default function Game({
     //Get level data
     useEffect(() => {
         //sendAction(LED_WHITE_ACTION)
-        setLvlData(game?.levels[+level-1]?.exercises?.[currentExe]?.startSeq?.map(item => item === "_" ? "" : item) ?? []);
+        setLvlData(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.startSeq?.map(item => item === "_" ? "" : item) ?? []);
         const inputs = document.querySelectorAll("input[name]");
         inputs.forEach((input) => {
             input.value = "";
@@ -396,13 +403,13 @@ export default function Game({
     //Handle next level
     useEffect(() => {
         if (isCorrect.every((el) => el === true)) {
-            if (currentExe < game?.levels[+level-1]?.exercises?.length-1) {
+            if (currentExe < game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.length-1) {
                 const title =
                     selectedLanguage === "eng" ? "CORRECT!" : "CORRETTO!";
                 const html =
                     selectedLanguage === "eng"
-                        ? "Exercise " + (currentExe + 1) + "/" + game?.levels[+level-1]?.exercises?.length + "completed"
-                        : "Esercizio " + (currentExe + 1) + "/" + game?.levels[+level-1]?.exercises?.length + "completato";
+                        ? "Exercise " + (currentExe + 1) + "/" + game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.length + "completed"
+                        : "Esercizio " + (currentExe + 1) + "/" + game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.length + "completato";
 
                 Swal.fire({
                     title: title,
@@ -416,8 +423,8 @@ export default function Game({
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
                         const ce = currentExe+1;
-                        setLvlData(game?.levels[+level-1]?.exercises?.[ce]?.startSeq?.map(item => item === "_" ? "" : item) ?? ['x','x','x','x','x'])
-                        setLvlDataCorrect(game?.levels[+level-1]?.exercises?.[ce]?.endSeq?.map(item => item === "_" ? "" : item) ?? ['x','x','x','x','x']);
+                        setLvlData(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[ce]?.startSeq?.map(item => item === "_" ? "" : item) ?? ['x','x','x','x','x'])
+                        setLvlDataCorrect(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[ce]?.endSeq?.map(item => item === "_" ? "" : item) ?? ['x','x','x','x','x']);
                         setCurrentExe((prevState) => prevState + 1);
                     }
                 });
@@ -563,7 +570,7 @@ export default function Game({
                 {mode == 2 ? (
                     <SeparatedGui 
                         FEEDBACK={FEEDBACK} 
-                        assignment={game?.levels[+level-1]?.exercises?.[currentExe]?.assignment} 
+                        assignment={game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.assignment} 
                         lvlData={lvlData} 
                         isCorrect={isCorrect} 
                         inputValues={inputValues} 
@@ -572,7 +579,7 @@ export default function Game({
                 ) : (
                     <SingleGui 
                         FEEDBACK={FEEDBACK} 
-                        assignment={game?.levels[+level-1]?.exercises?.[currentExe]?.assignment} 
+                        assignment={game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.assignment} 
                         lvlData={lvlData} 
                         isCorrect={isCorrect} 
                         inputValues={inputValues} 

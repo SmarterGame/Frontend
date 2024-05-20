@@ -160,9 +160,7 @@ export default function BadgePage({ token, url, user, boxes, classRoom, individu
 
     //Filter badges
     useEffect(() => {
-        const checkBadges = (isIndividual ? individual.Badges : classRoom.ObtainedBadges);
-
-        console.log(checkBadges)
+        const checkBadges = (isIndividual ? individual.ObtainedBadges : classRoom.ObtainedBadges)?.map(b => b._id);
         //Filter non obtained badges
         const nonObtainedBadges = badgeList?.map(badge => badge._id).filter(
             (badge) => !checkBadges.includes(badge)

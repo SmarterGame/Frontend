@@ -210,7 +210,7 @@ export default function Giochi({ classRoom, selectedMode, profileImg, games, max
                                 classRoom={classRoom}
                                 selectedMode={selectedMode}
                                 title={loadedGames[0].name}
-                                levels={loadedGames[0].levels ?? []}
+                                levels={loadedGames[0].levels.filter(l => l?.mode == selectedMode) ?? []}
                                 left={true}
                             >
                                 <Image
@@ -225,7 +225,7 @@ export default function Giochi({ classRoom, selectedMode, profileImg, games, max
                             <Levels
                                 key={1}
                                 gameId={loadedGames[1]?._id}
-                                levels={loadedGames[1].levels}
+                                levels={loadedGames[1].levels.filter(l => l?.mode == selectedMode)}
                                 selectedMode={selectedMode}
                                 title={loadedGames[1].name}
                                 left={false}
