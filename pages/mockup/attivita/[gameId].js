@@ -285,6 +285,7 @@ export default function Game({
     profileImg,
     game,
     level,
+    gameInstance,
     err
 }) {
     console.log(game);
@@ -487,30 +488,23 @@ export default function Game({
     //API TODO: pensaci sopra
     const gameFinished = async () => {
         try {
-            // const res = await axios({
-            //     method: "get",
-            //     url:
-            //         url +
-            //         "/classroom/gameFinished/" +
-            //         selectedClass +
-            //         "?game=" +
-            //         game +
-            //         "&level=" +
-            //         levelIndividual +
-            //         "&error=" +
-            //         error +
-            //         "&individual=true",
-            //     headers: {
-            //         Authorization: "Bearer " + token,
-            //     },
-            // });
-            // Da capire come posso fare a tirare fuori queste info ? probabilemente dall'istanza di gioco
+            const res = await axios({
+                method: "POST",
+                url:
+                    url +
+                    "/games/" + gameInstance.gameId + "/instances/" + gameInstance._id + "/stop",
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+            });
+            
             router.push({
                 pathname: "/mockup/gamification",
                 query: {
-                    game: game,
-                    level: level,
-                    //badgeData: JSON.stringify(res.data.badgeEarned),
+                    game: game?.name,
+                    badgeData: gameInstance?.obtainedBadges?.map(b => b?.badgeName).filter(b => !classRoom.ObtainedBadges.map(ba => ba.BadgeName).includes(b.badgeName)),
+                    expPoints: +gameInstance?.currentExpPoints - gameInstance?.originalExpPoints,
+                    level: gameInstance?.currentGameLevel,
                     selectedLanguage: selectedLanguage,
                 },
             });

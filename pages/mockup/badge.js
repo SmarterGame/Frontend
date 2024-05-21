@@ -3,15 +3,11 @@ import Link from "next/link";
 import { getAccessToken } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import { useRouter } from "next/router";
-import url2 from "url";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import procioneBadgeCompleted from "@/public/procioneBadgeCompleted.svg"
 
 export const getServerSideProps = async ({ req, res }) => {
-    //Get badge id from url
-    const { query } = url2.parse(req.url, true);
-    const idBadgeEarned = query.id ?? null;
-    const selectedLanguage = query.lan;
 
     const url = process.env.INTERNAL_BACKEND_URI;
     try {
@@ -42,24 +38,6 @@ export const getServerSideProps = async ({ req, res }) => {
         });
         // console.log(user.data.SelectedClass);
 
-        //Fetch profile image
-        const profileImg = await axios({
-            method: "get",
-            url: url + "/user/profileImg",
-            headers: {
-                Authorization: bearer_token,
-            },
-            responseType: "arraybuffer",
-        });
-        // console.log(profileImg.data);
-        let imageUrl = null;
-        if (Object.keys(profileImg.data).length !== 0) {
-            const image = Buffer.from(profileImg.data, "binary").toString(
-                "base64"
-            );
-            imageUrl = `data:image/png;base64,${image}`;
-        }
-
         //Fetch classroom data
         let classData;
         //Load individual data if user is individual
@@ -87,41 +65,11 @@ export const getServerSideProps = async ({ req, res }) => {
             // console.log(classData.data);
         }
 
-        //Fetch badge data
-        const badgeData = await axios({
-            method: "get",
-            url: url + "/badge/getBadge/" + idBadgeEarned,
-            headers: {
-                Authorization: bearer_token,
-            },
-        });
-        // console.log(badgeData.data);
-
-        //Fetch badge image
-        const badgeImg = await axios({
-            method: "get",
-            url:
-                url +
-                "/badge/getImg/" +
-                idBadgeEarned +
-                "?blocked=false&eng=" +
-                (selectedLanguage === "eng"),
-            headers: {
-                Authorization: bearer_token,
-            },
-            responseType: "arraybuffer",
-        });
-        const image = Buffer.from(badgeImg.data, "binary").toString("base64");
-        const badgeImageUrl = `data:image/jpeg;base64,${image}`;
-
         return {
             props: {
                 token: token.accessToken,
                 url: process.env.BACKEND_URI,
                 classRoom: classData.data,
-                profileImg: imageUrl,
-                badgeData: badgeData.data,
-                badgeImg: badgeImageUrl,
                 isIndividual: user.data.IsIndividual,
             },
         };
@@ -140,7 +88,7 @@ export default function Badge({
     isIndividual,
 }) {
     const router = useRouter();
-    const { title, liv, id } = router.query;
+    const { title, liv, name } = router.query;
 
     const [selectedLanguage, setSelectedLanguage] = useState();
     useEffect(() => {
@@ -170,7 +118,7 @@ export default function Badge({
                     <div className="flex flex-row items-center justify-center gap-x-10 px-32 bg-slate-200 rounded-xl shadow-2xl">
                         <div className="w-52 h-52 mx-auto bg-slate-200 mt-10 mb-10">
                             <Image
-                                src={badgeImg}
+                                src={procioneBadgeCompleted}
                                 alt="badge image"
                                 width={200}
                                 height={200}
@@ -190,9 +138,7 @@ export default function Badge({
                                     : "AVETE VINTO UN NUOVO BADGE:"}
                             </h1>
                             <h1 className="text-orangeBtn text-3xl">
-                                {selectedLanguage === "eng"
-                                    ? badgeData.BadgeName_en
-                                    : badgeData.BadgeName}
+                                {name}
                             </h1>
                         </div>
                     </div>

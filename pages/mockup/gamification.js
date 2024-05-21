@@ -5,14 +5,10 @@ import ghianda from "@/public/ghianda.svg";
 import { getSession } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import { useRouter } from "next/router";
-import url2 from "url";
 import { useEffect, useState } from "react";
+import procioneBadgeCompleted from "@/public/procioneBadgeCompleted.svg"
 
 export const getServerSideProps = async ({ req, res }) => {
-    //Get badge id from url
-    const { query } = url2.parse(req.url, true);
-    const badgeEarned = JSON.parse(query.badgeData ?? "[]");
-    const selectedLanguage = query.selectedLanguage;
 
     const url = process.env.INTERNAL_BACKEND_URI;
     try {
@@ -41,24 +37,6 @@ export const getServerSideProps = async ({ req, res }) => {
         });
         // console.log(user.data.SelectedClass);
 
-        //Fetch profile image
-        const profileImg = await axios({
-            method: "get",
-            url: url + "/user/profileImg",
-            headers: {
-                Authorization: bearer_token,
-            },
-            responseType: "arraybuffer",
-        });
-        // console.log(profileImg.data);
-        let imageUrl = null;
-        if (Object.keys(profileImg.data).length !== 0) {
-            const image = Buffer.from(profileImg.data, "binary").toString(
-                "base64"
-            );
-            imageUrl = `data:image/png;base64,${image}`;
-        }
-
         //Fetch classroom data
         let classData;
         //Load individual data if user is individual
@@ -86,37 +64,12 @@ export const getServerSideProps = async ({ req, res }) => {
             // console.log(classData.data);
         }
 
-        //Fetch badge image
-        let badgesImg = [];
-        for (const badgeId of badgeEarned) {
-            const badgeImg = await axios({
-                method: "get",
-                url:
-                    url +
-                    "/badge/getImg/" +
-                    badgeId +
-                    "?blocked=false&eng=" +
-                    (selectedLanguage === "eng"),
-                headers: {
-                    Authorization: bearer_token,
-                },
-                responseType: "arraybuffer",
-            });
-            const image = Buffer.from(badgeImg.data, "binary").toString(
-                "base64"
-            );
-            const badgeImageUrl = `data:image/jpeg;base64,${image}`;
-            badgesImg.push(badgeImageUrl);
-        }
-
         return {
             props: {
                 token: session.accessToken,
                 url: process.env.BACKEND_URI,
                 selectedClass: user.data.SelectedClass,
                 classRoom: classData.data,
-                profileImg: imageUrl,
-                badgesImg: badgesImg,
             },
         };
     } catch (err) {
@@ -134,8 +87,7 @@ export default function Quantita({
     badgesImg = [],
 }) {
     const router = useRouter();
-    const { game, level, badgeData } = router.query; //game = quantita or ordinamenti
-    const idBadgeEarned = JSON.parse(badgeData ?? "[]");
+    const { game, level, badgeData, expPoints } = router.query;
 
     const [selectedLanguage, setSelectedLanguage] = useState();
     useEffect(() => {
@@ -153,18 +105,6 @@ export default function Quantita({
         setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
 
-    let gameType = 0;
-    if (game == "quantita") gameType = 1;
-
-    let title;
-    if (game == "ordinamenti") {
-        if (selectedLanguage === "eng") title = "arrange the numbers";
-        else title = "gli ordinamenti";
-    } else {
-        if (selectedLanguage === "eng") title = "quantities";
-        else title = "le quantità";
-    }
-
     return (
         <>
             <LayoutGames
@@ -176,13 +116,7 @@ export default function Quantita({
                 <div className="relative flex flex-col mx-auto w-1/2 min-w-[700px] bg-slate-200 rounded-xl shadow-2xl mt-4 z-10">
                     <div className="flex flex-col items-center h-full mt-6">
                         <h1 className="text-4xl text-orangeBtn">
-                            {selectedLanguage === "eng"
-                                ? gameType
-                                    ? "QUANTITIES"
-                                    : "ARRANGE THE NUMBERS"
-                                : gameType
-                                ? "LE QUANTITA'"
-                                : "GLI ORDINAMENTI"}
+                            {game}
                             -{selectedLanguage === "eng" ? "LEVEL" : "LIVELLO"}{" "}
                             {level}
                         </h1>
@@ -193,7 +127,7 @@ export default function Quantita({
                         <div className="flex flex-row items-center gap-x-2 mt-4">
                             <p className="text-xl text-slate-700 mt-6">X</p>
                             <h1 className=" text-6xl text-slate-700 ml-1">
-                                {level}
+                                {expPoints}
                             </h1>
                             <Image src={ghianda} alt="ghianda" width={80} />
                         </div>
@@ -202,21 +136,17 @@ export default function Quantita({
 
                         <h1 className="text-2xl text-slate-700 mt-6">BADGE</h1>
                         <div className="flex flex-row gap-x-6 mt-4">
-                            {idBadgeEarned.map((badge, index) => (
-                                <button key={badge}>
+                            {[...new Set(badgeData)].map((badge, index) => (
+                                <button key={index}>
                                     <Link
-                                        href={`/mockup/badge?title=${game}&liv=${level}&id=${badge}&lan=${selectedLanguage}`}
+                                        href={`/mockup/badge?title=${game}&liv=${level}&name=${badge}`} alt={badge}
                                     >
-                                        {badgesImg.length > 0 ? (
-                                            <Image
-                                                src={badgesImg[index]}
-                                                alt="badge image"
-                                                width={150}
-                                                height={150}
-                                            />
-                                        ) : (
-                                            ""
-                                        )}
+                                        <Image
+                                            src={procioneBadgeCompleted}
+                                            alt="badge image"
+                                            width={150}
+                                            height={150}
+                                        />
                                     </Link>
                                 </button>
                             ))}
