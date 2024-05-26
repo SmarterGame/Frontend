@@ -649,6 +649,7 @@ export default function Game({
                         isCorrect={isCorrect} 
                         inputValues={inputValues} 
                         selectedSmarters={selectedSmarters}
+                        cardType={game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.cardType}
                     />
                 ) : (
                     <SingleGui 
@@ -658,6 +659,7 @@ export default function Game({
                         isCorrect={isCorrect} 
                         inputValues={inputValues} 
                         selectedSmarters={selectedSmarters}
+                        cardType={game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.cardType}
                     />
                 )}
                 
