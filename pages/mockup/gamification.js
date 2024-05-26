@@ -2,7 +2,7 @@ import LayoutGames from "@/components/LayoutGames";
 import Image from "next/image";
 import Link from "next/link";
 import ghianda from "@/public/ghianda.svg";
-import { getSession } from "@auth0/nextjs-auth0";
+import { getAccessToken } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -12,13 +12,13 @@ export const getServerSideProps = async ({ req, res }) => {
 
     const url = process.env.INTERNAL_BACKEND_URI;
     try {
-        const session = await getSession(req, res);
+        let token;
 
-        const bearer_token = "Bearer " + token.accessToken;
-
-        // EXIT if the session is null (Not Logged)
-        if (session == null) {
-            console.log("Early return");
+        try {
+            token = await getAccessToken(req, res);
+        }
+        catch (err) {
+            console.log(err);
             return { 
                 redirect: {
                     permanent: false,
@@ -27,6 +27,8 @@ export const getServerSideProps = async ({ req, res }) => {
                 props: {}
             };
         }
+
+        const bearer_token = "Bearer " + token.accessToken;
 
         const user = await axios({
             method: "get",
@@ -66,7 +68,7 @@ export const getServerSideProps = async ({ req, res }) => {
 
         return {
             props: {
-                token: session.accessToken,
+                token: token.accessToken,
                 url: process.env.BACKEND_URI,
                 selectedClass: user.data.SelectedClass,
                 classRoom: classData.data,
