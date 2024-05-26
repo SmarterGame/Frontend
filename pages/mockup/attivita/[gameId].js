@@ -194,7 +194,7 @@ function SingleGui({
             case "numbers":
                 return <div
                     className="text-8xl text-center w-20"
-                    name={i}
+                    name={index}
                 >{value}</div>
             case "apples":
                 return <Image
@@ -204,7 +204,7 @@ function SingleGui({
             default:
                 return <div
                     className="text-8xl text-center w-20"
-                    name={i}
+                    name={index}
                 ></div>
         }
     }
@@ -277,7 +277,7 @@ function SeparatedGui({
             case "numbers":
                 return <div
                     className="text-8xl text-center w-20"
-                    name={i}
+                    name={index}
                 >{value}</div>
             case "apples":
                 return <Image
@@ -287,7 +287,7 @@ function SeparatedGui({
             default:
                 return <div
                     className="text-8xl text-center w-20"
-                    name={i}
+                    name={index}
                 ></div>
         }
     }
