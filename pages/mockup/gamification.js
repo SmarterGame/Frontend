@@ -82,11 +82,8 @@ export const getServerSideProps = async ({ req, res }) => {
 };
 
 export default function Quantita({
-    token,
-    url,
     classRoom,
     profileImg,
-    badgesImg = [],
 }) {
     const router = useRouter();
     const { game, level, badgeData, expPoints } = router.query;

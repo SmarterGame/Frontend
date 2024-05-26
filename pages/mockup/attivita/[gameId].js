@@ -9,6 +9,29 @@ import Swal from "sweetalert2";
 import { useSmarter } from "@/data/mqtt/hooks";
 import leone from "@/public/leone.svg";
 import Image from "next/image";
+import mele1 from "@/public/mele1.svg";
+import mele2 from "@/public/mele2.svg";
+import mele3 from "@/public/mele3.svg";
+import mele4 from "@/public/mele4.svg";
+import mele5 from "@/public/mele5.svg";
+import mele6 from "@/public/mele6.svg";
+import mele7 from "@/public/mele7.svg";
+import mele8 from "@/public/mele8.svg";
+import mele9 from "@/public/mele9.svg";
+import mele10 from "@/public/mele10.svg";
+
+const meleSvgs = [
+    mele1,
+    mele2,
+    mele3,
+    mele4,
+    mele5,
+    mele6,
+    mele7,
+    mele8,
+    mele9,
+    mele10
+]
 
 export const getServerSideProps = async ({ req, res, query }) => {
     const FEEDBACK = process.env.FEEDBACK;
@@ -152,8 +175,39 @@ function SingleGui({
     lvlData,
     isCorrect,
     inputValues,
-    selectedSmarters
+    selectedSmarters,
+    cardType = "numbers"
 }) {
+    function getCardComponent(index, data) {
+        const value = data?.[index];
+
+        console.log(index);
+        console.log(value);
+
+        if (value === undefined || value > 10) 
+            return <div
+                className="text-8xl text-center w-20"
+                name={index}
+            ></div>
+
+        switch(cardType) {
+            case "numbers":
+                return <div
+                    className="text-8xl text-center w-20"
+                    name={i}
+                >{value}</div>
+            case "apples":
+                return <Image
+                    src={meleSvgs[value-1]}
+                    alt="mele"
+                ></Image>
+            default:
+                return <div
+                    className="text-8xl text-center w-20"
+                    name={i}
+                ></div>
+        }
+    }
     return (
         <>
             <div className="flex mt-6">
@@ -163,13 +217,13 @@ function SingleGui({
             </div>
             <div className="relative flex flex-col justify-center md:h-[55vh] lg:h-[60vh] mt-10 ml-4 mr-4 z-10">
                 <div className={(lvlData.length <= 5 ? "flex flex-col items-center w-full " : "") + "h-full"}>
-                    <div className={"grid grid-cols-"+ lvlData.length+" justify-items-center gap-y-4 gap-x-" + (lvlData.length > 5 ? "4" : "14") + " h-full "+ (lvlData.length > 5 ? "" : "w-[65%]")}>
-                        {lvlData.map((item, index) => (
+                    <div className={"grid grid-cols-"+lvlData.length+" grid-rows-2 justify-items-center gap-y-4 gap-x-" + (lvlData.length > 5 ? "4" : "14") + " h-full "+ (lvlData.length > 5 ? "" : "w-[65%]")}>
+                        {lvlData.map((_, index) => (
                             <div
                                 key={index}
                                 className="bg-slate-200 w-full flex justify-center items-center text-8xl col-span-1 row-span-1 overflow-hidden"
                             >
-                                {item}
+                                {getCardComponent(index, lvlData)}
                             </div>
                         ))}
                         {Array.from({ length: lvlData.length }, (_, index) => (
@@ -189,12 +243,7 @@ function SingleGui({
                                         : ``
                                 } w-full flex justify-center items-center text-8xl col-span-1 row-span-1 h-full`}
                             >
-                                {/* <input
-                                    className="text-6xl text-center w-20"
-                                    name={index}
-                                    onChange={handleInputChange}
-                                ></input> */}
-                                {inputValues?.[index]}
+                                {getCardComponent(index, inputValues)}
                             </div>
                         ))}
                     </div>
@@ -210,8 +259,40 @@ function SeparatedGui({
     lvlData,
     isCorrect,
     inputValues,
-    selectedSmarters
+    selectedSmarters,
+    cardType = "numbers"
 }) {
+    function getCardComponent(index, data) {
+        const value = data?.[index];
+
+        console.log(value);
+
+        if (value === undefined || value > 10) 
+            return <div
+                className="text-8xl text-center w-20"
+                name={index}
+            ></div>
+
+        switch(cardType) {
+            case "numbers":
+                return <div
+                    className="text-8xl text-center w-20"
+                    name={i}
+                >{value}</div>
+            case "apples":
+                return <Image
+                    src={meleSvgs[value-1]}
+                    alt="mele"
+                ></Image>
+            default:
+                return <div
+                    className="text-8xl text-center w-20"
+                    name={i}
+                ></div>
+        }
+    }
+
+
     return (
         <>
             <div className="flex mt-6">
@@ -226,13 +307,13 @@ function SeparatedGui({
                             <h1 className="mx-auto text-xl  mb-4 text-grayText">
                                 Smarter {smarterIndex+1}
                             </h1>
-                            <div className="grid grid-cols-5 justify-items-center gap-y-4 gap-x-4 h-full">
+                            <div className="grid grid-cols-5 grid-rows-2 justify-items-center gap-y-4 gap-x-4 h-full">
                                 {Array.from({ length: 5 }, (_, i) => (
                                     <div
                                         key={i}
                                         className="bg-slate-200 w-full flex justify-center items-center text-8xl"
                                     >
-                                        {lvlData[i+5*smarterIndex]}
+                                        {getCardComponent(i+5*smarterIndex, lvlData)}
                                     </div>
                                 ))}
                                 {Array.from({ length: 5 }, (_, i) => (
@@ -250,12 +331,9 @@ function SeparatedGui({
                                                             : ""
                                                     }`
                                                 : ``
-                                        } w-full flex justify-center items-center text-8xl`}
+                                        } w-full flex justify-center items-center text-8xl h-full`}
                                     >
-                                        <div
-                                            className="text-8xl text-center w-20"
-                                            name={i}
-                                        >{inputValues?.[i+5*smarterIndex]}</div>
+                                        {getCardComponent(i+5*smarterIndex, inputValues)}
                                     </div>
                                 ))}
                             </div>
@@ -497,12 +575,14 @@ export default function Game({
                     Authorization: "Bearer " + token,
                 },
             });
+
+            gameInstance = res.data;
             
             router.push({
                 pathname: "/mockup/gamification",
                 query: {
                     game: game?.name,
-                    badgeData: gameInstance?.obtainedBadges?.map(b => b?.badgeName).filter(b => !classRoom.ObtainedBadges.map(ba => ba.BadgeName).includes(b.badgeName)),
+                    badgeData: gameInstance?.obtainedBadges?.map(b => b?.badgeName)?.filter(b => !classRoom.ObtainedBadges.map(ba => ba.BadgeName).includes(b.badgeName)),
                     expPoints: +gameInstance?.currentExpPoints - gameInstance?.originalExpPoints,
                     level: gameInstance?.currentGameLevel,
                     selectedLanguage: selectedLanguage,
