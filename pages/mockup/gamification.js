@@ -135,7 +135,7 @@ export default function Quantita({
 
                         <h1 className="text-2xl text-slate-700 mt-6">BADGE</h1>
                         <div className="flex flex-row gap-x-6 mt-4">
-                            {[...new Set(badgeData)].map((badge, index) => (
+                            {[...new Set([badgeData].flatMap(b => b))].map((badge, index) => (
                                 <button key={index}>
                                     <Link
                                         href={`/mockup/badge?title=${game}&liv=${level}&name=${badge}`} alt={badge}

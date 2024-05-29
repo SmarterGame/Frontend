@@ -184,7 +184,7 @@ function SingleGui({
         console.log(index);
         console.log(value);
 
-        if (value === undefined || value > 10) 
+        if (value === undefined || (cardType === "apples" && value > 10)) 
             return <div
                 className="text-8xl text-center w-20"
                 name={index}
@@ -267,7 +267,7 @@ function SeparatedGui({
 
         console.log(value);
 
-        if (value === undefined || value > 10) 
+        if (value === undefined || (cardType === "apples" && value > 10)) 
             return <div
                 className="text-8xl text-center w-20"
                 name={index}
@@ -582,7 +582,7 @@ export default function Game({
                 pathname: "/mockup/gamification",
                 query: {
                     game: game?.name,
-                    badgeData: gameInstance?.obtainedBadges?.map(b => b?.badgeName)?.filter(b => !classRoom.ObtainedBadges.map(ba => ba.BadgeName).includes(b.badgeName)),
+                    badgeData: gameInstance?.obtainedBadges?.map(b => b?.badgeName)?.filter(b => !classRoom.ObtainedBadges.map(ba => ba.BadgeName).includes(b)),
                     expPoints: +gameInstance?.currentExpPoints - gameInstance?.originalExpPoints,
                     level: gameInstance?.currentGameLevel,
                     selectedLanguage: selectedLanguage,
