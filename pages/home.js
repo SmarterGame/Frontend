@@ -72,9 +72,9 @@ export const getServerSideProps = withPageAuthRequired({
                 }
             })
             const selectedOptions = {
-                selectedSmarters: selectedSmarters,
-                selectedMode: user.data.SelectedMode,
-                selectedIndividual: user.data.SelectedIndividual
+                selectedSmarters: selectedSmarters ?? null,
+                selectedMode: user.data.SelectedMode ?? null,
+                selectedIndividual: user.data.SelectedIndividual ?? null
             };
             
             return {
