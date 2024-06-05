@@ -5,7 +5,7 @@ import ghianda from "@/public/ghianda.svg";
 import { getAccessToken } from "@auth0/nextjs-auth0";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import procioneBadgeCompleted from "@/public/procioneBadgeCompleted.svg"
 
 export const getServerSideProps = async ({ req, res }) => {
@@ -89,6 +89,7 @@ export default function Quantita({
     const { game, level, badgeData, expPoints } = router.query;
 
     const [selectedLanguage, setSelectedLanguage] = useState();
+
     useEffect(() => {
         //Fetch the language
         // const fetchLanguage = async () => {
@@ -103,6 +104,14 @@ export default function Quantita({
         // fetchLanguage();
         setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
+
+    function getBadgeArray() {
+        if (!badgeData) {
+            return [];
+        }
+
+        return [...(new Set([badgeData].flatMap(b => b) ?? []))];
+    }
 
     return (
         <>
@@ -135,7 +144,7 @@ export default function Quantita({
 
                         <h1 className="text-2xl text-slate-700 mt-6">BADGE</h1>
                         <div className="flex flex-row gap-x-6 mt-4">
-                            {[...new Set([badgeData].flatMap(b => b))].map((badge, index) => (
+                            {getBadgeArray().map((badge, index) => (
                                 <button key={index}>
                                     <Link
                                         href={`/mockup/badge?title=${game}&liv=${level}&name=${badge}`} alt={badge}

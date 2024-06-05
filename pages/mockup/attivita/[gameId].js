@@ -582,7 +582,7 @@ export default function Game({
                 pathname: "/mockup/gamification",
                 query: {
                     game: game?.name,
-                    badgeData: gameInstance?.obtainedBadges?.map(b => b?.badgeName)?.filter(b => !classRoom.ObtainedBadges.map(ba => ba.BadgeName).includes(b)),
+                    badgeData: gameInstance?.obtainedBadges?.map(b => b?.badgeName)?.filter(b => !classRoom.ObtainedBadges.map(ba => ba.name).includes(b)),
                     expPoints: +gameInstance?.currentExpPoints - gameInstance?.originalExpPoints,
                     level: gameInstance?.currentGameLevel,
                     selectedLanguage: selectedLanguage,
