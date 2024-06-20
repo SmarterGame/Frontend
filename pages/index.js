@@ -8,6 +8,7 @@ import ita from "@/public/ita.png";
 import eng from "@/public/eng.png";
 import { useEffect, useState } from "react";
 
+
 export const getServerSideProps = async ({ req, res }) => {
     // const url = "http://" + process.env.BACKEND_URI;
     const url = process.env.INTERNAL_BACKEND_URI;
