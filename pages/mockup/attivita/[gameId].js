@@ -175,28 +175,32 @@ function SingleGui({
     lvlData,
     isCorrect,
     inputValues,
+    inputTypes,
     selectedSmarters,
     cardType = "numbers"
 }) {
-    function getCardComponent(index, data) {
+    function getCardComponent(index, data, assignment = true) {
         const value = data?.[index];
 
         console.log(index);
         console.log(value);
 
-        if (value === undefined || (cardType === "apples" && value > 10)) 
+        if (value === undefined || (cardType === "mela" && value > 10)) 
             return <div
                 className="text-8xl text-center w-20"
                 name={index}
             ></div>
 
-        switch(cardType) {
-            case "numbers":
+
+        const currentCardType = assignment ? cardType : inputTypes[index];
+        
+        switch(currentCardType) {
+            case "numero":
                 return <div
                     className="text-8xl text-center w-20"
                     name={index}
                 >{value}</div>
-            case "apples":
+            case "mela":
                 return <Image
                     src={meleSvgs[value-1]}
                     alt="mele"
@@ -243,7 +247,7 @@ function SingleGui({
                                         : ``
                                 } w-full flex justify-center items-center text-8xl col-span-1 row-span-1 h-full`}
                             >
-                                {getCardComponent(index, inputValues)}
+                                {getCardComponent(index, inputValues, false)}
                             </div>
                         ))}
                     </div>
@@ -259,27 +263,30 @@ function SeparatedGui({
     lvlData,
     isCorrect,
     inputValues,
+    inputTypes,
     selectedSmarters,
     cardType = "numbers"
 }) {
-    function getCardComponent(index, data) {
+    function getCardComponent(index, data, assignment = true) {
         const value = data?.[index];
 
         console.log(value);
 
-        if (value === undefined || (cardType === "apples" && value > 10)) 
+        if (value === undefined || (cardType === "mela" && value > 10)) 
             return <div
                 className="text-8xl text-center w-20"
                 name={index}
             ></div>
 
-        switch(cardType) {
-            case "numbers":
+        const currentCardType = assignment ? cardType : inputTypes[index];
+
+        switch(currentCardType) {
+            case "numero":
                 return <div
                     className="text-8xl text-center w-20"
                     name={index}
                 >{value}</div>
-            case "apples":
+            case "mela":
                 return <Image
                     src={meleSvgs[value-1]}
                     alt="mele"
@@ -333,7 +340,7 @@ function SeparatedGui({
                                                 : ``
                                         } w-full flex justify-center items-center text-8xl h-full`}
                                     >
-                                        {getCardComponent(i+5*smarterIndex, inputValues)}
+                                        {getCardComponent(i+5*smarterIndex, inputValues, false)}
                                     </div>
                                 ))}
                             </div>
@@ -378,6 +385,7 @@ export default function Game({
     const [lvlDataCorrect, setLvlDataCorrect] = useState(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.endSeq?.map(item => item === "_" ? "" : item) ?? []); //Used to check the correct solution
     const [lvlData, setLvlData] = useState(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.startSeq?.map(item => item === "_" ? "" : item) ?? []);
     const [inputValues, setInputValues] = useState(new Array(selectedSmarters?.length*5).map(() => "")); //Used to store the input values
+    const [inputTypes, setInputTypes] = useState(new Array(selectedSmarters?.length*5).map(() => ""));
     const [isCorrect, setIsCorrect] = useState([
         false,
         false,
@@ -420,8 +428,9 @@ export default function Game({
         console.log(lvlData);
         console.log(inputValues);
         console.log(lvlDataCorrect);
+        const cardType = game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.cardType;
         for (let i = 0; i < lvlData.length; i++) {
-            if (inputValues[i] == lvlDataCorrect[i]) {
+            if (cardType === inputTypes[i] && inputValues[i] == lvlDataCorrect[i]) {
                 setIsCorrect((prevState) => {
                     const newState = [...prevState];
                     newState[i] = true;
@@ -560,6 +569,20 @@ export default function Game({
                 })
                 return copy ?? ['' * selectedSmarters.length]
             } );
+
+            setInputTypes((prev) => {
+                let copy = [...prev]
+                selectedSmarters.forEach((smarter, index) => {
+                    console.log(result[smarter.name]);
+                    const msg = result[smarter.name]
+                    if (msg && msg.length > 0) {
+                        msg[msg.length-1]?.payloadTypes?.forEach((value, sindex) => {
+                            copy[sindex+5*index] = value;
+                        })
+                    }
+                })
+                return copy ?? ['' * selectedSmarters.length]
+            } );
         }
     }, [events])
 
@@ -648,6 +671,7 @@ export default function Game({
                         lvlData={lvlData} 
                         isCorrect={isCorrect} 
                         inputValues={inputValues} 
+                        inputTypes={inputTypes}
                         selectedSmarters={selectedSmarters}
                         cardType={game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.cardType}
                     />
@@ -657,7 +681,8 @@ export default function Game({
                         assignment={game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.assignment} 
                         lvlData={lvlData} 
                         isCorrect={isCorrect} 
-                        inputValues={inputValues} 
+                        inputValues={inputValues}
+                        inputTypes={inputTypes}
                         selectedSmarters={selectedSmarters}
                         cardType={game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.cardType}
                     />

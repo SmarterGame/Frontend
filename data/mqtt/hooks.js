@@ -1,7 +1,7 @@
 import { useHasHydrated } from "@/utils/hooks";
 import { useEffect, useState, useMemo } from "react";
 import { initMqtt } from "./connector";
-import { convertTagToSymbol } from "@/utils/smarter";
+import { convertTagToSymbol, convertTagToSymbolType } from "@/utils/smarter";
 
 const EVENT_TAG = '/event';
 const INFO_TAG = '/info';
@@ -63,7 +63,8 @@ export const useSmarter = (props) => {
               if (Array.isArray(json) && JSON.stringify(info) !== JSON.stringify(json)) {
                   setEvents(json.map((obj => ({
                     smarter_id: message_splitted[0],
-                    payload: obj.values?.map(value => convertTagToSymbol(value))
+                    payload: obj.values?.map(value => convertTagToSymbol(value)),
+                    payloadTypes: obj.values?.map(value => convertTagToSymbolType(value))
                 }))));
               }
               break;
@@ -71,7 +72,8 @@ export const useSmarter = (props) => {
               if (Array.isArray(json) && JSON.stringify(info) !== JSON.stringify(json)) {
                 setInfo(json.map((obj => ({
                   smarter_id: message_splitted[0],
-                  payload: convertTagToSymbol(obj.value)
+                  payload: convertTagToSymbol(obj.value),
+                  payloadType: convertTagToSymbolType(obj.value)
                 }))));
               }
               break;
