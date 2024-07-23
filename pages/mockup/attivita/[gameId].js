@@ -195,12 +195,12 @@ function SingleGui({
         const currentCardType = assignment ? cardType : inputTypes[index];
         
         switch(currentCardType) {
-            case "numero":
+            case "numbers":
                 return <div
                     className="text-8xl text-center w-20"
                     name={index}
                 >{value}</div>
-            case "mela":
+            case "apples":
                 return <Image
                     src={meleSvgs[value-1]}
                     alt="mele"
@@ -281,12 +281,12 @@ function SeparatedGui({
         const currentCardType = assignment ? cardType : inputTypes[index];
 
         switch(currentCardType) {
-            case "numero":
+            case "numbers":
                 return <div
                     className="text-8xl text-center w-20"
                     name={index}
                 >{value}</div>
-            case "mela":
+            case "apples":
                 return <Image
                     src={meleSvgs[value-1]}
                     alt="mele"
