@@ -55,7 +55,7 @@ COPY --from=builder /app/.next/standalone/ /app
 COPY --from=builder /app/public /app/public
 COPY --from=builder /app/.next/static /app/.next/static
 ENV HOSTNAME="0.0.0.0"
-
+ENV NODE_ENV="production"
 ENV AUTH0_ISSUER_BASE_URL="https://smarter.eu.auth0.com"
 ENV AUTH0_AUDIENCE="https://smartergame.com"
 ENV AUTH0_SCOPE="openid profile email offline_access"
