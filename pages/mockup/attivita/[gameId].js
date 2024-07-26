@@ -379,7 +379,7 @@ export default function Game({
     const mode = game?.levels.filter(l => l?.mode == selectedMode )[+level-1].mode;
     // TODO: prendi i dati degli smarter dalle informazioni utente quindi userData.SelectedSmarter -> [{name: string}]
     // da quell'array posso cavarmi fuori i dati di quanti smarter sono collegati e di conseguenza modulare l'interfaccia grafica
-    const {events, sendAction} = useSmarter({smarterIds: selectedSmarters?.map(smarter => smarter.name) ?? []});
+    const {events, gui, sendAction} = useSmarter({smarterIds: selectedSmarters?.map(smarter => smarter.name) ?? []});
     const [error, setError] = useState(false);
     const [currentExe, setCurrentExe] = useState(0);
     const [lvlDataCorrect, setLvlDataCorrect] = useState(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.endSeq?.map(item => item === "_" ? "" : item) ?? []); //Used to check the correct solution
@@ -429,32 +429,45 @@ export default function Game({
         console.log(inputValues);
         console.log(lvlDataCorrect);
         const cardType = game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.cardType;
+        const correctArray = [];
+        const wrongArray = [];
         for (let i = 0; i < lvlData.length; i++) {
             if (cardType === inputTypes[i] && inputValues[i] == lvlDataCorrect[i]) {
-                setIsCorrect((prevState) => {
-                    const newState = [...prevState];
-                    newState[i] = true;
-                    return newState;
-                });
-                setIsWrong((prevState) => {
-                    const newState = [...prevState];
-                    newState[i] = false;
-                    return newState;
-                });
+                correctArray.push(true);
+                wrongArray.push(false);
+                // setIsCorrect((prevState) => {
+                //     const newState = [...prevState];
+                //     newState[i] = true;
+                //     return newState;
+                // });
+                // setIsWrong((prevState) => {
+                //     const newState = [...prevState];
+                //     newState[i] = false;
+                //     return newState;
+                // });
             } else {
-                setIsCorrect((prevState) => {
-                    const newState = [...prevState];
-                    newState[i] = false;
-                    return newState;
-                });
-                if (inputValues[i] != undefined) {
-                    setIsWrong((prevState) => {
-                        const newState = [...prevState];
-                        newState[i] = true;
-                        return newState;
-                    });
+                // setIsCorrect((prevState) => {
+                //     const newState = [...prevState];
+                //     newState[i] = false;
+                //     return newState;
+                // });
+                correctArray.push(false);
+                if (inputValues[i] != undefined && inputValues[i] != "") {
+                    console.log("inputvalue")
+                    console.log(inputValues[i])
+                    wrongArray.push(true);
+                    // setIsWrong((prevState) => {
+                    //     const newState = [...prevState];
+                    //     newState[i] = true;
+                    //     return newState;
+                    // });
+                } else {
+                    wrongArray.push(false);
                 }
             }
+
+            setIsCorrect(correctArray);
+            setIsWrong(wrongArray);
 
             //If input is empty set isCorrect and isWrong to false
             // if (inputValues[i] == "" && ) {
@@ -490,7 +503,27 @@ export default function Game({
 
     //Handle next level
     useEffect(() => {
-        if (isCorrect.every((el) => el === true)) {
+        let newExecNum = undefined;
+
+        if (gui.type == "next_exec") {
+            newExecNum = gui.value;
+        }
+
+        console.log(newExecNum);
+        console.log(currentExe);
+        if (isCorrect.every((el) => el === true) || +newExecNum == currentExe+1) {
+            axios({
+                method: "post",
+                url: url + "/games/"+ game._id + "/instances/" + gameInstance._id + "/increaseExecNum",
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+            })
+            .then((res) => {
+                console.log(res.data);
+            }).catch((err) => {
+                console.log(err)
+            });
             if (currentExe < game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.length-1) {
                 const title =
                     selectedLanguage === "eng" ? "CORRECT!" : "CORRETTO!";
@@ -547,7 +580,26 @@ export default function Game({
                 });
             }
         }
-    }, [isCorrect]);
+    }, [isCorrect, gui]);
+
+    useEffect(() => {
+        console.log(isWrong)
+        if (isWrong.some((el) => el === true)) {
+            // TODO: add error to current exercise
+            axios({
+                method: "post",
+                url: url + "/games/"+ game._id + "/instances/" + gameInstance._id + "/increaseExecError",
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+            })
+            .then((res) => {
+                console.log(res.data);
+            }).catch((err) => {
+                console.log(err)
+            });
+        }
+    }, [isWrong])
 
     useEffect(() => {
         if (!isCorrect.every(Boolean)) {

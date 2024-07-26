@@ -6,6 +6,7 @@ import { convertTagToSymbol, convertTagToSymbolType } from "@/utils/smarter";
 const EVENT_TAG = '/event';
 const INFO_TAG = '/info';
 const ACTION_TAG = '/action';
+const GUI_TAG = '/gui';
 
 export const LED_RED_ACTION = '{"action":"led", "value": "red"}';
 export const LED_BLUE_ACTION = '{"action":"led", "value": "blue"}';
@@ -20,6 +21,7 @@ export const useSmarter = (props) => {
 
   const [events, setEvents] = useState([]);
   const [info, setInfo] = useState([]);
+  const [gui, setGui] = useState([]);
 
   const [error, setError] = useState();
   const [isConnecting, setIsConnecting] = useState(true);
@@ -32,6 +34,7 @@ export const useSmarter = (props) => {
   const topics = smarterIds.flatMap(id => [
     id+EVENT_TAG,
     id+INFO_TAG,
+    id+GUI_TAG,
   ]);
 
   const client = useMemo(() => initMqtt(topics),[]);
@@ -39,6 +42,8 @@ export const useSmarter = (props) => {
   const sendAction = (smarter_id, action) => {
     client.publish(actionTopics.find(topic => topic.smarter_id === smarter_id), action);
   }
+
+  
 
   // setup connection mqtt
   useEffect(() => {
@@ -77,6 +82,10 @@ export const useSmarter = (props) => {
                 }))));
               }
               break;
+            case GUI_TAG:
+              console.log(json);
+              setGui(json);
+              break;
             default:
               console.log("event not registered!");
           }
@@ -108,5 +117,5 @@ export const useSmarter = (props) => {
     };
   },[hydrated]);
 
-  return {events, info, sendAction, isConnecting, error};
+  return {events, info, gui, sendAction, isConnecting, error};
 }
