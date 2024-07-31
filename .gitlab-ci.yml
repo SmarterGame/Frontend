@@ -85,10 +85,6 @@ semgrep-sast:
   rules:
      - if: '$CI_COMMIT_REF_NAME == "main"'
 
-nodejs-scan-sast:
-  rules:
-     - if: '$CI_COMMIT_REF_NAME == "main"'
-
 gemnasium-maven-dependency_scanning:
   rules:
      - if: '$CI_COMMIT_REF_NAME == "main"'
