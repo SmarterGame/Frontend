@@ -63,7 +63,7 @@ export const getServerSideProps = async ({ req, res, query }) => {
         });
         if (user.data.IsIndividual === true)
             user.data.SelectedClass = user.data.SelectedIndividual;
-        // console.log(user.data.SelectedClass);
+        // //console.log(user.data.SelectedClass);
 
         //Fetch profile image
         const profileImg = await axios({
@@ -74,7 +74,7 @@ export const getServerSideProps = async ({ req, res, query }) => {
             },
             responseType: "arraybuffer",
         });
-        // console.log(profileImg.data);
+        // //console.log(profileImg.data);
         let imageUrl = null;
         if (Object.keys(profileImg.data).length !== 0) {
             const image = Buffer.from(profileImg.data, "binary").toString(
@@ -104,7 +104,7 @@ export const getServerSideProps = async ({ req, res, query }) => {
             });
         }
         
-        // console.log(classData.data);
+        // //console.log(classData.data);
 
         const game = await axios
             .get(url + "/games/" + gameId, {
@@ -149,8 +149,8 @@ export const getServerSideProps = async ({ req, res, query }) => {
             },
         };
     } catch (err) {
-        console.log(err);
-        console.log(url);
+        //console.log(err);
+        //console.log(url);
         const customError = {
             error: JSON.stringify(err, Object.getOwnPropertyNames(err)),
             debug: {
@@ -177,30 +177,30 @@ function SingleGui({
     inputValues,
     inputTypes,
     selectedSmarters,
-    cardType = "numbers"
+    cardType = "numero"
 }) {
     function getCardComponent(index, data, assignment = true) {
         const value = data?.[index];
 
-        console.log(index);
-        console.log(value);
+        //console.log(index);
+        //console.log(value);
 
         if (value === undefined || (cardType === "mela" && value > 10)) 
             return <div
                 className="text-8xl text-center w-20"
                 name={index}
             ></div>
-
+        
 
         const currentCardType = assignment ? cardType : inputTypes[index];
         
         switch(currentCardType) {
-            case "numbers":
+            case "numero":
                 return <div
                     className="text-8xl text-center w-20"
                     name={index}
                 >{value}</div>
-            case "apples":
+            case "mela":
                 return <Image
                     src={meleSvgs[value-1]}
                     alt="mele"
@@ -265,12 +265,12 @@ function SeparatedGui({
     inputValues,
     inputTypes,
     selectedSmarters,
-    cardType = "numbers"
+    cardType = "numero"
 }) {
     function getCardComponent(index, data, assignment = true) {
         const value = data?.[index];
 
-        console.log(value);
+        //console.log(value);
 
         if (value === undefined || (cardType === "mela" && value > 10)) 
             return <div
@@ -281,12 +281,12 @@ function SeparatedGui({
         const currentCardType = assignment ? cardType : inputTypes[index];
 
         switch(currentCardType) {
-            case "numbers":
+            case "numero":
                 return <div
                     className="text-8xl text-center w-20"
                     name={index}
                 >{value}</div>
-            case "apples":
+            case "mela":
                 return <Image
                     src={meleSvgs[value-1]}
                     alt="mele"
@@ -373,7 +373,7 @@ export default function Game({
     gameInstance,
     err
 }) {
-    console.log(game);
+    //console.log(game);
     const router = useRouter();
     //const { gameId, level } = router.query; //game = quantita or ordinamenti
     const mode = game?.levels.filter(l => l?.mode == selectedMode )[+level-1].mode;
@@ -394,6 +394,7 @@ export default function Game({
         false,
     ]);
     const [isWrong, setIsWrong] = useState([false, false, false, false, false]);
+    const [guiEvent, setGuiEvent] = useState("");
 
     const [selectedLanguage, setSelectedLanguage] = useState();
     useEffect(() => {
@@ -404,12 +405,20 @@ export default function Game({
         //         const language = await data.json();
         //         setSelectedLanguage(language);
         //     } catch (error) {
-        //         console.log(error);
+        //         //console.log(error);
         //     }
         // };
         // fetchLanguage();
         setSelectedLanguage(sessionStorage.getItem("language"));
     }, []);
+
+    //console.log(lvlData)
+    useEffect(() => {
+        if(!!gui) {
+            console.log(gui.type)
+            setGuiEvent(gui.type)
+        }
+    }, [gui])
 
     //Get level data
     useEffect(() => {
@@ -425,9 +434,9 @@ export default function Game({
 
     //Check if the solution is correct
     useEffect(() => {
-        console.log(lvlData);
-        console.log(inputValues);
-        console.log(lvlDataCorrect);
+        //console.log(lvlData);
+        //console.log(inputValues);
+        //console.log(lvlDataCorrect);
         const cardType = game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.cardType;
         const correctArray = [];
         const wrongArray = [];
@@ -453,8 +462,8 @@ export default function Game({
                 // });
                 correctArray.push(false);
                 if (inputValues[i] != undefined && inputValues[i] != "") {
-                    console.log("inputvalue")
-                    console.log(inputValues[i])
+                    //console.log("inputvalue")
+                    //console.log(inputValues[i])
                     wrongArray.push(true);
                     // setIsWrong((prevState) => {
                     //     const newState = [...prevState];
@@ -482,8 +491,8 @@ export default function Game({
             //         return newState;
             //     });
             // }
-            console.log(isCorrect)
-            console.log(isWrong)
+            //console.log(isCorrect)
+            //console.log(isWrong)
         }
     }, [inputValues]);
 
@@ -505,13 +514,14 @@ export default function Game({
     useEffect(() => {
         let newExecNum = undefined;
 
-        if (gui.type == "next_exec") {
-            newExecNum = gui.value;
+        if (guiEvent == "next_exec") {
+            newExecNum = currentExe+1;
         }
 
-        console.log(newExecNum);
-        console.log(currentExe);
-        if (isCorrect.every((el) => el === true) || +newExecNum == currentExe+1) {
+        //console.log("check")
+        //console.log(newExecNum);
+        //console.log(currentExe);
+        if (isCorrect.every((el) => el === true) || !!newExecNum) {
             axios({
                 method: "post",
                 url: url + "/games/"+ game._id + "/instances/" + gameInstance._id + "/increaseExecNum",
@@ -520,9 +530,9 @@ export default function Game({
                 },
             })
             .then((res) => {
-                console.log(res.data);
+                //console.log(res.data);
             }).catch((err) => {
-                console.log(err)
+                //console.log(err)
             });
             if (currentExe < game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.length-1) {
                 const title =
@@ -547,6 +557,7 @@ export default function Game({
                         setLvlData(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[ce]?.startSeq?.map(item => item === "_" ? "" : item) ?? ['x','x','x','x','x'])
                         setLvlDataCorrect(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[ce]?.endSeq?.map(item => item === "_" ? "" : item) ?? ['x','x','x','x','x']);
                         setCurrentExe((prevState) => prevState + 1);
+                        setGuiEvent("");
                     }
                 });
             } else {
@@ -580,10 +591,10 @@ export default function Game({
                 });
             }
         }
-    }, [isCorrect, gui]);
+    }, [isCorrect, guiEvent]);
 
     useEffect(() => {
-        console.log(isWrong)
+        //console.log(isWrong)
         if (isWrong.some((el) => el === true)) {
             // TODO: add error to current exercise
             axios({
@@ -594,24 +605,26 @@ export default function Game({
                 },
             })
             .then((res) => {
-                console.log(res.data);
+                //console.log(res.data);
             }).catch((err) => {
-                console.log(err)
+                //console.log(err)
             });
         }
     }, [isWrong])
 
     useEffect(() => {
-        if (!isCorrect.every(Boolean)) {
-            console.log("Enter")
-            console.log(isCorrect);
+        console.log("Enter")
+        console.log(inputValues);
+        console.log(inputTypes);
+        if (isCorrect.every((el) => el === false)) {
+            console.log("Enter2")
             const copy_events = [...events];
             const result = Object.groupBy(copy_events, ({ smarter_id }) => smarter_id);
             
             setInputValues((prev) => {
                 let copy = [...prev]
                 selectedSmarters.forEach((smarter, index) => {
-                    console.log(result[smarter.name]);
+                    //console.log(result[smarter.name]);
                     const msg = result[smarter.name]
                     if (msg && msg.length > 0) {
                         msg[msg.length-1]?.payload?.forEach((value, sindex) => {
@@ -625,7 +638,7 @@ export default function Game({
             setInputTypes((prev) => {
                 let copy = [...prev]
                 selectedSmarters.forEach((smarter, index) => {
-                    console.log(result[smarter.name]);
+                    //console.log(result[smarter.name]);
                     const msg = result[smarter.name]
                     if (msg && msg.length > 0) {
                         msg[msg.length-1]?.payloadTypes?.forEach((value, sindex) => {
@@ -664,7 +677,7 @@ export default function Game({
                 },
             });
         } catch (err) {
-            console.log(err);
+            //console.log(err);
         }
     };
 
