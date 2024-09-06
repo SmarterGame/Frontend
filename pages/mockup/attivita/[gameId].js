@@ -205,6 +205,16 @@ function SingleGui({
                     src={meleSvgs[value-1]}
                     alt="mele"
                 ></Image>
+            case "simbolo":
+                return <div
+                    className="text-8xl text-center w-20"
+                    name={index}
+                >{value}</div>
+            case "operatore":
+                return <div
+                    className="text-8xl text-center w-20"
+                    name={index}
+                >{value}</div>
             default:
                 return <div
                     className="text-8xl text-center w-20"
@@ -291,6 +301,16 @@ function SeparatedGui({
                     src={meleSvgs[value-1]}
                     alt="mele"
                 ></Image>
+            case "simbolo":
+                return <div
+                    className="text-8xl text-center w-20"
+                    name={index}
+                >{value}</div>
+            case "operatore":
+                return <div
+                    className="text-8xl text-center w-20"
+                    name={index}
+                >{value}</div>
             default:
                 return <div
                     className="text-8xl text-center w-20"
