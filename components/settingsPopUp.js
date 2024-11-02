@@ -287,8 +287,8 @@ export default function PopUp({
                                         ? "No mode selected"
                                         : "Nessuna modalità selezionata"}
                                 </option>
-                                <option value={1}>Low positive interdependence</option>
-                                <option value={2}>High positive interdependence</option>
+                                <option value={1}>High positive interdependence</option>
+                                <option value={2}>Low positive interdependence</option>
                                 <option value={3}>Individual</option>
                             </select>
                         </div>

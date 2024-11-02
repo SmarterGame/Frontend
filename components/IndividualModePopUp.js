@@ -42,8 +42,8 @@ export default function IndividualModePopUP({
             : "Nessun profilo selezionato"
     );
 
-    const smarter1Id = boxes.find((box) => box.name === smarter1)?._id;
-    const smarter2Id = boxes.find((box) => box.name === smarter2)?._id;
+    const smarter1Id = boxes?.find((box) => box.name === smarter1)?._id;
+    const smarter2Id = boxes?.find((box) => box.name === smarter2)?._id;
 
     useEffect(() => {
         const getClassIndividuals = async () => {
