@@ -185,14 +185,18 @@ function SingleGui({
         //console.log(index);
         //console.log(value);
 
-        if (value === undefined || (cardType === "mela" && value > 10)) 
+        if (value === undefined || (cardType[index] === "mela" && value > 10)) 
             return <div
                 className="text-8xl text-center w-20"
                 name={index}
             ></div>
         
 
-        const currentCardType = assignment ? cardType : inputTypes[index];
+        const currentCardType = assignment ? cardType[index] : inputTypes[index];
+
+        console.log(currentCardType)
+        console.log(cardType)
+        console.log(index)
         
         switch(currentCardType) {
             case "numero":
@@ -275,20 +279,20 @@ function SeparatedGui({
     inputValues,
     inputTypes,
     selectedSmarters,
-    cardType = "numero"
+    cardType = Array(10).fill("numero")
 }) {
     function getCardComponent(index, data, assignment = true) {
         const value = data?.[index];
 
         //console.log(value);
 
-        if (value === undefined || (cardType === "mela" && value > 10)) 
+        if (value === undefined || (cardType[index] === "mela" && value > 10)) 
             return <div
                 className="text-8xl text-center w-20"
                 name={index}
             ></div>
 
-        const currentCardType = assignment ? cardType : inputTypes[index];
+        const currentCardType = assignment ? cardType[index] : inputTypes[index];
 
         switch(currentCardType) {
             case "numero":
@@ -393,17 +397,19 @@ export default function Game({
     gameInstance,
     err
 }) {
-    //console.log(game);
+    console.log(game);
     const router = useRouter();
     //const { gameId, level } = router.query; //game = quantita or ordinamenti
     const mode = game?.levels.filter(l => l?.mode == selectedMode )[+level-1].mode;
     // TODO: prendi i dati degli smarter dalle informazioni utente quindi userData.SelectedSmarter -> [{name: string}]
     // da quell'array posso cavarmi fuori i dati di quanti smarter sono collegati e di conseguenza modulare l'interfaccia grafica
-    const {events, gui, sendAction} = useSmarter({smarterIds: selectedSmarters?.map(smarter => smarter.name) ?? []});
+    const {events, gui} = useSmarter({smarterIds: selectedSmarters?.map(smarter => smarter.name) ?? []});
     const [error, setError] = useState(false);
     const [currentExe, setCurrentExe] = useState(0);
-    const [lvlDataCorrect, setLvlDataCorrect] = useState(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.endSeq?.map(item => item === "_" ? "" : item) ?? []); //Used to check the correct solution
-    const [lvlData, setLvlData] = useState(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.startSeq?.map(item => item === "_" ? "" : item) ?? []);
+    const [lvlDataCorrect, setLvlDataCorrect] = useState(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.endSeq?.sequence?.map(item => item === "_" ? "" : item) ?? []); //Used to check the correct solution
+    const [lvlData, setLvlData] = useState(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.startSeq?.sequence?.map(item => item === "_" ? "" : item) ?? []);
+    const [lvlDataType, setLvlDataType] = useState(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.startSeq?.cardType);
+    const [lvlDataCorrectType, setLvlDataCorrectType] = useState(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.endSeq?.cardType);
     const [inputValues, setInputValues] = useState(new Array(selectedSmarters?.length*5).map(() => "")); //Used to store the input values
     const [inputTypes, setInputTypes] = useState(new Array(selectedSmarters?.length*5).map(() => ""));
     const [isCorrect, setIsCorrect] = useState([
@@ -415,6 +421,8 @@ export default function Game({
     ]);
     const [isWrong, setIsWrong] = useState([false, false, false, false, false]);
     const [guiEvent, setGuiEvent] = useState("");
+
+    console.log(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.startSeq?.sequence);
 
     const [selectedLanguage, setSelectedLanguage] = useState();
     useEffect(() => {
@@ -443,7 +451,9 @@ export default function Game({
     //Get level data
     useEffect(() => {
         //sendAction(LED_WHITE_ACTION)
-        setLvlData(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.startSeq?.map(item => item === "_" ? "" : item) ?? []);
+        setLvlData(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.startSeq?.sequence?.map(item => item === "_" ? "" : item) ?? []);
+        setLvlDataType(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.startSeq?.cardType);
+        setLvlDataCorrectType(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.endSeq?.cardType);
         const inputs = document.querySelectorAll("input[name]");
         inputs.forEach((input) => {
             input.value = "";
@@ -457,11 +467,10 @@ export default function Game({
         //console.log(lvlData);
         //console.log(inputValues);
         //console.log(lvlDataCorrect);
-        const cardType = game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.cardType;
         const correctArray = [];
         const wrongArray = [];
         for (let i = 0; i < lvlData.length; i++) {
-            if (cardType === inputTypes[i] && inputValues[i] == lvlDataCorrect[i]) {
+            if (lvlDataCorrectType[i] === inputTypes[i] && inputValues[i] == lvlDataCorrect[i]) {
                 correctArray.push(true);
                 wrongArray.push(false);
                 // setIsCorrect((prevState) => {
@@ -575,7 +584,9 @@ export default function Game({
                     if (result.dismiss === Swal.DismissReason.timer) {
                         const ce = currentExe+1;
                         setLvlData(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[ce]?.startSeq?.map(item => item === "_" ? "" : item) ?? ['x','x','x','x','x'])
-                        setLvlDataCorrect(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[ce]?.endSeq?.map(item => item === "_" ? "" : item) ?? ['x','x','x','x','x']);
+                        setLvlDataCorrect(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[ce]?.endSeq?.sequence?.map(item => item === "_" ? "" : item) ?? ['x','x','x','x','x']);
+                        setLvlDataType(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[ce]?.startSeq?.cardType);
+                        setLvlDataCorrectType(game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[ce]?.endSeq?.cardType);
                         setCurrentExe((prevState) => prevState + 1);
                         setGuiEvent("");
                     }
@@ -671,7 +682,6 @@ export default function Game({
         }
     }, [events])
 
-    //API TODO: pensaci sopra
     const gameFinished = async () => {
         try {
             const res = await axios({
@@ -758,7 +768,7 @@ export default function Game({
                         inputValues={inputValues} 
                         inputTypes={inputTypes}
                         selectedSmarters={selectedSmarters}
-                        cardType={game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.cardType}
+                        cardType={lvlDataType}
                     />
                 ) : (
                     <SingleGui 
@@ -769,7 +779,7 @@ export default function Game({
                         inputValues={inputValues}
                         inputTypes={inputTypes}
                         selectedSmarters={selectedSmarters}
-                        cardType={game?.levels.filter(l => l?.mode == selectedMode )[+level-1]?.exercises?.[currentExe]?.cardType}
+                        cardType={lvlDataType}
                     />
                 )}
                 
