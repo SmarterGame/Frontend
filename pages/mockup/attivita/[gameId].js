@@ -470,7 +470,7 @@ export default function Game({
         const correctArray = [];
         const wrongArray = [];
         for (let i = 0; i < lvlData.length; i++) {
-            if (lvlDataCorrectType[i] === inputTypes[i] && inputValues[i] == lvlDataCorrect[i]) {
+            if ((lvlDataCorrectType[i] === inputTypes[i] || lvlDataCorrectType[i] == "qualsiasi") && inputValues[i] == lvlDataCorrect[i]) {
                 correctArray.push(true);
                 wrongArray.push(false);
                 // setIsCorrect((prevState) => {
