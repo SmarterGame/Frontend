@@ -686,6 +686,18 @@ export default function Game({
 
     const gameFinished = async () => {
         try {
+            await axios({
+                method: "POST",
+                url:
+                    url +
+                    "/games/" + gameInstance.gameId + "/instances/" + gameInstance._id + "/stop",
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+            });
+
+            await new Promise(r => setTimeout(r, 2000));
+
             const res = await axios({
                 method: "POST",
                 url:

@@ -155,6 +155,7 @@ export default function Quantita({
                                             width={150}
                                             height={150}
                                         />
+                                        <div>{badge}</div>
                                     </Link>
                                 </button>
                             ))}
