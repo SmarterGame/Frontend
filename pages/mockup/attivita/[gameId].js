@@ -647,7 +647,9 @@ export default function Game({
         console.log("Enter")
         console.log(inputValues);
         console.log(inputTypes);
-        if (isCorrect.every((el) => el === false)) {
+        console.log(events);
+        console.log(isCorrect)
+        //if (isCorrect.every((el) => el === false)) {
             console.log("Enter2")
             const copy_events = [...events];
             const result = Object.groupBy(copy_events, ({ smarter_id }) => smarter_id);
@@ -679,7 +681,7 @@ export default function Game({
                 })
                 return copy ?? ['' * selectedSmarters.length]
             } );
-        }
+        //}
     }, [events])
 
     const gameFinished = async () => {
